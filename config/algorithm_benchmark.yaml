@@ -1,7 +1,7 @@
 global:
-  runs: 20
+  runs: 30
   pop_size: 100
-  n_gen: 200
+  evaluation_budget: 20000
   seed_base: 42
   out_dir: results/algorithm_benchmark
 
@@ -21,10 +21,14 @@ algorithm_configs:
   - config/algorithms/oade_nsga2.yaml
   - config/algorithms/nsga2.yaml
   - config/algorithms/rnsga2.yaml
-  # - config/algorithms/dnsga2.yaml
+  - config/algorithms/dnsga2.yaml
   - config/algorithms/cgde_nsga2.yaml
   - config/algorithms/nsga2_sdr_ols.yaml
-  # - config/algorithms/ce_moea.yaml
+  - config/algorithms/ce_moea.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII
 
 plots:
   igd_mean_std: plot_igd_mean_std.png
