@@ -1,0 +1,49 @@
+global:
+  runs: 30
+  pop_size: 100
+  evaluation_budget: 20000
+  seed_base: 42
+  out_dir: results/wfg_benchmark
+
+# k must be divisible by n_obj - 1. All cases use 24 decision variables.
+problems:
+  - {name: wfg1, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg1, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg1, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg2, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg2, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg2, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg3, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg3, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg3, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg4, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg4, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg4, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg5, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg5, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg5, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg6, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg6, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg6, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg7, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg7, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg7, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg8, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg8, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg8, n_obj: 5, n_var: 24, k: 8}
+  - {name: wfg9, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg9, n_obj: 3, n_var: 24, k: 4}
+  - {name: wfg9, n_obj: 5, n_var: 24, k: 8}
+
+algorithm_configs:
+  - config/algorithms/oade_nsga2.yaml
+  - config/algorithms/nsga2.yaml
+  - config/algorithms/rnsga2.yaml
+  - config/algorithms/dnsga2.yaml
+  - config/algorithms/cgde_nsga2.yaml
+  - config/algorithms/nsga2_sdr_ols.yaml
+  - config/algorithms/ce_moea.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII

@@ -16,6 +16,7 @@ from pymoo.indicators.igd import IGD
 from pymoo.optimize import minimize
 from pymoo.problems import get_problem
 from pymoo.core.callback import Callback
+from pymoo.core.sampling import Sampling
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 from pymoo.util.ref_dirs import get_reference_directions
 
@@ -121,6 +122,22 @@ class PymooConvergenceCallback(Callback):
             self.recorder.record(self.budgeted.n_eval, algorithm.pop.get("F"))
 
 
+class FixedInitialSampling(Sampling):
+    """Return the common initial population once and remain callable thereafter."""
+
+    def __init__(self, initial_x: np.ndarray, seed: int) -> None:
+        super().__init__()
+        self.initial_x = np.asarray(initial_x, dtype=float).copy()
+        self.rng = np.random.default_rng(seed + 900_000)
+        self.used_initial = False
+
+    def _do(self, problem, n_samples, **kwargs):
+        if not self.used_initial and n_samples == len(self.initial_x):
+            self.used_initial = True
+            return self.initial_x.copy()
+        return self.rng.uniform(problem.xl, problem.xu, size=(n_samples, problem.n_var))
+
+
 def load_algorithm_specs(paths: list[str]) -> list[AlgorithmSpec]:
     specs = []
     for path_text in paths:
@@ -152,7 +169,7 @@ def reference_front(problem, problem_cfg: dict) -> np.ndarray:
     """Create a deterministic reference front for ZDT/DTLZ-style problems."""
 
     name = str(problem_cfg["name"]).lower()
-    if name.startswith("dtlz"):
+    if name.startswith(("dtlz", "wfg")):
         n_obj = int(problem.n_obj)
         partitions_by_objectives = {2: 200, 3: 20, 5: 6}
         partitions = int(
@@ -177,7 +194,7 @@ def _run_pymoo(spec, problem, pop_size, budget, initial_x, seed, recorder) -> Ru
     params = dict(spec.params)
     params.setdefault("pop_size", pop_size)
     if spec.sampling == "initial_population":
-        params.setdefault("sampling", initial_x)
+        params.setdefault("sampling", FixedInitialSampling(initial_x, seed))
     if spec.auto_ref_points:
         params.setdefault("ref_points", make_rnsga2_ref_points(problem, initial_x))
     algorithm = import_class(spec.class_path)(**params)
