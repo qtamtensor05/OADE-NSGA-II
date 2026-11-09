@@ -1,0 +1,32 @@
+global:
+  runs: 30
+  pop_size: 100
+  evaluation_budget: 20000
+  seed_base: 42
+  jobs: 6
+  out_dir: results/algorithm_benchmark_v2
+
+problems:
+  - name: zdt1
+    n_var: 30
+  - name: zdt2
+    n_var: 30
+  - name: zdt3
+    n_var: 30
+  - name: zdt4
+    n_var: 10
+  - name: zdt6
+    n_var: 10
+
+algorithm_configs:
+  - config/algorithms/oade_nsga2.yaml
+  - config/algorithms/nsga2.yaml
+  - config/algorithms/rnsga2.yaml
+  - config/algorithms/dnsga2.yaml
+  - config/algorithms/cgde_nsga2.yaml
+  - config/algorithms/nsga2_sdr_ols.yaml
+  - config/algorithms/ce_moea.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII

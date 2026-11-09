@@ -59,10 +59,19 @@ class OADE_NSGAII:
         self.eta_c = 20.0
         self.eta_m = 20.0
 
-        # Ngưỡng phát hiện trì trệ
+        # Ngưỡng phát hiện trì trệ và chế độ restart
         self.stagnation_patience   = n_gen // 4  # số thế hệ không cải thiện trước khi restart
         self.stagnation_tolerance  = 1e-4        # cải thiện nhỏ hơn ngưỡng này bị coi là trì trệ
-        self.restart_elite_ratio   = 0.3         # tỉ lệ cá thể tốt giữ lại sau restart
+        self.restart_elite_ratio   = 0.8         # tỉ lệ cá thể tốt giữ lại sau restart (conservative)
+        self.restart_mode          = "adaptive"  # mặc định: adaptive diversity-aware restart
+        self.diversity_threshold   = 0.02        # ngưỡng sụp đổ đa dạng cho restart mới
+
+        # Independent ablation switches; all enabled is the full OADE method.
+        self.enable_fcr_adaptation = True
+        self.enable_probability_adaptation = True
+        self.enable_neighborhood = True
+        self.enable_restart = True
+        self.enable_obl = True
 
         # Trạng thái runtime
         self.population: List[Individual] = []
@@ -116,14 +125,15 @@ class OADE_NSGAII:
     # Sinh con lai
     def _generate_offspring(self, gen: int) -> List[Individual]:
         """Sinh toàn bộ con lai cho thế hệ này: DE hoặc SBX theo prob_de, thêm OBL mỗi 10 thế hệ."""
-        neighbor_indices = get_neighborhood_indices(self.population, self.n_neighbors)
+        neighbor_count = self.n_neighbors if self.enable_neighborhood else self.pop_size
+        neighbor_indices = get_neighborhood_indices(self.population, neighbor_count)
 
         offspring = [
             self._create_one_child(i, neighbor_indices)
             for i in range(self.pop_size)
         ]
 
-        if gen % 10 == 0:
+        if self.enable_obl and gen % 10 == 0:
             offspring += generate_obl_offspring(self.population, self.problem, self.xl, self.xu)
 
         return offspring
@@ -163,11 +173,65 @@ class OADE_NSGAII:
             improved       = np.linalg.norm(current_ideal - last_ideal) >= self.stagnation_tolerance
             stagnation_counter = 0 if improved else stagnation_counter + 1
 
-        if stagnation_counter >= self.stagnation_patience:
-            self._partial_restart()
-            stagnation_counter = 0
+        if self.enable_restart and stagnation_counter >= self.stagnation_patience:
+            if self.restart_mode == "adaptive":
+                if self._is_diversity_collapsed():
+                    self._adaptive_restart()
+                    stagnation_counter = 0
+                else:
+                    stagnation_counter = self.stagnation_patience // 2
+            else:
+                self._partial_restart()
+                stagnation_counter = 0
 
         return stagnation_counter, current_ideal
+
+    def _is_diversity_collapsed(self) -> bool:
+        """Kiểm tra xem quần thể có thực sự bị sụp đổ đa dạng không."""
+        if len(self.population) < 2:
+            return True
+        f_mat = np.array([ind.F for ind in self.population])
+        f_min = np.min(f_mat, axis=0)
+        f_max = np.max(f_mat, axis=0)
+        if float(np.max(f_max - f_min)) < 1e-3:
+            return True
+
+        x_mat = np.array([ind.X for ind in self.population])
+        span = np.where((self.xu - self.xl) > 1e-12, self.xu - self.xl, 1.0)
+        norm_x = (x_mat - self.xl) / span
+        max_dim_std = float(np.max(np.std(norm_x, axis=0)))
+        return max_dim_std < self.diversity_threshold
+
+    def _adaptive_restart(self) -> None:
+        """
+        Conservative adaptive restart: giữ lại đa số cá thể ưu tú (80%),
+        chỉ làm mới phần còn lại bằng đột biến OBL/Gauss quanh elite,
+        bảo toàn tham số thích nghi DE.
+        """
+        n_keep = max(int(self.pop_size * self.restart_elite_ratio), int(self.pop_size * 0.8))
+        elite = self.population[:n_keep]
+        n_new = self.pop_size - len(elite)
+        if n_new <= 0:
+            return
+
+        x_elite = np.array([ind.X for ind in elite])
+        new_xs = []
+        for _ in range(n_new):
+            base = x_elite[np.random.randint(len(x_elite))]
+            if np.random.rand() < 0.5:
+                cand = self.xl + self.xu - base + np.random.normal(0, 0.05, self.n_var) * (self.xu - self.xl)
+            else:
+                cand = base + np.random.normal(0, 0.1, self.n_var) * (self.xu - self.xl)
+            cand = np.clip(cand, self.xl, self.xu)
+            new_xs.append(cand)
+
+        x_new = np.array(new_xs)
+        f_new = self.problem.evaluate(x_new)
+        new_inds = [_make_evaluated_individual(x_new[i], f_new[i]) for i in range(n_new)]
+
+        self.population = environmental_selection(elite + new_inds, self.pop_size, self.n_obj)
+        self.mean_F = 0.8 * self.mean_F + 0.2 * 0.5
+        self.mean_CR = 0.8 * self.mean_CR + 0.2 * 0.5
 
     def _partial_restart(self) -> None:
         """Giữ lại elite, thay thế phần còn lại bằng cá thể ngẫu nhiên, reset tham số DE."""
@@ -207,11 +271,11 @@ class OADE_NSGAII:
         successful_de = [ind for ind in de_offspring if ind.rank == 1]
 
         total = len(de_offspring) + len(sbx_offspring)
-        if total > 0:
+        if self.enable_probability_adaptation and total > 0:
             de_ratio     = len(de_offspring) / total
             self.prob_de = float(np.clip(0.9 * self.prob_de + 0.1 * de_ratio, 0.2, 0.8))
 
-        if successful_de:
+        if self.enable_fcr_adaptation and successful_de:
             f_values     = np.array([ind.used_F  for ind in successful_de])
             cr_values    = np.array([ind.used_CR for ind in successful_de])
             lehmer_mean_F = float(np.mean(f_values ** 2) / np.mean(f_values))

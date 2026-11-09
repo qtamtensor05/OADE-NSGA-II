@@ -64,6 +64,10 @@ class CEMOEA:
         F = self.problem.evaluate(P)
         ranks, crowding, _ = rank_and_crowding(F)
         self.history.clear()
+        self.population = P.copy()
+        self.objectives = F.copy()
+        self.ranks = ranks.copy()
+        self.crowding = crowding.copy()
 
         for generation in range(1, self.n_gen):
             parents = binary_tournament_selection(P, ranks, crowding, self.rng, size=self.pop_size)
@@ -75,6 +79,10 @@ class CEMOEA:
             P, F, ranks, crowding = environmental_selection(combined_P, combined_F, self.pop_size)
 
             self.history.append(F.copy())
+            self.population = P.copy()
+            self.objectives = F.copy()
+            self.ranks = ranks.copy()
+            self.crowding = crowding.copy()
             if progress_callback is not None:
                 progress_callback(generation + 1, self.n_gen)
 

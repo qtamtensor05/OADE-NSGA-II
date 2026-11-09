@@ -1,0 +1,19 @@
+"comparison_algorithm","outcome","endpoint_count"
+"F/CR","Full better",0
+"F/CR","No corrected difference",10
+"F/CR","Removal better",0
+"Prob.","Full better",0
+"Prob.","No corrected difference",10
+"Prob.","Removal better",0
+"Nbr.","Full better",0
+"Nbr.","No corrected difference",10
+"Nbr.","Removal better",0
+"Restart","Full better",0
+"Restart","No corrected difference",5
+"Restart","Removal better",5
+"OBL","Full better",2
+"OBL","No corrected difference",8
+"OBL","Removal better",0
+"Basic","Full better",2
+"Basic","No corrected difference",2
+"Basic","Removal better",6

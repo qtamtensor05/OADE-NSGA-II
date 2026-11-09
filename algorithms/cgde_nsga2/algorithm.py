@@ -64,6 +64,9 @@ class CGDE_NSGAII:
         ranks, crowding, _ = rank_and_crowding(F_values)
         archive = P.copy()
         self.history.clear()
+        self.population = P.copy()
+        self.objectives = F_values.copy()
+        self.archive = archive.copy()
 
         mutation_prob = (1.0 / self.problem.n_var) if self.mutation_prob is None else float(self.mutation_prob)
 
@@ -98,6 +101,9 @@ class CGDE_NSGAII:
             archive = self._update_archive(archive, previous_population)
 
             self.history.append(F_values.copy())
+            self.population = P.copy()
+            self.objectives = F_values.copy()
+            self.archive = archive.copy()
             if progress_callback is not None:
                 progress_callback(generation + 1, self.n_gen)
 

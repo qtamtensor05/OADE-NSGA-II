@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import random
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -15,6 +17,7 @@ from pymoo.indicators.igd import IGD
 from pymoo.problems import get_problem
 from scipy.stats import friedmanchisquare, wilcoxon
 
+from src.benchmarking.evaluation import BudgetedProblem, EvaluationBudgetExceeded
 from src.benchmarking.pymoo_compare import make_initial_population, non_dominated
 from src.oade_nsga2 import OADE_NSGAII, ProblemWrapper
 from src.utils.config import load_yaml_config
@@ -31,7 +34,9 @@ RAW_FIELDNAMES = [
     "run_idx",
     "seed",
     "pop_size",
-    "n_gen",
+    "evaluation_budget",
+    "n_eval",
+    "budget_utilization",
     "stagnation_patience",
     "initial_mean_F",
     "initial_mean_CR",
@@ -61,6 +66,8 @@ SUMMARY_FIELDNAMES = [
     "HV_std",
     "HV_best",
     "runtime_mean",
+    "n_eval_mean",
+    "budget_utilization_mean",
     "restart_count_mean",
     "final_mean_F_mean",
     "final_mean_CR_mean",
@@ -239,12 +246,15 @@ def run_experiment(
     hv_indicator = HV(ref_point=np.max(pf, axis=0) + 0.1)
 
     pop_size, oade_cfg, initial_mean_f, initial_mean_cr = resolve_settings(cfg, experiment, seed)
-    n_gen = int(cfg["global"]["n_gen"])
+    evaluation_budget = int(cfg["global"]["evaluation_budget"])
     initial_x = make_initial_population(problem, pop_size, seed)
 
     np.random.seed(seed)
     random.seed(seed)
-    solver = TrackingOADE_NSGAII(ProblemWrapper(problem), pop_size=pop_size, n_gen=n_gen)
+    budgeted_problem = BudgetedProblem(problem, evaluation_budget)
+    solver = TrackingOADE_NSGAII(
+        ProblemWrapper(budgeted_problem), pop_size=pop_size, n_gen=evaluation_budget
+    )
     apply_oade_config(solver, oade_cfg)
 
     trace = []
@@ -260,7 +270,10 @@ def run_experiment(
         )
 
     start = time.perf_counter()
-    front = non_dominated(solver.run(initial_x=initial_x, progress_callback=record_trace))
+    try:
+        front = non_dominated(solver.run(initial_x=initial_x, progress_callback=record_trace))
+    except EvaluationBudgetExceeded:
+        front = non_dominated(np.asarray([individual.F for individual in solver.population]))
     runtime = time.perf_counter() - start
 
     raw_row = {
@@ -272,7 +285,9 @@ def run_experiment(
         "run_idx": run_idx,
         "seed": seed,
         "pop_size": pop_size,
-        "n_gen": n_gen,
+        "evaluation_budget": evaluation_budget,
+        "n_eval": budgeted_problem.n_eval,
+        "budget_utilization": budgeted_problem.n_eval / evaluation_budget,
         "stagnation_patience": int(oade_cfg["stagnation_patience"]),
         "initial_mean_F": initial_mean_f,
         "initial_mean_CR": initial_mean_cr,
@@ -314,6 +329,8 @@ def summarize(raw_rows: list[dict]) -> list[dict]:
         igd = [float(row["IGD"]) for row in rows]
         hv = [float(row["HV"]) for row in rows]
         runtime = [float(row["runtime_seconds"]) for row in rows]
+        n_eval = [float(row["n_eval"]) for row in rows]
+        budget_utilization = [float(row["budget_utilization"]) for row in rows]
         restart_count = [float(row["restart_count"]) for row in rows]
         final_mean_f = [float(row["final_mean_F"]) for row in rows]
         final_mean_cr = [float(row["final_mean_CR"]) for row in rows]
@@ -332,6 +349,8 @@ def summarize(raw_rows: list[dict]) -> list[dict]:
                 "HV_std": std(hv),
                 "HV_best": float(np.max(hv)),
                 "runtime_mean": float(np.mean(runtime)),
+                "n_eval_mean": float(np.mean(n_eval)),
+                "budget_utilization_mean": float(np.mean(budget_utilization)),
                 "restart_count_mean": float(np.mean(restart_count)),
                 "final_mean_F_mean": float(np.mean(final_mean_f)),
                 "final_mean_CR_mean": float(np.mean(final_mean_cr)),
@@ -442,9 +461,50 @@ def statistical_tests(
     return stats_rows
 
 
+def read_existing_rows(path: Path, expected_fields: list[str]) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames != expected_fields:
+            raise ValueError(
+                f"cannot resume from {path}: schema differs from the current sensitivity pipeline"
+            )
+        return list(reader)
+
+
+def persist_sensitivity(
+    out_dir: Path,
+    raw_rows: list[dict],
+    trace_rows: list[dict],
+    baselines: dict[str, str],
+    study_labels: dict[str, list[str]],
+    alpha: float,
+) -> None:
+    write_csv(out_dir / "sensitivity_raw_runs.csv", raw_rows, RAW_FIELDNAMES)
+    write_csv(out_dir / "sensitivity_summary.csv", summarize(raw_rows), SUMMARY_FIELDNAMES)
+    write_csv(
+        out_dir / "sensitivity_statistics.csv",
+        statistical_tests(raw_rows, baselines, study_labels, alpha),
+        STATS_FIELDNAMES,
+    )
+    write_csv(out_dir / "sensitivity_fcr_trace.csv", trace_rows, TRACE_FIELDNAMES)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default=str(DEFAULT_CONFIG_PATH))
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume after the last fully completed parameter level",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=None,
+        help="number of independent problem/seed workers (default: config value or 1)",
+    )
     args = parser.parse_args(argv)
 
     cfg = load_yaml_config(Path(args.config))
@@ -453,31 +513,97 @@ def main(argv: list[str] | None = None) -> None:
     seed_base = int(cfg["global"]["seed_base"])
     alpha = float(cfg["global"]["alpha"])
     experiments, baselines, study_labels = build_experiments(cfg)
+    jobs = int(args.jobs or cfg["global"].get("jobs", 1))
+    if jobs < 1:
+        raise ValueError("--jobs must be at least 1")
+    print(f"Using {jobs} sensitivity worker(s).", flush=True)
 
-    raw_rows = []
-    trace_rows = []
+    if args.resume:
+        raw_rows = read_existing_rows(out_dir / "sensitivity_raw_runs.csv", RAW_FIELDNAMES)
+        trace_rows = read_existing_rows(out_dir / "sensitivity_fcr_trace.csv", TRACE_FIELDNAMES)
+    else:
+        raw_rows = []
+        trace_rows = []
 
     for experiment in experiments:
-        for problem_item in cfg["problems"]:
-            problem_name = str(problem_item["name"])
-            n_var = problem_item.get("n_var")
-            for run_idx in range(runs):
-                seed = seed_base + run_idx
-                raw_row, new_trace_rows = run_experiment(cfg, experiment, problem_name, n_var, run_idx, seed)
-                raw_rows.append(raw_row)
-                trace_rows.extend(new_trace_rows)
+        expected = len(cfg["problems"]) * runs
+        completed = sum(
+            str(row["study"]) == experiment.study
+            and str(row["parameter_label"]) == experiment.label
+            for row in raw_rows
+        )
+        if args.resume and completed == expected:
+            print(
+                f"[{experiment.study}={experiment.label}] resume: "
+                f"already complete ({completed} runs)."
+            )
+            continue
+        if args.resume and completed:
+            raise ValueError(
+                f"cannot safely resume partially completed level "
+                f"{experiment.study}={experiment.label}: found {completed}/{expected} rows"
+            )
+        tasks = [
+            (
+                str(problem_item["name"]),
+                problem_item.get("n_var"),
+                run_idx,
+                seed_base + run_idx,
+            )
+            for problem_item in cfg["problems"]
+            for run_idx in range(runs)
+        ]
+        level_results = []
+        if jobs <= 1:
+            for problem_name, n_var, run_idx, seed in tasks:
+                level_results.append(
+                    run_experiment(cfg, experiment, problem_name, n_var, run_idx, seed)
+                )
                 print(
                     f"[{experiment.study}={experiment.label}] "
-                    f"{problem_name} run {run_idx + 1}/{runs} done (seed={seed})."
+                    f"{problem_name} run {run_idx + 1}/{runs} done (seed={seed}).",
+                    flush=True,
                 )
+        else:
+            with ProcessPoolExecutor(max_workers=jobs) as executor:
+                futures = {
+                    executor.submit(
+                        run_experiment, cfg, experiment, problem_name, n_var, run_idx, seed
+                    ): (problem_name, run_idx, seed)
+                    for problem_name, n_var, run_idx, seed in tasks
+                }
+                completed_count = 0
+                for future in as_completed(futures):
+                    level_results.append(future.result())
+                    completed_count += 1
+                    problem_name, run_idx, seed = futures[future]
+                    print(
+                        f"[{experiment.study}={experiment.label}] "
+                        f"{completed_count}/{len(tasks)} tasks done "
+                        f"(latest {problem_name}, run_idx={run_idx}, seed={seed}).",
+                        flush=True,
+                    )
 
-    summary_rows = summarize(raw_rows)
-    stats_rows = statistical_tests(raw_rows, baselines, study_labels, alpha)
+        new_raw_rows = [result[0] for result in level_results]
+        new_raw_rows.sort(key=lambda row: (str(row["problem"]), int(row["run_idx"])))
+        new_trace_rows = [row for result in level_results for row in result[1]]
+        new_trace_rows.sort(
+            key=lambda row: (
+                str(row["problem"]), int(row["run_idx"]), int(row["generation"])
+            )
+        )
+        raw_rows.extend(new_raw_rows)
+        trace_rows.extend(new_trace_rows)
 
-    write_csv(out_dir / "sensitivity_raw_runs.csv", raw_rows, RAW_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_summary.csv", summary_rows, SUMMARY_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_statistics.csv", stats_rows, STATS_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_fcr_trace.csv", trace_rows, TRACE_FIELDNAMES)
+        persist_sensitivity(
+            out_dir, raw_rows, trace_rows, baselines, study_labels, alpha
+        )
+        print(
+            f"[{experiment.study}={experiment.label}] checkpoint saved to "
+            f"{out_dir.as_posix()}."
+        )
+
+    persist_sensitivity(out_dir, raw_rows, trace_rows, baselines, study_labels, alpha)
 
     print(f"Saved: {(out_dir / 'sensitivity_raw_runs.csv').as_posix()}")
     print(f"Saved: {(out_dir / 'sensitivity_summary.csv').as_posix()}")

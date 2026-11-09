@@ -1,0 +1,5 @@
+matplotlib>=3.8,<4
+numpy>=1.26,<3
+pymoo>=0.6.1,<0.7
+PyYAML>=6.0,<7
+scipy>=1.12,<2
