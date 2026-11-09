@@ -59,11 +59,11 @@ class OADE_NSGAII:
         self.eta_c = 20.0
         self.eta_m = 20.0
 
-        # Ngưỡng phát hiện trì trệ
+        # Ngưỡng phát hiện trì trệ và chế độ restart
         self.stagnation_patience   = n_gen // 4  # số thế hệ không cải thiện trước khi restart
         self.stagnation_tolerance  = 1e-4        # cải thiện nhỏ hơn ngưỡng này bị coi là trì trệ
-        self.restart_elite_ratio   = 0.3         # tỉ lệ cá thể tốt giữ lại sau restart
-        self.restart_mode          = "classic"   # "classic" (cũ) hoặc "adaptive" (mới bảo tồn)
+        self.restart_elite_ratio   = 0.8         # tỉ lệ cá thể tốt giữ lại sau restart (conservative)
+        self.restart_mode          = "adaptive"  # mặc định: adaptive diversity-aware restart
         self.diversity_threshold   = 0.02        # ngưỡng sụp đổ đa dạng cho restart mới
 
         # Independent ablation switches; all enabled is the full OADE method.

@@ -129,6 +129,25 @@
 | Multi-format export | `restart_convergence.{pdf,svg,tiff,png}` |
 | Visual inspection | PASS; trajectories distinguish stability clearly |
 
+## Benchmark v2 pairwise outcome counts
+
+| Check | Result |
+|---|---|
+| Unique claim | Visualizes the number of Holm-corrected statistical wins, ties, and losses of OADE v2 against 6 baselines |
+| Metric total | 60 comparisons (5 problems × 2 metrics × 6 comparators) |
+| Outcome summary | 58 wins (#31A354), 1 tie (#BDBDBD), 1 loss (#E6550D) |
+| Multi-format export | `benchmark_v2_outcome_counts.{pdf,svg,png}` |
+| Visual inspection | PASS; clear horizontal bar layout, numeric counts inside segments, unambiguous legend |
+
+## Benchmark v2 performance leap (OADE v1 vs v2)
+
+| Check | Result |
+|---|---|
+| Unique claim | Displays the exact percentage reduction in mean IGD from OADE v1 to OADE v2 across all 5 ZDT problems |
+| Direct values | ZDT1: -24.5%, ZDT2: -38.5%, ZDT3: -40.0%, ZDT4: 0.0%, ZDT6: -27.3% |
+| Multi-format export | `benchmark_v2_v1_vs_v2_delta.{pdf,svg,png}` |
+| Visual inspection | PASS; side-by-side bar comparison with green callout annotations |
+
 ## Reviewed warnings
 
 - The source validator reports that R syntax should be checked by R itself. `Rscript --vanilla` parsed the complete source successfully.

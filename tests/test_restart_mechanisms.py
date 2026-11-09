@@ -24,13 +24,14 @@ class RestartMechanismTests(unittest.TestCase):
     def setUp(self):
         self.problem = ProblemWrapper(DummyProblem())
 
-    def test_default_is_classic_mode(self):
+    def test_default_is_adaptive_mode(self):
         solver = OADE_NSGAII(self.problem, pop_size=20, n_gen=40)
-        self.assertEqual(solver.restart_mode, "classic")
+        self.assertEqual(solver.restart_mode, "adaptive")
         self.assertTrue(solver.enable_restart)
 
     def test_classic_restart_triggers_on_stagnation_alone(self):
         solver = OADE_NSGAII(self.problem, pop_size=20, n_gen=40)
+        solver.restart_mode = "classic"
         solver.stagnation_patience = 5
         # Build population
         solver.population = [
