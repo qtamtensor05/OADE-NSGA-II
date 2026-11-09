@@ -1,6 +1,6 @@
 global:
   runs: 30
-  n_gen: 200
+  evaluation_budget: 20000
   seed_base: 42
   out_dir: results/sensitivity
   alpha: 0.05

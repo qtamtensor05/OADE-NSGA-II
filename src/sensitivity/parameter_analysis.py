@@ -15,6 +15,7 @@ from pymoo.indicators.igd import IGD
 from pymoo.problems import get_problem
 from scipy.stats import friedmanchisquare, wilcoxon
 
+from src.benchmarking.evaluation import BudgetedProblem, EvaluationBudgetExceeded
 from src.benchmarking.pymoo_compare import make_initial_population, non_dominated
 from src.oade_nsga2 import OADE_NSGAII, ProblemWrapper
 from src.utils.config import load_yaml_config
@@ -31,7 +32,9 @@ RAW_FIELDNAMES = [
     "run_idx",
     "seed",
     "pop_size",
-    "n_gen",
+    "evaluation_budget",
+    "n_eval",
+    "budget_utilization",
     "stagnation_patience",
     "initial_mean_F",
     "initial_mean_CR",
@@ -61,6 +64,8 @@ SUMMARY_FIELDNAMES = [
     "HV_std",
     "HV_best",
     "runtime_mean",
+    "n_eval_mean",
+    "budget_utilization_mean",
     "restart_count_mean",
     "final_mean_F_mean",
     "final_mean_CR_mean",
@@ -239,12 +244,15 @@ def run_experiment(
     hv_indicator = HV(ref_point=np.max(pf, axis=0) + 0.1)
 
     pop_size, oade_cfg, initial_mean_f, initial_mean_cr = resolve_settings(cfg, experiment, seed)
-    n_gen = int(cfg["global"]["n_gen"])
+    evaluation_budget = int(cfg["global"]["evaluation_budget"])
     initial_x = make_initial_population(problem, pop_size, seed)
 
     np.random.seed(seed)
     random.seed(seed)
-    solver = TrackingOADE_NSGAII(ProblemWrapper(problem), pop_size=pop_size, n_gen=n_gen)
+    budgeted_problem = BudgetedProblem(problem, evaluation_budget)
+    solver = TrackingOADE_NSGAII(
+        ProblemWrapper(budgeted_problem), pop_size=pop_size, n_gen=evaluation_budget
+    )
     apply_oade_config(solver, oade_cfg)
 
     trace = []
@@ -260,7 +268,10 @@ def run_experiment(
         )
 
     start = time.perf_counter()
-    front = non_dominated(solver.run(initial_x=initial_x, progress_callback=record_trace))
+    try:
+        front = non_dominated(solver.run(initial_x=initial_x, progress_callback=record_trace))
+    except EvaluationBudgetExceeded:
+        front = non_dominated(np.asarray([individual.F for individual in solver.population]))
     runtime = time.perf_counter() - start
 
     raw_row = {
@@ -272,7 +283,9 @@ def run_experiment(
         "run_idx": run_idx,
         "seed": seed,
         "pop_size": pop_size,
-        "n_gen": n_gen,
+        "evaluation_budget": evaluation_budget,
+        "n_eval": budgeted_problem.n_eval,
+        "budget_utilization": budgeted_problem.n_eval / evaluation_budget,
         "stagnation_patience": int(oade_cfg["stagnation_patience"]),
         "initial_mean_F": initial_mean_f,
         "initial_mean_CR": initial_mean_cr,
@@ -314,6 +327,8 @@ def summarize(raw_rows: list[dict]) -> list[dict]:
         igd = [float(row["IGD"]) for row in rows]
         hv = [float(row["HV"]) for row in rows]
         runtime = [float(row["runtime_seconds"]) for row in rows]
+        n_eval = [float(row["n_eval"]) for row in rows]
+        budget_utilization = [float(row["budget_utilization"]) for row in rows]
         restart_count = [float(row["restart_count"]) for row in rows]
         final_mean_f = [float(row["final_mean_F"]) for row in rows]
         final_mean_cr = [float(row["final_mean_CR"]) for row in rows]
@@ -332,6 +347,8 @@ def summarize(raw_rows: list[dict]) -> list[dict]:
                 "HV_std": std(hv),
                 "HV_best": float(np.max(hv)),
                 "runtime_mean": float(np.mean(runtime)),
+                "n_eval_mean": float(np.mean(n_eval)),
+                "budget_utilization_mean": float(np.mean(budget_utilization)),
                 "restart_count_mean": float(np.mean(restart_count)),
                 "final_mean_F_mean": float(np.mean(final_mean_f)),
                 "final_mean_CR_mean": float(np.mean(final_mean_cr)),
