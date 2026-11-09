@@ -8,6 +8,7 @@ from typing import Callable
 
 from src.benchmarking import ablation, algorithm_benchmark, dtlz_benchmark, pymoo_compare
 from src.plotting import algorithm_benchmark as algorithm_benchmark_plots
+from src.plotting import convergence
 from src.plotting import all_problems, parameter_sensitivity, wilcoxon_results
 from src.sensitivity import parameter_analysis
 
@@ -25,6 +26,7 @@ COMMANDS: dict[str, Command] = {
     "plot-all": all_problems.main,
     "plot-algorithm-benchmark": algorithm_benchmark_plots.main,
     "plot-three-algorithms": algorithm_benchmark_plots.main,
+    "plot-convergence": convergence.main,
     "plot-wilcoxon": wilcoxon_results.main,
     "sensitivity": parameter_analysis.main,
     "plot-sensitivity": parameter_sensitivity.main,
