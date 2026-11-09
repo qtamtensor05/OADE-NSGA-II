@@ -64,6 +64,13 @@ class OADE_NSGAII:
         self.stagnation_tolerance  = 1e-4        # cải thiện nhỏ hơn ngưỡng này bị coi là trì trệ
         self.restart_elite_ratio   = 0.3         # tỉ lệ cá thể tốt giữ lại sau restart
 
+        # Independent ablation switches; all enabled is the full OADE method.
+        self.enable_fcr_adaptation = True
+        self.enable_probability_adaptation = True
+        self.enable_neighborhood = True
+        self.enable_restart = True
+        self.enable_obl = True
+
         # Trạng thái runtime
         self.population: List[Individual] = []
         self.history:    List[np.ndarray] = []  # lịch sử F mỗi thế hệ
@@ -116,14 +123,15 @@ class OADE_NSGAII:
     # Sinh con lai
     def _generate_offspring(self, gen: int) -> List[Individual]:
         """Sinh toàn bộ con lai cho thế hệ này: DE hoặc SBX theo prob_de, thêm OBL mỗi 10 thế hệ."""
-        neighbor_indices = get_neighborhood_indices(self.population, self.n_neighbors)
+        neighbor_count = self.n_neighbors if self.enable_neighborhood else self.pop_size
+        neighbor_indices = get_neighborhood_indices(self.population, neighbor_count)
 
         offspring = [
             self._create_one_child(i, neighbor_indices)
             for i in range(self.pop_size)
         ]
 
-        if gen % 10 == 0:
+        if self.enable_obl and gen % 10 == 0:
             offspring += generate_obl_offspring(self.population, self.problem, self.xl, self.xu)
 
         return offspring
@@ -163,7 +171,7 @@ class OADE_NSGAII:
             improved       = np.linalg.norm(current_ideal - last_ideal) >= self.stagnation_tolerance
             stagnation_counter = 0 if improved else stagnation_counter + 1
 
-        if stagnation_counter >= self.stagnation_patience:
+        if self.enable_restart and stagnation_counter >= self.stagnation_patience:
             self._partial_restart()
             stagnation_counter = 0
 
@@ -207,11 +215,11 @@ class OADE_NSGAII:
         successful_de = [ind for ind in de_offspring if ind.rank == 1]
 
         total = len(de_offspring) + len(sbx_offspring)
-        if total > 0:
+        if self.enable_probability_adaptation and total > 0:
             de_ratio     = len(de_offspring) / total
             self.prob_de = float(np.clip(0.9 * self.prob_de + 0.1 * de_ratio, 0.2, 0.8))
 
-        if successful_de:
+        if self.enable_fcr_adaptation and successful_de:
             f_values     = np.array([ind.used_F  for ind in successful_de])
             cr_values    = np.array([ind.used_CR for ind in successful_de])
             lehmer_mean_F = float(np.mean(f_values ** 2) / np.mean(f_values))

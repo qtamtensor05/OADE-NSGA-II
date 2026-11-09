@@ -6,7 +6,7 @@ import argparse
 import sys
 from typing import Callable
 
-from src.benchmarking import algorithm_benchmark, pymoo_compare
+from src.benchmarking import ablation, algorithm_benchmark, pymoo_compare
 from src.plotting import algorithm_benchmark as algorithm_benchmark_plots
 from src.plotting import all_problems, parameter_sensitivity, wilcoxon_results
 from src.sensitivity import parameter_analysis
@@ -19,6 +19,7 @@ COMMANDS: dict[str, Command] = {
     "benchmark": algorithm_benchmark.main,
     "benchmark-algorithms": algorithm_benchmark.main,
     "benchmark-three-algorithms": algorithm_benchmark.main,
+    "ablation": ablation.main,
     "benchmark-legacy": pymoo_compare.main,
     "plot-all": all_problems.main,
     "plot-algorithm-benchmark": algorithm_benchmark_plots.main,

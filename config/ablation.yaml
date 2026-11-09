@@ -1,0 +1,26 @@
+global:
+  runs: 30
+  pop_size: 100
+  evaluation_budget: 20000
+  seed_base: 42
+  out_dir: results/ablation
+
+problems:
+  - {name: zdt1, n_var: 30}
+  - {name: zdt2, n_var: 30}
+  - {name: zdt3, n_var: 30}
+  - {name: zdt4, n_var: 10}
+  - {name: zdt6, n_var: 10}
+
+algorithm_configs:
+  - config/ablations/full.yaml
+  - config/ablations/no_fcr_adaptation.yaml
+  - config/ablations/no_probability_adaptation.yaml
+  - config/ablations/no_neighborhood.yaml
+  - config/ablations/no_restart.yaml
+  - config/ablations/no_obl.yaml
+  - config/ablations/basic.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_FULL
