@@ -372,6 +372,11 @@ def summarize_costs(raw_rows: list[dict]) -> list[dict]:
         if not selected:
             continue
         runtime = np.asarray([row["runtime_seconds"] for row in selected], dtype=float)
+        n_eval = np.asarray([row["n_eval"] for row in selected], dtype=float)
+        utilization = np.asarray(
+            [row["budget_utilization"] for row in selected], dtype=float
+        )
+        front_size = np.asarray([row["front_size"] for row in selected], dtype=float)
         rows.append({
             "problem": problem,
             "algorithm": algorithm,
@@ -379,9 +384,9 @@ def summarize_costs(raw_rows: list[dict]) -> list[dict]:
             "runtime_mean": float(np.mean(runtime)),
             "runtime_std": float(np.std(runtime, ddof=1)) if len(runtime) > 1 else 0.0,
             "runtime_median": float(np.median(runtime)),
-            "n_eval_mean": float(np.mean([row["n_eval"] for row in selected])),
-            "budget_utilization_mean": float(np.mean([row["budget_utilization"] for row in selected])),
-            "front_size_mean": float(np.mean([row["front_size"] for row in selected])),
+            "n_eval_mean": float(np.mean(n_eval)),
+            "budget_utilization_mean": float(np.mean(utilization)),
+            "front_size_mean": float(np.mean(front_size)),
         })
     return rows
 

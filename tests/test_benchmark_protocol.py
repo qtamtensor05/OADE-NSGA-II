@@ -13,7 +13,7 @@ from src.benchmarking.statistics import (
     paired_rank_biserial,
     paired_wilcoxon_rows,
 )
-from src.benchmarking.algorithm_benchmark import AlgorithmSpec, summarize
+from src.benchmarking.algorithm_benchmark import AlgorithmSpec, summarize, summarize_costs
 
 
 class SphereProblem:
@@ -42,6 +42,7 @@ class BenchmarkProtocolTests(unittest.TestCase):
             "runtime_seconds": "1.5",
             "n_eval": "20000",
             "budget_utilization": "1.0",
+            "front_size": "20",
         }
         numeric = dict(base)
         numeric.update(
@@ -53,11 +54,16 @@ class BenchmarkProtocolTests(unittest.TestCase):
             runtime_seconds=1.0,
             n_eval=20000,
             budget_utilization=1.0,
+            front_size=20,
         )
         rows = summarize([base, numeric], [spec])
         self.assertEqual(len(rows), 1)
         self.assertAlmostEqual(rows[0]["IGD_mean"], 0.15)
         self.assertAlmostEqual(rows[0]["HV_mean"], 0.85)
+        costs = summarize_costs([base, numeric])
+        self.assertEqual(len(costs), 1)
+        self.assertAlmostEqual(costs[0]["n_eval_mean"], 20000.0)
+        self.assertAlmostEqual(costs[0]["front_size_mean"], 20.0)
 
     def test_budgeted_problem_counts_and_blocks_overrun(self):
         problem = BudgetedProblem(SphereProblem(), max_evaluations=3)
