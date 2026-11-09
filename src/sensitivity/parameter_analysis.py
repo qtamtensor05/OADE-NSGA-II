@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import random
 import time
 from dataclasses import dataclass
@@ -459,9 +460,44 @@ def statistical_tests(
     return stats_rows
 
 
+def read_existing_rows(path: Path, expected_fields: list[str]) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames != expected_fields:
+            raise ValueError(
+                f"cannot resume from {path}: schema differs from the current sensitivity pipeline"
+            )
+        return list(reader)
+
+
+def persist_sensitivity(
+    out_dir: Path,
+    raw_rows: list[dict],
+    trace_rows: list[dict],
+    baselines: dict[str, str],
+    study_labels: dict[str, list[str]],
+    alpha: float,
+) -> None:
+    write_csv(out_dir / "sensitivity_raw_runs.csv", raw_rows, RAW_FIELDNAMES)
+    write_csv(out_dir / "sensitivity_summary.csv", summarize(raw_rows), SUMMARY_FIELDNAMES)
+    write_csv(
+        out_dir / "sensitivity_statistics.csv",
+        statistical_tests(raw_rows, baselines, study_labels, alpha),
+        STATS_FIELDNAMES,
+    )
+    write_csv(out_dir / "sensitivity_fcr_trace.csv", trace_rows, TRACE_FIELDNAMES)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default=str(DEFAULT_CONFIG_PATH))
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume after the last fully completed parameter level",
+    )
     args = parser.parse_args(argv)
 
     cfg = load_yaml_config(Path(args.config))
@@ -471,10 +507,31 @@ def main(argv: list[str] | None = None) -> None:
     alpha = float(cfg["global"]["alpha"])
     experiments, baselines, study_labels = build_experiments(cfg)
 
-    raw_rows = []
-    trace_rows = []
+    if args.resume:
+        raw_rows = read_existing_rows(out_dir / "sensitivity_raw_runs.csv", RAW_FIELDNAMES)
+        trace_rows = read_existing_rows(out_dir / "sensitivity_fcr_trace.csv", TRACE_FIELDNAMES)
+    else:
+        raw_rows = []
+        trace_rows = []
 
     for experiment in experiments:
+        expected = len(cfg["problems"]) * runs
+        completed = sum(
+            str(row["study"]) == experiment.study
+            and str(row["parameter_label"]) == experiment.label
+            for row in raw_rows
+        )
+        if args.resume and completed == expected:
+            print(
+                f"[{experiment.study}={experiment.label}] resume: "
+                f"already complete ({completed} runs)."
+            )
+            continue
+        if args.resume and completed:
+            raise ValueError(
+                f"cannot safely resume partially completed level "
+                f"{experiment.study}={experiment.label}: found {completed}/{expected} rows"
+            )
         for problem_item in cfg["problems"]:
             problem_name = str(problem_item["name"])
             n_var = problem_item.get("n_var")
@@ -488,13 +545,15 @@ def main(argv: list[str] | None = None) -> None:
                     f"{problem_name} run {run_idx + 1}/{runs} done (seed={seed})."
                 )
 
-    summary_rows = summarize(raw_rows)
-    stats_rows = statistical_tests(raw_rows, baselines, study_labels, alpha)
+        persist_sensitivity(
+            out_dir, raw_rows, trace_rows, baselines, study_labels, alpha
+        )
+        print(
+            f"[{experiment.study}={experiment.label}] checkpoint saved to "
+            f"{out_dir.as_posix()}."
+        )
 
-    write_csv(out_dir / "sensitivity_raw_runs.csv", raw_rows, RAW_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_summary.csv", summary_rows, SUMMARY_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_statistics.csv", stats_rows, STATS_FIELDNAMES)
-    write_csv(out_dir / "sensitivity_fcr_trace.csv", trace_rows, TRACE_FIELDNAMES)
+    persist_sensitivity(out_dir, raw_rows, trace_rows, baselines, study_labels, alpha)
 
     print(f"Saved: {(out_dir / 'sensitivity_raw_runs.csv').as_posix()}")
     print(f"Saved: {(out_dir / 'sensitivity_summary.csv').as_posix()}")
