@@ -81,6 +81,13 @@ def paired_wilcoxon_rows(
     problem and comparison algorithm. This makes the correction family explicit.
     """
 
+    # Resume preflight intentionally persists an empty checkpoint before the
+    # first problem starts.  There is no comparison family at that point, so
+    # emit an empty statistics table instead of treating the configured
+    # reference algorithm as missing.
+    if not raw_rows:
+        return []
+
     problems = sorted({str(row["problem"]) for row in raw_rows})
     algorithms = sorted({str(row["algorithm"]) for row in raw_rows})
     if reference_algorithm not in algorithms:

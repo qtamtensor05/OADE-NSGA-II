@@ -28,6 +28,9 @@ class SphereProblem:
 
 
 class BenchmarkProtocolTests(unittest.TestCase):
+    def test_paired_rows_allow_empty_resume_preflight(self):
+        self.assertEqual(paired_wilcoxon_rows([], "OADE_FULL"), [])
+
     def test_summary_accepts_resumed_csv_strings_and_new_numeric_rows(self):
         spec = AlgorithmSpec(name="OADE", runner="local_oade", params={})
         base = {

@@ -1,0 +1,22 @@
+"algorithm","rank","endpoint_count"
+"OADE","Rank 1",4
+"OADE","Rank 2",1
+"OADE","Rank 3",3
+"NSGA2","Rank 1",3
+"NSGA2","Rank 2",5
+"NSGA2","Rank 3",0
+"DNSGA2","Rank 1",1
+"DNSGA2","Rank 2",2
+"DNSGA2","Rank 3",5
+"RNSGA2","Rank 1",0
+"RNSGA2","Rank 2",0
+"RNSGA2","Rank 3",0
+"CGDE","Rank 1",2
+"CGDE","Rank 2",0
+"CGDE","Rank 3",2
+"SDR-OLS","Rank 1",0
+"SDR-OLS","Rank 2",0
+"SDR-OLS","Rank 3",0
+"CE-MOEA","Rank 1",0
+"CE-MOEA","Rank 2",2
+"CE-MOEA","Rank 3",0

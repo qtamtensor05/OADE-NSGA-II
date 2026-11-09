@@ -3,5 +3,18 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+# Local report-writing and figure-generation environment
+.r-bootstrap/
+.Rprofile
+renv.lock
+renv/
+.Rhistory
+.RData
+.Ruserdata
+analysis/figures/
+scripts/render_research_figures.ps1
+
+# Local benchmark and report-generation logs
+*.log
 results/smoke/
 results/smoke-sensitivity/
