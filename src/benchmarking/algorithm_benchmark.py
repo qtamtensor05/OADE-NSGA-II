@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import importlib
 import random
 import time
@@ -332,7 +333,7 @@ def summarize(raw_rows: list[dict], specs: list[AlgorithmSpec]) -> list[dict]:
     for problem, n_var, n_obj in keys:
         for spec in specs:
             selected = [row for row in raw_rows if row["problem"] == problem and row["algorithm"] == spec.name]
-            valid = [row for row in selected if row["valid"]]
+            valid = [row for row in selected if row_is_valid(row)]
             if not valid:
                 continue
             igd = np.asarray([row["IGD"] for row in valid])
@@ -360,7 +361,7 @@ def summarize_costs(raw_rows: list[dict]) -> list[dict]:
     for problem, algorithm in keys:
         selected = [
             row for row in raw_rows
-            if row["problem"] == problem and row["algorithm"] == algorithm and row["valid"]
+            if row["problem"] == problem and row["algorithm"] == algorithm and row_is_valid(row)
         ]
         if not selected:
             continue
@@ -377,6 +378,55 @@ def summarize_costs(raw_rows: list[dict]) -> list[dict]:
             "front_size_mean": float(np.mean([row["front_size"] for row in selected])),
         })
     return rows
+
+
+def read_rows(path: Path, expected_fields: list[str]) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if reader.fieldnames != expected_fields:
+            raise ValueError(
+                f"cannot resume from {path}: schema differs from the current pipeline"
+            )
+        return list(reader)
+
+
+def row_is_valid(row: dict) -> bool:
+    value = row.get("valid", True)
+    return value.lower() == "true" if isinstance(value, str) else bool(value)
+
+
+def persist_outputs(
+    out_dir: Path,
+    raw_rows: list[dict],
+    validation_rows: list[dict],
+    convergence_rows: list[dict],
+    specs: list[AlgorithmSpec],
+    stat_cfg: dict,
+) -> None:
+    summary_rows = summarize(raw_rows, specs)
+    cost_rows = summarize_costs(raw_rows)
+    statistics_rows = paired_wilcoxon_rows(
+        raw_rows,
+        str(stat_cfg.get("reference_algorithm", "OADE_NSGAII")),
+        float(stat_cfg.get("alpha", 0.05)),
+    )
+    write_csv(out_dir / RAW_CSV, raw_rows, RAW_FIELDNAMES)
+    write_csv(out_dir / SUMMARY_CSV, summary_rows, SUMMARY_FIELDNAMES)
+    write_csv(out_dir / STATISTICS_CSV, statistics_rows, STATISTICS_FIELDNAMES)
+    write_csv(out_dir / VALIDATION_CSV, validation_rows, VALIDATION_FIELDNAMES)
+    write_csv(out_dir / CONVERGENCE_CSV, convergence_rows, CONVERGENCE_FIELDNAMES)
+    write_csv(out_dir / COST_CSV, cost_rows, COST_FIELDNAMES)
+
+
+def configured_problem_label(problem_cfg: dict) -> str:
+    name = str(problem_cfg["name"])
+    if "label" in problem_cfg:
+        return str(problem_cfg["label"])
+    if name.lower().startswith(("dtlz", "wfg")):
+        return f"{name}_m{int(problem_cfg['n_obj'])}"
+    return name
 
 
 def run_one_problem(
@@ -446,30 +496,47 @@ def run_one_problem(
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume after the last fully completed problem using current-schema CSV files",
+    )
     args = parser.parse_args(argv)
     cfg = load_yaml_config(Path(args.config))
     specs = load_algorithm_specs([str(path) for path in cfg["algorithm_configs"]])
     out_dir = Path(cfg["global"]["out_dir"])
-    raw_rows, validation_rows, convergence_rows = [], [], []
+    if args.resume:
+        raw_rows = read_rows(out_dir / RAW_CSV, RAW_FIELDNAMES)
+        validation_rows = read_rows(out_dir / VALIDATION_CSV, VALIDATION_FIELDNAMES)
+        convergence_rows = read_rows(out_dir / CONVERGENCE_CSV, CONVERGENCE_FIELDNAMES)
+    else:
+        raw_rows, validation_rows, convergence_rows = [], [], []
+    expected_per_problem = int(cfg["global"]["runs"]) * len(specs)
     for problem_cfg in cfg["problems"]:
+        label = configured_problem_label(problem_cfg)
+        completed = sum(str(row["problem"]) == label for row in raw_rows)
+        if args.resume and completed == expected_per_problem:
+            print(f"[{label}] resume: already complete ({completed} runs).")
+            continue
+        if args.resume and completed:
+            raise ValueError(
+                f"cannot safely resume partially completed problem {label}: "
+                f"found {completed}/{expected_per_problem} rows"
+            )
         problem_rows, problem_validation, problem_convergence = run_one_problem(problem_cfg, cfg, specs)
         raw_rows.extend(problem_rows)
         validation_rows.extend(problem_validation)
         convergence_rows.extend(problem_convergence)
-    summary_rows = summarize(raw_rows, specs)
-    cost_rows = summarize_costs(raw_rows)
-    stat_cfg = cfg.get("statistics", {})
-    statistics_rows = paired_wilcoxon_rows(
-        raw_rows, str(stat_cfg.get("reference_algorithm", "OADE_NSGAII")),
-        float(stat_cfg.get("alpha", 0.05)),
-    )
-    write_csv(out_dir / RAW_CSV, raw_rows, RAW_FIELDNAMES)
-    write_csv(out_dir / SUMMARY_CSV, summary_rows, SUMMARY_FIELDNAMES)
-    write_csv(out_dir / STATISTICS_CSV, statistics_rows, STATISTICS_FIELDNAMES)
-    write_csv(out_dir / VALIDATION_CSV, validation_rows, VALIDATION_FIELDNAMES)
-    write_csv(out_dir / CONVERGENCE_CSV, convergence_rows, CONVERGENCE_FIELDNAMES)
-    write_csv(out_dir / COST_CSV, cost_rows, COST_FIELDNAMES)
-    invalid = sum(not row["valid"] for row in raw_rows)
+        persist_outputs(
+            out_dir,
+            raw_rows,
+            validation_rows,
+            convergence_rows,
+            specs,
+            cfg.get("statistics", {}),
+        )
+        print(f"[{label}] checkpoint saved to {out_dir.as_posix()}.")
+    invalid = sum(not row_is_valid(row) for row in raw_rows)
     print(f"Saved benchmark outputs to {out_dir.as_posix()} ({invalid} invalid runs).")
 
 
