@@ -6,6 +6,7 @@ import argparse
 import csv
 import random
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -498,6 +499,12 @@ def main(argv: list[str] | None = None) -> None:
         action="store_true",
         help="resume after the last fully completed parameter level",
     )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=None,
+        help="number of independent problem/seed workers (default: config value or 1)",
+    )
     args = parser.parse_args(argv)
 
     cfg = load_yaml_config(Path(args.config))
@@ -506,6 +513,10 @@ def main(argv: list[str] | None = None) -> None:
     seed_base = int(cfg["global"]["seed_base"])
     alpha = float(cfg["global"]["alpha"])
     experiments, baselines, study_labels = build_experiments(cfg)
+    jobs = int(args.jobs or cfg["global"].get("jobs", 1))
+    if jobs < 1:
+        raise ValueError("--jobs must be at least 1")
+    print(f"Using {jobs} sensitivity worker(s).", flush=True)
 
     if args.resume:
         raw_rows = read_existing_rows(out_dir / "sensitivity_raw_runs.csv", RAW_FIELDNAMES)
@@ -532,18 +543,57 @@ def main(argv: list[str] | None = None) -> None:
                 f"cannot safely resume partially completed level "
                 f"{experiment.study}={experiment.label}: found {completed}/{expected} rows"
             )
-        for problem_item in cfg["problems"]:
-            problem_name = str(problem_item["name"])
-            n_var = problem_item.get("n_var")
-            for run_idx in range(runs):
-                seed = seed_base + run_idx
-                raw_row, new_trace_rows = run_experiment(cfg, experiment, problem_name, n_var, run_idx, seed)
-                raw_rows.append(raw_row)
-                trace_rows.extend(new_trace_rows)
+        tasks = [
+            (
+                str(problem_item["name"]),
+                problem_item.get("n_var"),
+                run_idx,
+                seed_base + run_idx,
+            )
+            for problem_item in cfg["problems"]
+            for run_idx in range(runs)
+        ]
+        level_results = []
+        if jobs <= 1:
+            for problem_name, n_var, run_idx, seed in tasks:
+                level_results.append(
+                    run_experiment(cfg, experiment, problem_name, n_var, run_idx, seed)
+                )
                 print(
                     f"[{experiment.study}={experiment.label}] "
-                    f"{problem_name} run {run_idx + 1}/{runs} done (seed={seed})."
+                    f"{problem_name} run {run_idx + 1}/{runs} done (seed={seed}).",
+                    flush=True,
                 )
+        else:
+            with ProcessPoolExecutor(max_workers=jobs) as executor:
+                futures = {
+                    executor.submit(
+                        run_experiment, cfg, experiment, problem_name, n_var, run_idx, seed
+                    ): (problem_name, run_idx, seed)
+                    for problem_name, n_var, run_idx, seed in tasks
+                }
+                completed_count = 0
+                for future in as_completed(futures):
+                    level_results.append(future.result())
+                    completed_count += 1
+                    problem_name, run_idx, seed = futures[future]
+                    print(
+                        f"[{experiment.study}={experiment.label}] "
+                        f"{completed_count}/{len(tasks)} tasks done "
+                        f"(latest {problem_name}, run_idx={run_idx}, seed={seed}).",
+                        flush=True,
+                    )
+
+        new_raw_rows = [result[0] for result in level_results]
+        new_raw_rows.sort(key=lambda row: (str(row["problem"]), int(row["run_idx"])))
+        new_trace_rows = [row for result in level_results for row in result[1]]
+        new_trace_rows.sort(
+            key=lambda row: (
+                str(row["problem"]), int(row["run_idx"]), int(row["generation"])
+            )
+        )
+        raw_rows.extend(new_raw_rows)
+        trace_rows.extend(new_trace_rows)
 
         persist_sensitivity(
             out_dir, raw_rows, trace_rows, baselines, study_labels, alpha

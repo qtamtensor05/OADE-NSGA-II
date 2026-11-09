@@ -1,5 +1,5 @@
 global:
-  runs: 1
+  runs: 4
   evaluation_budget: 400
   seed_base: 42
   out_dir: results/smoke-sensitivity

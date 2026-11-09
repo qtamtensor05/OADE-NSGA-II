@@ -1,5 +1,5 @@
 global:
-  runs: 1
+  runs: 4
   pop_size: 20
   evaluation_budget: 400
   seed_base: 42

@@ -7,6 +7,7 @@ import csv
 import importlib
 import random
 import time
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -429,8 +430,11 @@ def configured_problem_label(problem_cfg: dict) -> str:
     return name
 
 
-def run_one_problem(
-    problem_cfg: dict, cfg: dict, specs: list[AlgorithmSpec]
+def run_single_seed(
+    problem_cfg: dict,
+    global_cfg: dict,
+    specs: list[AlgorithmSpec],
+    run_idx: int,
 ) -> tuple[list[dict], list[dict], list[dict]]:
     name = str(problem_cfg["name"])
     metadata_keys = {"reference_partitions", "label"}
@@ -448,48 +452,87 @@ def run_one_problem(
     pareto_front = reference_front(problem, problem_cfg)
     igd_indicator = IGD(pareto_front)
     hv_indicator = HV(ref_point=np.max(pareto_front, axis=0) + 0.1)
-    global_cfg = cfg["global"]
-    runs, pop_size = int(global_cfg["runs"]), int(global_cfg["pop_size"])
+    pop_size = int(global_cfg["pop_size"])
     budget, seed_base = int(global_cfg["evaluation_budget"]), int(global_cfg["seed_base"])
     raw_rows, validation_rows, convergence_rows = [], [], []
-    for run_idx in range(runs):
-        seed = seed_base + run_idx
-        initial_x = make_initial_population(problem, pop_size, seed)
-        for spec in specs:
-            recorder = ConvergenceRecorder(budget, igd_indicator, hv_indicator)
-            outcome = run_algorithm(spec, problem, pop_size, budget, initial_x, seed, recorder)
-            validation = validate_result(outcome.x, outcome.f, problem)
-            budget_valid = outcome.n_eval <= budget
-            valid = validation.valid and budget_valid
-            status = validation.status if budget_valid else "budget_exceeded"
-            utilization = outcome.n_eval / budget
-            row = {
-                "problem": problem_label, "n_var": int(problem.n_var), "n_obj": int(problem.n_obj),
-                "run_idx": run_idx, "seed": seed, "algorithm": spec.name, "runner": spec.runner,
-                "evaluation_budget": budget, "n_eval": outcome.n_eval, "budget_utilization": utilization,
-                "runtime_seconds": outcome.runtime_seconds, "front_size": validation.front_size,
-                "duplicate_fraction": validation.duplicate_fraction, "valid": valid,
-                "validation_status": status,
-                "IGD": float(igd_indicator(outcome.f)) if valid else float("nan"),
-                "HV": float(hv_indicator(outcome.f)) if valid else float("nan"),
-            }
-            raw_rows.append(row)
-            validation_rows.append({
-                "problem": problem_label, "run_idx": run_idx, "seed": seed, "algorithm": spec.name,
-                "valid": valid, "validation_status": status, "validation_message": validation.message,
-                "front_size": validation.front_size, "duplicate_fraction": validation.duplicate_fraction,
-                "n_eval": outcome.n_eval, "evaluation_budget": budget,
+    seed = seed_base + run_idx
+    initial_x = make_initial_population(problem, pop_size, seed)
+    for spec in specs:
+        recorder = ConvergenceRecorder(budget, igd_indicator, hv_indicator)
+        outcome = run_algorithm(spec, problem, pop_size, budget, initial_x, seed, recorder)
+        validation = validate_result(outcome.x, outcome.f, problem)
+        budget_valid = outcome.n_eval <= budget
+        valid = validation.valid and budget_valid
+        status = validation.status if budget_valid else "budget_exceeded"
+        utilization = outcome.n_eval / budget
+        row = {
+            "problem": problem_label, "n_var": int(problem.n_var), "n_obj": int(problem.n_obj),
+            "run_idx": run_idx, "seed": seed, "algorithm": spec.name, "runner": spec.runner,
+            "evaluation_budget": budget, "n_eval": outcome.n_eval, "budget_utilization": utilization,
+            "runtime_seconds": outcome.runtime_seconds, "front_size": validation.front_size,
+            "duplicate_fraction": validation.duplicate_fraction, "valid": valid,
+            "validation_status": status,
+            "IGD": float(igd_indicator(outcome.f)) if valid else float("nan"),
+            "HV": float(hv_indicator(outcome.f)) if valid else float("nan"),
+        }
+        raw_rows.append(row)
+        validation_rows.append({
+            "problem": problem_label, "run_idx": run_idx, "seed": seed, "algorithm": spec.name,
+            "valid": valid, "validation_status": status, "validation_message": validation.message,
+            "front_size": validation.front_size, "duplicate_fraction": validation.duplicate_fraction,
+            "n_eval": outcome.n_eval, "evaluation_budget": budget,
+        })
+        for point in outcome.convergence:
+            convergence_rows.append({
+                "problem": problem_label,
+                "n_obj": int(problem.n_obj),
+                "run_idx": run_idx,
+                "seed": seed,
+                "algorithm": spec.name,
+                **point,
             })
-            for point in outcome.convergence:
-                convergence_rows.append({
-                    "problem": problem_label,
-                    "n_obj": int(problem.n_obj),
-                    "run_idx": run_idx,
-                    "seed": seed,
-                    "algorithm": spec.name,
-                    **point,
-                })
-        print(f"[{problem_label}] run {run_idx + 1}/{runs} done (seed={seed}).")
+    return raw_rows, validation_rows, convergence_rows
+
+
+def run_one_problem(
+    problem_cfg: dict,
+    cfg: dict,
+    specs: list[AlgorithmSpec],
+    jobs: int = 1,
+) -> tuple[list[dict], list[dict], list[dict]]:
+    runs = int(cfg["global"]["runs"])
+    problem_label = configured_problem_label(problem_cfg)
+    results = []
+    if jobs <= 1:
+        for run_idx in range(runs):
+            results.append(run_single_seed(problem_cfg, cfg["global"], specs, run_idx))
+            print(f"[{problem_label}] run {run_idx + 1}/{runs} done.", flush=True)
+    else:
+        with ProcessPoolExecutor(max_workers=jobs) as executor:
+            futures = {
+                executor.submit(run_single_seed, problem_cfg, cfg["global"], specs, run_idx): run_idx
+                for run_idx in range(runs)
+            }
+            completed = 0
+            for future in as_completed(futures):
+                results.append(future.result())
+                completed += 1
+                print(
+                    f"[{problem_label}] {completed}/{runs} runs done "
+                    f"(latest run_idx={futures[future]}).",
+                    flush=True,
+                )
+
+    raw_rows = [row for result in results for row in result[0]]
+    validation_rows = [row for result in results for row in result[1]]
+    convergence_rows = [row for result in results for row in result[2]]
+    raw_rows.sort(key=lambda row: (int(row["run_idx"]), str(row["algorithm"])))
+    validation_rows.sort(key=lambda row: (int(row["run_idx"]), str(row["algorithm"])))
+    convergence_rows.sort(
+        key=lambda row: (
+            int(row["run_idx"]), str(row["algorithm"]), float(row["checkpoint_fraction"])
+        )
+    )
     return raw_rows, validation_rows, convergence_rows
 
 
@@ -500,6 +543,12 @@ def main(argv: list[str] | None = None) -> None:
         "--resume",
         action="store_true",
         help="resume after the last fully completed problem using current-schema CSV files",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=None,
+        help="number of independent seed workers (default: config value or 1)",
     )
     args = parser.parse_args(argv)
     cfg = load_yaml_config(Path(args.config))
@@ -512,6 +561,10 @@ def main(argv: list[str] | None = None) -> None:
     else:
         raw_rows, validation_rows, convergence_rows = [], [], []
     expected_per_problem = int(cfg["global"]["runs"]) * len(specs)
+    jobs = int(args.jobs or cfg["global"].get("jobs", 1))
+    if jobs < 1:
+        raise ValueError("--jobs must be at least 1")
+    print(f"Using {jobs} seed worker(s).", flush=True)
     for problem_cfg in cfg["problems"]:
         label = configured_problem_label(problem_cfg)
         completed = sum(str(row["problem"]) == label for row in raw_rows)
@@ -523,7 +576,9 @@ def main(argv: list[str] | None = None) -> None:
                 f"cannot safely resume partially completed problem {label}: "
                 f"found {completed}/{expected_per_problem} rows"
             )
-        problem_rows, problem_validation, problem_convergence = run_one_problem(problem_cfg, cfg, specs)
+        problem_rows, problem_validation, problem_convergence = run_one_problem(
+            problem_cfg, cfg, specs, jobs=jobs
+        )
         raw_rows.extend(problem_rows)
         validation_rows.extend(problem_validation)
         convergence_rows.extend(problem_convergence)
