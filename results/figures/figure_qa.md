@@ -94,6 +94,41 @@
 | PDF glyph floor | PASS; minimum 6 pt against a 5 pt requirement |
 | Visual inspection | PASS; all endpoints, zero reference, points, boxes, scale, and caption are legible; extreme values are retained |
 
+## Restart confirmation paired-run distribution (Held-out seeds)
+
+| Check | Result |
+|---|---|
+| Unique claim | Confirms run-level IGD and HV improvements of No Restart and Adaptive Restart over Full OADE across 30 held-out seeds |
+| Center/summary | Boxplot median and interquartile range (IQR) |
+| Replicate unit | 30 independent paired seeds (1000–1029) per endpoint |
+| Direction | Positive means comparison algorithm (No Restart or Adaptive Restart) improved over Full OADE |
+| Layout / Panels | 2 panels (a: IGD improvement %, b: HV improvement %) with jittered raw points |
+| Color / Contrast | Restrained publication palette: `#3182BD` (No Restart) and `#31A354` (Adaptive Restart) |
+| Multi-format export | Vector PDF, vector SVG, 300-DPI uncompressed TIFF, and PNG preview |
+| Source data CSV | PASS; complete paired run differences exported to `restart_confirmation_paired_source.csv` |
+| Visual inspection | PASS; clear labels, zero threshold line, distinct problem separations, legible legend |
+
+## Direct metric comparison across 5 problems (Grouped Boxplots)
+
+| Check | Result |
+|---|---|
+| Unique claim | Directly displays absolute IGD and HV metric values side-by-side without abstraction |
+| Center/summary | Median and IQR with overlaid raw seed jitter points ($n = 30$) |
+| Metric clarity | Row 1: IGD with "Lower is better ↓"; Row 2: HV with "Higher is better ↑" |
+| Color encoding | `#D95F0E` (Full OADE, warning), `#3182BD` (No Restart), `#31A354` (Adaptive Restart) |
+| Multi-format export | `restart_direct_comparison.{pdf,svg,tiff,png}` |
+| Visual inspection | PASS; clear problem columns, distinct colors, readable tick marks |
+
+## Evaluation convergence trajectories (Median IGD + IQR band)
+
+| Check | Result |
+|---|---|
+| Unique claim | Reveals within-budget convergence dynamics and shows perturbation spikes of classic restart |
+| Trajectory encoding | Solid/dashed/dotted lines with shaded 25th–75th percentile ribbons |
+| X-axis | Exact function evaluations ($0 \dots 20,000$) |
+| Multi-format export | `restart_convergence.{pdf,svg,tiff,png}` |
+| Visual inspection | PASS; trajectories distinguish stability clearly |
+
 ## Reviewed warnings
 
 - The source validator reports that R syntax should be checked by R itself. `Rscript --vanilla` parsed the complete source successfully.
