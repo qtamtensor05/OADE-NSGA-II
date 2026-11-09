@@ -570,6 +570,21 @@ def main(argv: list[str] | None = None) -> None:
         raw_rows = read_rows(out_dir / RAW_CSV, RAW_FIELDNAMES)
         validation_rows = read_rows(out_dir / VALIDATION_CSV, VALIDATION_FIELDNAMES)
         convergence_rows = read_rows(out_dir / CONVERGENCE_CSV, CONVERGENCE_FIELDNAMES)
+        # Fail fast on schema/type/aggregation regressions before spending time
+        # on another problem. This also repairs derived files after a previous
+        # process stopped after primary evidence was checkpointed.
+        persist_outputs(
+            out_dir,
+            raw_rows,
+            validation_rows,
+            convergence_rows,
+            specs,
+            cfg.get("statistics", {}),
+        )
+        print(
+            f"Resume preflight passed for {len(raw_rows)} existing run rows.",
+            flush=True,
+        )
     else:
         raw_rows, validation_rows, convergence_rows = [], [], []
     expected_per_problem = int(cfg["global"]["runs"]) * len(specs)
