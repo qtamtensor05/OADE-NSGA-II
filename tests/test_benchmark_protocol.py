@@ -13,6 +13,7 @@ from src.benchmarking.statistics import (
     paired_rank_biserial,
     paired_wilcoxon_rows,
 )
+from src.benchmarking.algorithm_benchmark import AlgorithmSpec, summarize
 
 
 class SphereProblem:
@@ -27,6 +28,37 @@ class SphereProblem:
 
 
 class BenchmarkProtocolTests(unittest.TestCase):
+    def test_summary_accepts_resumed_csv_strings_and_new_numeric_rows(self):
+        spec = AlgorithmSpec(name="OADE", runner="local_oade", params={})
+        base = {
+            "problem": "zdt1",
+            "n_var": "30",
+            "n_obj": "2",
+            "algorithm": "OADE",
+            "runner": "local_oade",
+            "valid": "True",
+            "IGD": "0.2",
+            "HV": "0.8",
+            "runtime_seconds": "1.5",
+            "n_eval": "20000",
+            "budget_utilization": "1.0",
+        }
+        numeric = dict(base)
+        numeric.update(
+            n_var=30,
+            n_obj=2,
+            valid=True,
+            IGD=0.1,
+            HV=0.9,
+            runtime_seconds=1.0,
+            n_eval=20000,
+            budget_utilization=1.0,
+        )
+        rows = summarize([base, numeric], [spec])
+        self.assertEqual(len(rows), 1)
+        self.assertAlmostEqual(rows[0]["IGD_mean"], 0.15)
+        self.assertAlmostEqual(rows[0]["HV_mean"], 0.85)
+
     def test_budgeted_problem_counts_and_blocks_overrun(self):
         problem = BudgetedProblem(SphereProblem(), max_evaluations=3)
         result = problem.evaluate(np.zeros((2, 2)))

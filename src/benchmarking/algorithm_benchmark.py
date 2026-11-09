@@ -330,18 +330,23 @@ def run_algorithm(spec, problem, pop_size, budget, initial_x, seed, recorder) ->
 
 def summarize(raw_rows: list[dict], specs: list[AlgorithmSpec]) -> list[dict]:
     rows = []
-    keys = sorted({(row["problem"], row["n_var"], row["n_obj"]) for row in raw_rows})
+    keys = sorted(
+        {
+            (str(row["problem"]), int(row["n_var"]), int(row["n_obj"]))
+            for row in raw_rows
+        }
+    )
     for problem, n_var, n_obj in keys:
         for spec in specs:
             selected = [row for row in raw_rows if row["problem"] == problem and row["algorithm"] == spec.name]
             valid = [row for row in selected if row_is_valid(row)]
             if not valid:
                 continue
-            igd = np.asarray([row["IGD"] for row in valid])
-            hv = np.asarray([row["HV"] for row in valid])
-            runtime = np.asarray([row["runtime_seconds"] for row in valid])
-            n_eval = np.asarray([row["n_eval"] for row in valid])
-            utilization = np.asarray([row["budget_utilization"] for row in valid])
+            igd = np.asarray([row["IGD"] for row in valid], dtype=float)
+            hv = np.asarray([row["HV"] for row in valid], dtype=float)
+            runtime = np.asarray([row["runtime_seconds"] for row in valid], dtype=float)
+            n_eval = np.asarray([row["n_eval"] for row in valid], dtype=float)
+            utilization = np.asarray([row["budget_utilization"] for row in valid], dtype=float)
             rows.append({
                 "problem": problem, "n_var": n_var, "n_obj": n_obj,
                 "algorithm": spec.name, "runner": spec.runner,
@@ -406,6 +411,11 @@ def persist_outputs(
     specs: list[AlgorithmSpec],
     stat_cfg: dict,
 ) -> None:
+    # Persist primary evidence first. Derived summaries/statistics must never
+    # cause completed runs to be lost if their calculation raises an error.
+    write_csv(out_dir / RAW_CSV, raw_rows, RAW_FIELDNAMES)
+    write_csv(out_dir / VALIDATION_CSV, validation_rows, VALIDATION_FIELDNAMES)
+    write_csv(out_dir / CONVERGENCE_CSV, convergence_rows, CONVERGENCE_FIELDNAMES)
     summary_rows = summarize(raw_rows, specs)
     cost_rows = summarize_costs(raw_rows)
     statistics_rows = paired_wilcoxon_rows(
@@ -413,11 +423,8 @@ def persist_outputs(
         str(stat_cfg.get("reference_algorithm", "OADE_NSGAII")),
         float(stat_cfg.get("alpha", 0.05)),
     )
-    write_csv(out_dir / RAW_CSV, raw_rows, RAW_FIELDNAMES)
     write_csv(out_dir / SUMMARY_CSV, summary_rows, SUMMARY_FIELDNAMES)
     write_csv(out_dir / STATISTICS_CSV, statistics_rows, STATISTICS_FIELDNAMES)
-    write_csv(out_dir / VALIDATION_CSV, validation_rows, VALIDATION_FIELDNAMES)
-    write_csv(out_dir / CONVERGENCE_CSV, convergence_rows, CONVERGENCE_FIELDNAMES)
     write_csv(out_dir / COST_CSV, cost_rows, COST_FIELDNAMES)
 
 
