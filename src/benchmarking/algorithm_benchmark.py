@@ -16,6 +16,7 @@ from pymoo.indicators.igd import IGD
 from pymoo.optimize import minimize
 from pymoo.problems import get_problem
 from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
+from pymoo.util.ref_dirs import get_reference_directions
 
 from algorithms.ce_moea import CEMOEA
 from algorithms.cgde_nsga2 import CGDE_NSGAII
@@ -95,6 +96,28 @@ def non_dominated_xy(x: np.ndarray, f: np.ndarray) -> tuple[np.ndarray, np.ndarr
     f = np.asarray(f, dtype=float)
     indices = NonDominatedSorting().do(f, only_non_dominated_front=True)
     return x[indices], f[indices]
+
+
+def reference_front(problem, problem_cfg: dict) -> np.ndarray:
+    """Create a deterministic reference front for ZDT/DTLZ-style problems."""
+
+    name = str(problem_cfg["name"]).lower()
+    if name.startswith("dtlz"):
+        n_obj = int(problem.n_obj)
+        partitions_by_objectives = {2: 200, 3: 20, 5: 6}
+        partitions = int(
+            problem_cfg.get("reference_partitions", partitions_by_objectives.get(n_obj, 6))
+        )
+        directions = get_reference_directions(
+            "das-dennis", n_obj, n_partitions=partitions
+        )
+        front = problem.pareto_front(directions)
+    else:
+        front = problem.pareto_front()
+    front = np.asarray(front, dtype=float)
+    if front.ndim != 2 or front.shape[1] != int(problem.n_obj):
+        raise ValueError(f"invalid Pareto front for {name}")
+    return front
 
 
 def _run_pymoo(spec, problem, pop_size, budget, initial_x, seed) -> RunOutcome:
@@ -240,11 +263,19 @@ def summarize(raw_rows: list[dict], specs: list[AlgorithmSpec]) -> list[dict]:
 
 def run_one_problem(problem_cfg: dict, cfg: dict, specs: list[AlgorithmSpec]) -> tuple[list[dict], list[dict]]:
     name = str(problem_cfg["name"])
-    kwargs = {key: value for key, value in problem_cfg.items() if key != "name"}
+    metadata_keys = {"reference_partitions", "label"}
+    kwargs = {
+        key: value for key, value in problem_cfg.items()
+        if key != "name" and key not in metadata_keys
+    }
     problem = get_problem(name, **kwargs)
-    pareto_front = np.asarray(problem.pareto_front(), dtype=float)
-    if pareto_front.ndim != 2 or pareto_front.shape[1] != int(problem.n_obj):
-        raise ValueError(f"invalid Pareto front for {name}")
+    problem_label = str(
+        problem_cfg.get(
+            "label",
+            f"{name}_m{int(problem.n_obj)}" if name.lower().startswith(("dtlz", "wfg")) else name,
+        )
+    )
+    pareto_front = reference_front(problem, problem_cfg)
     igd_indicator = IGD(pareto_front)
     hv_indicator = HV(ref_point=np.max(pareto_front, axis=0) + 0.1)
     global_cfg = cfg["global"]
@@ -262,7 +293,7 @@ def run_one_problem(problem_cfg: dict, cfg: dict, specs: list[AlgorithmSpec]) ->
             status = validation.status if budget_valid else "budget_exceeded"
             utilization = outcome.n_eval / budget
             row = {
-                "problem": name, "n_var": int(problem.n_var), "n_obj": int(problem.n_obj),
+                "problem": problem_label, "n_var": int(problem.n_var), "n_obj": int(problem.n_obj),
                 "run_idx": run_idx, "seed": seed, "algorithm": spec.name, "runner": spec.runner,
                 "evaluation_budget": budget, "n_eval": outcome.n_eval, "budget_utilization": utilization,
                 "runtime_seconds": outcome.runtime_seconds, "front_size": validation.front_size,
@@ -273,12 +304,12 @@ def run_one_problem(problem_cfg: dict, cfg: dict, specs: list[AlgorithmSpec]) ->
             }
             raw_rows.append(row)
             validation_rows.append({
-                "problem": name, "run_idx": run_idx, "seed": seed, "algorithm": spec.name,
+                "problem": problem_label, "run_idx": run_idx, "seed": seed, "algorithm": spec.name,
                 "valid": valid, "validation_status": status, "validation_message": validation.message,
                 "front_size": validation.front_size, "duplicate_fraction": validation.duplicate_fraction,
                 "n_eval": outcome.n_eval, "evaluation_budget": budget,
             })
-        print(f"[{name}] run {run_idx + 1}/{runs} done (seed={seed}).")
+        print(f"[{problem_label}] run {run_idx + 1}/{runs} done (seed={seed}).")
     return raw_rows, validation_rows
 
 
