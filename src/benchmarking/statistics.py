@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from collections.abc import Iterable
 
 import numpy as np
@@ -28,7 +29,10 @@ STATISTICS_FIELDNAMES = [
 
 
 def holm_adjust(p_values: Iterable[float]) -> list[float]:
-    values = [float(value) for value in p_values]
+    values = [
+        1.0 if math.isnan(float(value)) else min(1.0, max(0.0, float(value)))
+        for value in p_values
+    ]
     indexed = sorted(enumerate(values), key=lambda item: item[1])
     adjusted = [1.0] * len(values)
     previous = 0.0
@@ -117,13 +121,20 @@ def paired_wilcoxon_rows(
                 reference_values = np.asarray([reference[index] for index in paired_indices])
                 comparison_values = np.asarray([comparison[index] for index in paired_indices])
                 differences = reference_values - comparison_values
-                try:
-                    result = wilcoxon(reference_values, comparison_values, zero_method="wilcox")
-                    statistic = float(result.statistic)
-                    p_value = float(result.pvalue)
-                except ValueError:
+                if np.all(differences == 0.0):
                     statistic = 0.0
                     p_value = 1.0
+                else:
+                    try:
+                        result = wilcoxon(reference_values, comparison_values, zero_method="wilcox")
+                        statistic = float(result.statistic)
+                        p_value = float(result.pvalue)
+                    except ValueError:
+                        statistic = 0.0
+                        p_value = 1.0
+                    if math.isnan(p_value):
+                        statistic = 0.0
+                        p_value = 1.0
                 metric_rows.append(
                     {
                         "problem": problem,

@@ -14,7 +14,7 @@ An improved multi-objective evolutionary algorithm integrating **Opposition-Base
 - [2. Experimental Protocol & Statistical Discipline](#2-experimental-protocol--statistical-discipline)
 - [3. Key Results & Achievements](#3-key-results--achievements)
 - [4. Strengths & Advantages](#4-strengths--advantages)
-- [5. Limitations & Claim Boundaries](#5-limitations--claim-boundaries)
+- [5. Weaknesses, Limitations & Claim Boundaries](#5-weaknesses-limitations--claim-boundaries)
 - [6. Visual Evidence & Figures](#6-visual-evidence--figures)
 - [7. Project Structure & Reproducibility](#7-project-structure--reproducibility)
 - [8. Quick Start Guide](#8-quick-start-guide)
@@ -42,7 +42,9 @@ All experiments strictly follow the reporting and replication guidelines of **Na
 * **Independent Experimental Unit**: One complete stochastic run ($n = 30$ paired runs per problem-metric endpoint).
 * **Strict Evaluation Budget**: Fixed at exactly 20,000 function evaluations per run (verified budget utilization $> 99.7\%$).
 * **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
-* **Test Suite**: Standard bi-objective CEC benchmark suite: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
+* **Test Suites (17 Benchmark Configurations)**:
+  * **Bi-objective ZDT (`1,050` runs)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
+  * **Multi-/Many-objective DTLZ1–DTLZ4 (`2,520` runs)**: DTLZ1 ($M \in \{2,3,5\}, D \in \{6,7,9\}$) and DTLZ2–DTLZ4 ($M \in \{2,3,5\}, D \in \{11,12,14\}$).
 * **Competing Baselines (6 Algorithms)**:
   * NSGA-II (Deb et al., 2002)
   * D-NSGA-II (Direction-based NSGA-II)
@@ -50,16 +52,21 @@ All experiments strictly follow the reporting and replication guidelines of **Na
   * CGDE-NSGA-II (Competitive & Guided Differential Evolution)
   * NSGA-II-SDR-OLS (Strengthened Dominance Relation + Orthogonal Local Search)
   * CE-MOEA (Cross-Entropy Multi-Objective Evolutionary Algorithm)
-* **Statistical Inference**: Two-sided paired Wilcoxon signed-rank tests with family-wise error rate controlled via **Holm-Bonferroni step-down correction** separately across comparisons for each metric family ($m = 30$, $\alpha = 0.05$).
+* **Statistical Inference**: Two-sided paired Wilcoxon signed-rank tests with family-wise error rate controlled via **Holm-Bonferroni step-down correction** separately per metric family ($m = 30$ for ZDT; $m = 72$ for DTLZ1–4; $\alpha = 0.05$).
 * **Effect Sizes**: Matched-pairs rank-biserial correlation $r \in [-1, 1]$.
 
 ---
 
 ## 3. Key Results & Achievements
 
-### Benchmark v2: Head-to-Head Comparison (1,050 Independent Runs)
+### Combined 7-Algorithm Scorecard (ZDT + DTLZ1–DTLZ4 = 204 Pairwise Tests, 3,570 Runs)
 
-Full empirical evidence stored in [`results/algorithm_benchmark_v2/`](results/algorithm_benchmark_v2/):
+* **Combined Outcome (204 Holm-Adjusted Comparisons)**: **149 Wins (73.0%) / 41 Ties (20.1%) / 14 Losses (6.9%)** across 3,570 runs (`OADE-NSGA-II v2`: **510/510 valid runs**, 0 collapsed fronts).
+  * **ZDT Benchmark v2 (60 comparisons)**: **58 Wins (96.7%) / 1 Tie / 1 Loss** (Rank #1 on 8/10 endpoints).
+  * **DTLZ1–DTLZ4 Benchmark (144 comparisons)**: **91 Wins (63.2%) / 40 Ties (27.8%) / 13 Losses (9.0%)** (Rank #1 on 8/12 IGD medians and 7/12 HV means; zero losses at $M=5$).
+* **Zero-Loss Records Across All 17 Problems**: OADE-NSGA-II v2 never lost a single Holm-corrected comparison against **`CE-MOEA`** (23–11–0), **`NSGA-II-SDR-OLS`** (30–4–0), or **`R-NSGA-II`** (31–3–0), while leading **`NSGA-II`** (22–7–5), **`D-NSGA-II`** (22–7–5), and **`CGDE-NSGA-II`** (21–9–4).
+
+### Bi-Objective ZDT Benchmark v2 (`results/algorithm_benchmark_v2/`, 1,050 Runs)
 
 | Problem | Metric | OADE-NSGA-II v2 | Best Competitor | Competitor Name | $p_{\text{adj}}$ (Holm) | Effect Size ($r$) | Inferential Result |
 |---|---|---:|---:|---|---:|---:|---|
@@ -69,51 +76,60 @@ Full empirical evidence stored in [`results/algorithm_benchmark_v2/`](results/al
 | **ZDT4** | IGD ↓<br>HV ↑ | **0.006831 ± 0.003329**<br>**0.865051 ± 0.005679** | 0.009953 ± 0.005080<br>0.859362 ± 0.007910 | NSGA-II<br>NSGA-II | $4.04 \times 10^{-3}$<br>$8.72 \times 10^{-4}$ | $+0.626$<br>$+0.669$ | **OADE v2 Wins (#1)**<br>**OADE v2 Wins (#1)** |
 | **ZDT6** | IGD ↓<br>HV ↑ | 0.003844 ± 0.000193<br>0.438177 ± 0.000253 | **0.003823 ± 0.000223**<br>**0.439057 ± 0.000199** | CGDE-NSGA-II<br>CGDE-NSGA-II | $0.776$ (Tie)<br>$5.58 \times 10^{-8}$ | $-0.062$<br>$-1.000$ | Indistinguishable (#2)<br>CGDE Wins (#2) |
 
-### Overall Scorecard Across 60 Pairwise Tests:
-* **OADE-NSGA-II v2 Wins**: **58 / 60 comparisons (96.7%)**
-* **Ties**: 1 / 60 (ZDT6 IGD against CGDE, $p_{\text{adj}} = 0.776$)
-* **Losses**: 1 / 60 (ZDT6 HV against CGDE, $p_{\text{adj}} < 10^{-7}$)
-* **Overall Rank**: **Rank #1 in 8 out of 10 problem-metric endpoints**, and Rank #2 in the remaining 2 endpoints.
+### Multi-/Many-Objective DTLZ1–DTLZ4 Highlights (`results/dtlz_benchmark/`, 2,520 Runs)
+
+| Problem Family | $M=2$ Outcome | $M=3$ Outcome | $M=5$ Outcome |
+|---|---|---|---|
+| **DTLZ1** (Multimodal linear) | **6/6 IGD & HV Wins** (`0.0022` med IGD) | **6/6 Wins ($r = +1.000, W=0$)**; `0.0292` vs NSGA-II `0.0967` | **6/6 IGD Wins** (`0.8972` vs `40.17` NSGA-II); **13/30 HV>0** vs **0/30** all baselines |
+| **DTLZ2** (Unimodal sphere) | **IGD Tie** vs NSGA-II (`0.0050`); NSGA-II +0.11% HV | **Trails SBX & CGDE** (`0.0762` vs `0.0685`–`0.0720` IGD) | **Rank #1** (`0.4214` IGD, `0.4517` HV); beats D-NSGA-II, CGDE, CE-MOEA, R-NSGA-II, SDR-OLS |
+| **DTLZ3** (Hard multimodal sphere) | **6/6 IGD Wins** (`1.0708` med, **11/30 HV>0**) | **6/6 IGD Wins ($r = +1.000$)**; `2.5460` vs `14.1763`–`108.7107` | **5/6 IGD Wins** (`72.7081` vs `108.3939`–`258.9448`; ties SDR-OLS); **0/30 HV>0** all algorithms |
+| **DTLZ4** ($\alpha=100$ biased sphere) | **0/30 collapses** (`0.0051` med); NSGA-II collapses **11/30** (`0.2753` mean) | **Trails SBX & CGDE** (`0.0780` vs `0.0686`–`0.0704` IGD) | **Rank #1 IGD (`0.3746`, 0/30 collapses)**; ties CE-MOEA/CGDE at **23.8× faster speed**; NSGA-II/D-NSGA-II collapse **30/30** (`HV = 0.0205`/`0.0422`) |
+
+Full tables (Median [IQR], Mean ± SD, effect sizes) are archived in [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md).
 
 ---
 
 ## 4. Strengths & Advantages
 
-1. **Unmatched Accuracy & Convergence**:
-   Achieves the lowest IGD and highest Hypervolume across ZDT1, ZDT2, ZDT3, and ZDT4, outperforming classic NSGA-II across all 10 endpoints after Holm multiplicity correction.
-2. **Robust Multimodal Escape (OBL Resilience)**:
-   On ZDT4 ($21^9$ local Pareto fronts), OADE achieves near-optimal IGD ($0.00683$), while competitor algorithms like CGDE-NSGA-II and NSGA-II-SDR-OLS completely collapsed into local optima ($\text{HV} = 0.0, \text{IGD} > 10.8$).
+1. **Multimodal Escape Across 2–5 Objectives**:
+   OBL initialization and periodic opposition injection break local-optimum traps on ZDT4 ($21^9$ fronts), DTLZ1 (18/18 IGD wins), and DTLZ3 (17/18 IGD wins), where heavy baselines (`CGDE-NSGA-II`, `NSGA-II-SDR-OLS`) repeatedly stall at $\text{HV} = 0$.
+2. **Immunity to Severe Coordinate Bias (DTLZ4 Collapse Resistance)**:
+   While standard SBX algorithms suffer severe corner collapse on DTLZ4 (36.7% failure for `NSGA-II` at $M=2$; **100% failure** for both `NSGA-II` and `D-NSGA-II` at $M=5$), OADE-NSGA-II v2 logged **0 collapses across all 90 DTLZ4 runs** and **510/510 valid fronts** overall (vs 15 `collapsed_front` failures in `SDR-OLS` and 3 in `CGDE`).
 3. **Stabilized Variance via Adaptive Restart**:
-   The new adaptive diversity check prevents premature destruction of converged populations. Standard deviations dropped by **11× to 27×** compared to classic restart, completely eliminating late-run archive contamination.
+   The adaptive diversity check prevents premature destruction of converged populations. Standard deviations on ZDT1–ZDT3 dropped by **11× to 27×** compared to classic restart, eliminating late-run archive contamination and boosting ZDT win rate from 39/60 (v1) to **58/60 (v2)**.
 4. **Computational Efficiency**:
-   Averages **10.8 to 14.8 seconds** per run across all problems in Python. It runs **7.7× to 10× faster** than local implementations of CGDE-NSGA-II (103–138s) and CE-MOEA (39–145s).
-5. **No Parameter Tuning Required**:
-   $F$ and $CR$ parameters are self-adapted online using Lehmer-mean updates based on successful offspring, avoiding problem-specific manual tuning.
+   Averages **10.8–14.8s/run** on ZDT and **2.74–3.04s/run** on DTLZ4 (with `OMP_NUM_THREADS=1`), running **7.7× to 26× faster** than local implementations of `CGDE-NSGA-II` and `CE-MOEA`.
+5. **Online Parameter Self-Adaptation**:
+   $F$ and $CR$ parameters adapt online via Lehmer-mean updates from successful offspring, avoiding problem-specific manual tuning.
 
 ---
 
-## 5. Limitations & Claim Boundaries
+## 5. Weaknesses, Limitations & Claim Boundaries
 
-In adherence to Nature reporting rigor, the boundaries of the empirical findings must be explicitly stated:
+In adherence to Nature reporting rigor, empirically observed weaknesses and boundaries must be stated explicitly:
 
-1. **Test Suite Scope**:
-   Evidence is strictly bounded to the 5 tested continuous bi-objective ZDT problems ($D \in \{10, 30\}, M=2$) under a 20,000-evaluation budget. Performance on discrete, constrained, noisy, dynamically changing, or many-objective ($M \ge 3$) problems (e.g., DTLZ, WFG) remains to be formally confirmed.
-2. **Hardware-Dependent Runtime**:
-   Reported wall-clock runtimes reflect execution in a multi-threaded Python 3 environment. They demonstrate practical implementation efficiency, but must **not** be interpreted as hardware-independent asymptotic time complexities $\mathcal{O}(\cdot)$.
-3. **Isolated Component Attribution**:
-   The ablation study confirms that OBL is the decisive driver on ZDT4 and Adaptive Restart cures ZDT1–ZDT3. However, isolated main effects of F/CR adaptation and operator probability adaptation did not reach statistical significance after Holm correction; their primary verified function is **tail-risk failure prevention** rather than median shifting.
-4. **Inconclusive Comparisons**:
-   On ZDT6 IGD against CGDE ($p_{\text{adj}} = 0.776$), the non-significant outcome represents an absence of detectable difference under the current sample size ($n=30$), **not** mathematical equivalence.
+1. **Confirmed Deficit on Smooth/Biased 3-Objective Spherical Fronts (`dtlz2_m3`, `dtlz4_m3`)**:
+   All 6 IGD losses and 5 of the 7 DTLZ HV losses occur exclusively at $M=3$ on spherical fronts when baselines avoid local traps (`NSGA-II`, `D-NSGA-II`, and `CGDE-NSGA-II` outperform OADE by ~6%–14% IGD and ~2.3%–4.1% HV). When convergence trapping is absent in 3D, coordinate-wise SBX interpolates the spherical surface slightly more uniformly than neighborhood-restricted DE + periodic OBL.
+2. **Crowding-Distance Saturation at $M=5$ Under Extreme Multimodality (`dtlz1_m5`, `dtlz3_m5`)**:
+   Retaining NSGA-II crowding-distance selection limits convergence pressure at 5 objectives under a 20,000-evaluation cap: 17/30 runs on `dtlz1_m5` ($\text{IGD}_{\text{med}} = 0.8972$, right-skewed max `24.71`) and 30/30 runs on `dtlz3_m5` fail to reach positive Hypervolume (`HV = 0.0`).
+3. **Remaining Test Suite Boundaries**:
+   Current empirical evidence covers continuous unconstrained problems across **ZDT1–4, ZDT6** ($M=2$) and **DTLZ1–4** ($M \in \{2, 3, 5\}$). Performance on **degenerate/disconnected DTLZ5–7** (pending an offline analytical `reference_front` update), **non-separable/scaled WFG1–9**, constrained MOPs (requiring Deb's constrained-domination principle), and discrete problems remains untested.
+4. **Hardware-Dependent Runtime**:
+   Reported wall-clock runtimes reflect Python execution overhead and BLAS thread settings (`OMP_NUM_THREADS=1` cut DTLZ4 runtimes ~3× vs unpinned DTLZ1–3 batches), and must **not** be interpreted as hardware-independent asymptotic complexities $\mathcal{O}(\cdot)$.
+5. **Isolated Component Attribution & Inconclusive Tests**:
+   Ablation confirms OBL drives ZDT4 and Adaptive Restart cures ZDT1–ZDT3, whereas F/CR and operator probability adaptation act primarily as **tail-risk safeguards**. Non-significant comparisons (e.g., `ZDT6` IGD vs CGDE, `dtlz4_m5` vs CE-MOEA/CGDE) denote absence of statistically detectable difference at $n=30$, **not** mathematical equivalence.
 
 ---
 
 ## 6. Visual Evidence & Figures
 
-All figures are generated reproducibly in vector PDF, SVG, 300-DPI uncompressed TIFF, and PNG preview under [`results/figures/`](results/figures/):
+All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures/) (oversized `.tiff` print files, QA audit overlays, and standalone figure-helper scripts are excluded via `.gitignore`):
 
 | Figure File | Description |
 |---|---|
-| [`benchmark_v2_outcome_counts.png`](results/figures/benchmark_v2_outcome_counts.png) | Horizontal stacked bar chart displaying the 58 wins, 1 tie, and 1 loss against 6 baselines. |
+| [`integrated_7algo_landscape.png`](results/figures/integrated_7algo_landscape.png) | **Multi-panel overview**: 17-problem rank-biserial effect-size matrix (`a`), 204-test outcome ledger (`b`), and 34-endpoint mean-rank vs runtime Pareto trade-off (`c`). |
+| [`dtlz1_4_scaling_diagnosis.png`](results/figures/dtlz1_4_scaling_diagnosis.png) | **2×2 DTLZ scaling grid ($M=2,3,5$)**: Multimodal escape on DTLZ1/3 (`a, b`), 3-objective spherical deficit on DTLZ2 (`c`), and DTLZ4 corner-collapse immunity (`d`). |
+| [`benchmark_v2_outcome_counts.png`](results/figures/benchmark_v2_outcome_counts.png) | Horizontal stacked bar chart displaying the 58 wins, 1 tie, and 1 loss on ZDT v2 against 6 baselines. |
 | [`benchmark_v2_v1_vs_v2_delta.png`](results/figures/benchmark_v2_v1_vs_v2_delta.png) | Direct IGD reduction from OADE v1 to OADE v2 across all 5 ZDT problems (-24.5% to -40.0%). |
 | [`restart_direct_comparison.png`](results/figures/restart_direct_comparison.png) | Grouped boxplots comparing Old Restart, No Restart, and New Restart side-by-side with overlaid raw seeds. |
 | [`restart_convergence.png`](results/figures/restart_convergence.png) | Within-budget convergence trajectories (Median IGD + IQR shaded bands) over 20,000 evaluations. |
@@ -131,36 +147,36 @@ OADE-NSGA-II/
 │   ├── ce_moea/                # Cross-Entropy MOEA
 │   ├── cgde_nsga2/             # Competitive & Guided DE NSGA-II
 │   └── nsga2_sdr_ols/          # SDR + Orthogonal Local Search
-├── analysis/
-│   └── figures/                # Standalone figure generation scripts
-│       ├── plot_benchmark_v2.py
-│       ├── plot_intuitive_restart_figures.py
-│       └── plot_restart_confirmation.py
 ├── config/                     # YAML configuration files
-│   ├── algorithm_benchmark_v2.yaml  # 7-algorithm benchmark suite v2
+│   ├── algorithm_benchmark_v2.yaml  # 7-algorithm ZDT benchmark suite v2
+│   ├── dtlz1_4_benchmark.yaml       # DTLZ1-4 suite (M = 2, 3, 5)
 │   ├── restart_confirmation.yaml    # Held-out seed confirmation config
 │   └── ablations/              # Component ablation specifications
 ├── docs/                       # Formal scientific research reports
+│   ├── dtlz1_4_integrated_report.md # Integrated ZDT + DTLZ1-4 analysis
 │   ├── benchmark_v2_results_report.md
 │   ├── restart_confirmation_report.md
 │   ├── ablation_results_report.md
 │   └── research_results_report.md
 ├── results/                    # Transparent benchmark outputs (CSV, Logs)
-│   ├── algorithm_benchmark_v2/ # 1,050 raw runs, summaries, paired stats
+│   ├── algorithm_benchmark_v2/ # 1,050 ZDT runs, summaries, paired stats
+│   ├── dtlz_benchmark/         # 2,520 DTLZ1-4 runs, summaries, paired stats
 │   ├── restart_confirmation/   # 450 held-out runs
-│   └── figures/                # Publication-ready figures (PDF, TIFF, SVG, CSV)
+│   └── figures/                # Publication figures (PDF, SVG, PNG, Source CSVs)
 ├── scripts/                    # High-level runner utilities
-│   ├── run_benchmark_v2.py
-│   └── render_research_figures.ps1
-├── src/                        # Core algorithmic framework
-│   ├── oade_nsga2/             # OADE-NSGA-II implementation
-│   │   ├── algorithm.py        # Main solver class & adaptive restart
-│   │   ├── operators.py        # DE mutation, SBX, polynomial mutation, OBL
-│   │   └── selection.py        # Environmental selection, crowding distance
-│   └── benchmarking/           # Benchmark protocol, budgeting, statistics
-└── tests/                      # Automated unit test suite
-    └── test_restart_mechanisms.py
+│   └── run_benchmark_v2.py
+└── src/                        # Core algorithmic & evaluation framework
+    ├── oade_nsga2/             # OADE-NSGA-II implementation
+    │   ├── algorithm.py        # Main solver class & adaptive restart
+    │   ├── operators.py        # DE mutation, SBX, polynomial mutation, OBL
+    │   └── selection.py        # Environmental selection, crowding distance
+    ├── benchmarking/           # Benchmark protocol, budgeting, statistics
+    ├── plotting/               # Built-in benchmark plotters (via main.py)
+    ├── sensitivity/            # Parameter sensitivity pipeline
+    └── utils/                  # YAML config & CSV utilities
 ```
+
+*(Note: local unit tests `tests/`, smoke configurations `config/smoke_*.yaml`, standalone plotting scripts `analysis/`, 600-DPI `.tiff` rasters, and figure QA intermediates are kept locally via `.gitignore`.)*
 
 ---
 
@@ -175,20 +191,21 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### Run Automated Unit Tests
-```powershell
-.venv\Scripts\python.exe -m unittest discover tests
-```
-
-### Reproduce Benchmark v2 (7 Algorithms, 1,050 Runs)
+### Reproduce Benchmark v2 (ZDT, 7 Algorithms, 1,050 Runs)
 ```powershell
 .venv\Scripts\python.exe scripts\run_benchmark_v2.py
 ```
 
-### Regenerate All Nature Figures
+### Reproduce DTLZ1–DTLZ4 Benchmark (M = 2, 3, 5; 2,520 Runs)
 ```powershell
-.venv\Scripts\python.exe analysis/figures/plot_benchmark_v2.py
-.venv\Scripts\python.exe analysis/figures/plot_intuitive_restart_figures.py
+$env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
+.venv\Scripts\python.exe main.py benchmark-dtlz --config config/dtlz1_4_benchmark.yaml --jobs 8
+```
+
+### Generate Built-in Summary Plots
+```powershell
+.venv\Scripts\python.exe main.py plot-algorithm-benchmark
+.venv\Scripts\python.exe main.py plot-convergence
 ```
 
 ---
@@ -196,6 +213,7 @@ pip install -r requirements.txt
 ## 📜 Citation & Research Reports
 
 If you use OADE-NSGA-II in your research, please refer to the detailed evaluation reports in `docs/`:
-* **Benchmark v2 Report**: [`docs/benchmark_v2_results_report.md`](docs/benchmark_v2_results_report.md)
+* **Integrated ZDT + DTLZ1–4 Report**: [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md)
+* **Benchmark v2 Report (ZDT)**: [`docs/benchmark_v2_results_report.md`](docs/benchmark_v2_results_report.md)
 * **Restart Confirmation Report**: [`docs/restart_confirmation_report.md`](docs/restart_confirmation_report.md)
 * **Component Ablation Report**: [`docs/ablation_results_report.md`](docs/ablation_results_report.md)

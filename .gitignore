@@ -1,9 +1,20 @@
+# Environments and caches
 .venv/
 .agents/
 __pycache__/
 *.py[cod]
 .pytest_cache/
-# Local report-writing and figure-generation environment
+.coverage
+htmlcov/
+*.tmp
+scratch/
+
+# Unit tests and smoke-test configs/outputs (kept locally only)
+tests/
+config/smoke_*.yaml
+results/smoke*/
+
+# Local report-writing, figure-generation scripts, and heavy/QA artifacts
 .r-bootstrap/
 .Rprofile
 renv.lock
@@ -11,10 +22,13 @@ renv/
 .Rhistory
 .RData
 .Ruserdata
-analysis/figures/
+analysis/
 scripts/render_research_figures.ps1
+results/figures/*.alignment.json
+results/figures/*.alignment.svg
+results/figures/*.collision-audit.json
+results/figures/*.collision-audit.pdf
+results/figures/*.tiff
 
 # Local benchmark and report-generation logs
 *.log
-results/smoke/
-results/smoke-sensitivity/

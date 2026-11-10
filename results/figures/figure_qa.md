@@ -154,3 +154,35 @@
 - The static source validator could not infer the runtime positivity assertion near `scale_x_log10`; the script stops before plotting if any runtime minimum is non-positive.
 - The PDF text scanner reports unsupported filters in two streams but still identifies the documents as auditable, finds the minimum 6 pt glyph size, and reports no below-threshold text.
 - R prints Windows locale warnings for `C.UTF-8`; exported labels were visually inspected and contain no damaged characters.
+
+---
+
+## Integrated 7-Algorithm Landscape (`integrated_7algo_landscape`)
+
+| Check | Result |
+|---|---|
+| Backend | Python 3.14 / Matplotlib 3.11.2 (`analysis/figures/plot_integrated_7algo_dtlz.py`) |
+| Unique claim | Synthesizes OADE-NSGA-II v2's Holm-adjusted effect sizes (`a`), 204-test outcome ledger (`b`), and symmetric 34-endpoint rank-runtime trade-off (`c`) across ZDT and DTLZ1–4 |
+| Palette & Salience | Colorblind-safe blue-white-coral diverging heatmap (`#0F4D92`, `#F7F7F7`, `#B64342`); hero markers emphasized |
+| Source preflight | PASS (`21 pass, 0 warn, 0 fail` via `validate_figure.py`) |
+| Multi-panel alignment | PASS (`strict=True` via `require_matplotlib_panel_alignment`; external colorbar excluded from grid alignment) |
+| PDF glyph floor | PASS (minimum found `5.25 pt` >= `5.0 pt`; 0 below minimum via `audit_pdf_text.py`) |
+| Collision audit | PASS (`0 fail, 0 warn`, 97 text boxes, 101 strokes via `audit_figure_collisions.py`) |
+| Export bundle | `integrated_7algo_landscape.{pdf,svg,tiff,png}`, `.alignment.json/.svg`, `integrated_7algo_source_data.csv`, `integrated_7algo_cost_rank_source.csv` |
+| Visual inspection | PASS at final double-column width (`182.9 mm`); markers and labels verified free of overlap |
+
+## DTLZ1–4 Multi-Objective Scaling Diagnosis (`dtlz1_4_scaling_diagnosis`)
+
+| Check | Result |
+|---|---|
+| Backend | Python 3.14 / Matplotlib 3.11.2 (`analysis/figures/plot_integrated_7algo_dtlz.py`) |
+| Unique claim | Reveals objective-scaling separation (`a`, `b`: multimodal escape on DTLZ1/3), 3-objective spherical interpolation deficit (`c`: DTLZ2 ratio vs NSGA-II), and 5-objective corner-collapse resistance (`d`: DTLZ4 HV) across $M \in \{2, 3, 5\}$ |
+| Center / Spread | Median and interquartile range (25th–75th percentiles) over $n=26$–$30$ valid paired runs per configuration |
+| Scale & Exclusion disclosure | Panels `a, b` guard strict positivity for log scale; Panel `c` zooms to `0.78–1.65` ratio vs NSGA-II (omitting off-scale R-NSGA-II & SDR-OLS > 1.5, documented in caption & source CSV) |
+| Source preflight | PASS (`21 pass, 0 warn, 0 fail` via `validate_figure.py`) |
+| Multi-panel alignment | PASS (`strict=True` via `require_matplotlib_panel_alignment` on 2×2 grid) |
+| PDF glyph floor | PASS (minimum found `5.25 pt` >= `5.0 pt`; 0 below minimum via `audit_pdf_text.py`) |
+| Collision audit | PASS (`0 fail, 0 warn`, 51 text boxes, 480 strokes via `audit_figure_collisions.py`) |
+| Export bundle | `dtlz1_4_scaling_diagnosis.{pdf,svg,tiff,png}`, `.alignment.json/.svg`, `dtlz1_4_scaling_source_data.csv` |
+| Visual inspection | PASS; DTLZ4 collapse callout and DTLZ2 `M=3` annotation sit in clear whitespace without touching lines |
+

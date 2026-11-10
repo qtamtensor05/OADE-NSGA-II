@@ -123,9 +123,9 @@ All comparisons evaluate OADE-NSGA-II v2 as the reference ($n = 30$ paired runs)
 
 ## 7. Research Conclusion
 
-The Benchmark v2 conclusively validates that integrating the **Adaptive Diversity-Aware Restart** policy transforms OADE-NSGA-II from a competitive algorithm with an acknowledged Achilles' heel into an overwhelmingly dominant multi-objective optimizer across the ZDT suite.
+In this benchmark, OADE-NSGA-II v2 with Adaptive Diversity-Aware Restart had better corrected pairwise outcomes than the v1 configuration on several tested endpoints and led the descriptive means on eight of ten endpoints. The results support further evaluation of this configuration on these five ZDT problems; they do not establish general or universal dominance.
 
-By eliminating false stagnation alarms on continuous Pareto fronts, OADE-NSGA-II v2 captures 58 out of 60 pairwise statistical victories, establishes the lowest IGD on 4 out of 5 benchmark problems, and reduces run-to-run variation by over an order of magnitude.
+The outcome count is 58 wins, one non-significant comparison and one loss among the 60 configured paired tests. This is evidence for the tested implementations, seeds and protocol. Mechanistic attribution to eliminated false triggers requires trigger-level diagnostics; generalization requires additional benchmark suites and independent implementations.
 
 ---
 
@@ -138,3 +138,14 @@ All raw runs, statistical tests, summaries, and figures are archived reproducibl
 - Validation logs: `results/algorithm_benchmark_v2/algorithm_benchmark_validation.csv`
 - Cost summary: `results/algorithm_benchmark_v2/algorithm_benchmark_cost_summary.csv`
 - Figures: `results/figures/benchmark_v2_outcome_counts.*`, `results/figures/benchmark_v2_v1_vs_v2_delta.*`
+
+---
+
+## 9. Multi- and Many-Objective Extension (DTLZ1–DTLZ4, $M \in \{2, 3, 5\}$)
+
+To test whether the Benchmark v2 gains generalize beyond continuous bi-objective ZDT problems, the identical 7-algorithm suite was subsequently evaluated across **DTLZ1–DTLZ4** ($M \in \{2, 3, 5\}$, 12 configurations, 2,520 runs; see [`docs/dtlz1_4_integrated_report.md`](dtlz1_4_integrated_report.md)):
+
+* **Integrated 17-Problem Scorecard (ZDT + DTLZ1–DTLZ4, 204 Holm-Adjusted Comparisons)**: **149 wins (73.0%), 41 ties (20.1%), 14 losses (6.9%)** across 3,570 total stochastic runs (`510/510` valid fronts for OADE-NSGA-II v2).
+* **Additional Strengths Confirmed**: Decisive superiority on high-dimensional multimodal landscapes (DTLZ1, DTLZ3; $r = +1.000$ at $M=3$), total immunity to DTLZ4 coordinate-power collapse (**0/90** collapses vs **11/30** at $M=2$ and **30/30** at $M=5$ for NSGA-II), and zero losses at $M=5$.
+* **Specific Weaknesses Revealed**: On smooth or biased 3-objective spherical fronts (`dtlz2_m3`, `dtlz4_m3`), SBX-based NSGA-II/D-NSGA-II and CGDE-NSGA-II outperform OADE-NSGA-II v2 (~6%–14% IGD, ~2.3%–4.1% HV); at $M=5$ under extreme multimodality (`dtlz1_m5`, `dtlz3_m5`), crowding-distance saturation still limits Hypervolume penetration into the reference box ($\text{HV}_{\text{med}} = 0.0$).
+

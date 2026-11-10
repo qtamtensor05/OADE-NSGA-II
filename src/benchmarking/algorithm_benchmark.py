@@ -7,6 +7,7 @@ import csv
 import importlib
 import random
 import time
+import warnings
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
@@ -203,15 +204,23 @@ def _run_pymoo(spec, problem, pop_size, budget, initial_x, seed, recorder) -> Ru
     start = time.perf_counter()
     result = None
     try:
-        result = minimize(
-            budgeted,
-            algorithm,
-            termination=("n_eval", budget),
-            seed=seed,
-            verbose=False,
-            copy_algorithm=False,
-            callback=PymooConvergenceCallback(budgeted, recorder),
-        )
+        with warnings.catch_warnings():
+            # pymoo's R-NSGA-II divides by (nadir - ideal) without guarding
+            # against zero spread when biased fronts (e.g., DTLZ4) collapse onto an axis.
+            warnings.filterwarnings(
+                "ignore",
+                category=RuntimeWarning,
+                module=r"pymoo\.algorithms\.moo\.rnsga2",
+            )
+            result = minimize(
+                budgeted,
+                algorithm,
+                termination=("n_eval", budget),
+                seed=seed,
+                verbose=False,
+                copy_algorithm=False,
+                callback=PymooConvergenceCallback(budgeted, recorder),
+            )
     except EvaluationBudgetExceeded:
         # Some pymoo algorithms perform extra internal evaluations (for
         # example DNSGA-II change detection). Preserve the last complete

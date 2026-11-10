@@ -133,8 +133,7 @@ Multiplicity correction is applied via the Holm step-down procedure across all c
 ## 7. Key Findings and Scientific Interpretation
 
 ### 7.1 Complete Confirmation on Held-Out Evidence
-The results definitively reject the null hypothesis across 8 out of 8 non-multimodal endpoints (ZDT1, ZDT2, ZDT3, ZDT6). All Holm-adjusted $p$-values are $< 0.003$, and the matched-pairs rank-biserial effects range from $-0.677$ to $-0.923$.
-The earlier finding was not an artifact of random seed selection: classic restart is systematically harmful to convergence on continuous Pareto fronts.
+Across ZDT1, ZDT2, ZDT3 and ZDT6, the stored paired tests favour both No Restart and Adaptive Restart over Full OADE for IGD and HV after Holm adjustment. This held-out-seed result is consistent with the earlier finding that the tested classic restart policy can reduce final quality on these four problems. It does not establish that all restart policies are harmful or that the result generalizes beyond the tested suite.
 
 ### 7.2 Collapse of Run-to-Run Variance
 Under Full OADE, random destruction triggered near the end of the 20,000-evaluation budget frequently left the final archive contaminated with unrefined random solutions. Disabling restart or using Adaptive Restart reduced the sample standard deviation by **11× to 27×**:
@@ -143,10 +142,10 @@ Under Full OADE, random destruction triggered near the end of the 20,000-evaluat
 - On ZDT6: IGD standard deviation fell from $0.005021$ to $0.000183$ (a 27.4-fold stabilization).
 
 ### 7.3 Adaptive Restart Successfully Prevents False Triggers
-By evaluating decision-space variance and objective spread prior to triggering, `OADE_ADAPTIVE_RESTART` recognized that continuous front development is not stagnation. It successfully inhibited destructive restarts, achieving identical high-precision performance to `OADE_NO_RESTART`.
+The raw data require an implementation audit before this mechanism claim is accepted: No Restart and Adaptive Restart have exactly identical IGD and HV values in 296 of 300 paired problem-seed records. Such near identity may indicate that the adaptive trigger rarely activated, or that both configurations followed the same execution path. The result tables alone cannot distinguish these explanations. Report restart counts and trigger diagnostics by run, and verify that the adaptive configuration is wired into the runner before attributing the outcome to the dual-trigger mechanism.
 
 ### 7.4 No Penalty on Multimodal Landscapes
-On ZDT4, neither `OADE_NO_RESTART` nor `OADE_ADAPTIVE_RESTART` degraded performance relative to `OADE_FULL` ($p_{\text{adj}} = 1.000$). This proves that the classic restart was never the operative mechanism that prevented divergence on ZDT4; the component solely responsible for overcoming ZDT4's $21^9$ local fronts is **Opposition-Based Learning (OBL)**.
+On ZDT4, the paired tests did not detect a corrected difference between either candidate and Full OADE. This is not an equivalence result and does not identify which component prevents failure. The separate ablation supports an OBL contribution on the tested ZDT4 configuration, but this experiment does not establish that OBL is the sole mechanism.
 
 ---
 
