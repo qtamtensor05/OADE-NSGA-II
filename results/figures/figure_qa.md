@@ -186,3 +186,33 @@
 | Export bundle | `dtlz1_4_scaling_diagnosis.{pdf,svg,tiff,png}`, `.alignment.json/.svg`, `dtlz1_4_scaling_source_data.csv` |
 | Visual inspection | PASS; DTLZ4 collapse callout and DTLZ2 `M=3` annotation sit in clear whitespace without touching lines |
 
+---
+
+## Full 7-Algorithm WFG Bi-Objective Profile (`wfg_m2_7algo_profile`)
+
+| Check | Result |
+|---|---|
+| Backend | Python 3.14 / Matplotlib 3.11.2 (`analysis/figures/plot_wfg_analysis.py`) |
+| Unique claim | Establishes OADE-NSGA-II v2's 42/48 (87.5%) M=2 WFG advantage (`a`), sole consistent escape from the non-separable deceptive WFG9 local basin (`b`), and 41× mean speedup over `CGDE-NSGA-II`/`CE-MOEA` across 8 endpoints (`c`) |
+| Center / Spread | Panel `a`: Holm-corrected matched-pairs rank-biserial effect sizes (`48` tests, `m=24`/metric); Panel `b`: horizontal boxplots (median + IQR) with deterministic-spread raw seeds (`n=30`); Panel `c`: mean runtime (`min–max` problem range) vs 8-endpoint combined rank |
+| Source preflight | PASS (`21 pass, 0 warn, 0 fail` via `validate_figure.py --strict`) |
+| Multi-panel alignment | PASS (`strict=True` via `require_matplotlib_panel_alignment`; external colorbar excluded from grid alignment) |
+| PDF glyph floor | PASS (`minimum found: 5.8 pt >= 5.0 pt`, `0 below minimum` via `audit_pdf_text.py`) |
+| Collision audit | PASS (`0 fail, 0 warn`, `113` text boxes, `156` strokes via `audit_figure_collisions.py --strict`) |
+| Export bundle | `wfg_m2_7algo_profile.{pdf,svg,png}`, `wfg_m2_7algo_source_data.csv`, `wfg_m2_7algo_cost_rank_source.csv` (`.tiff`, `.alignment.*`, `.collision-audit.*`, and helper script excluded via `.gitignore`) |
+| Visual inspection | PASS at final double-column width (`182.9 mm`); colorbar, WFG9 callouts, and Pareto annotations sit in clear space |
+
+## WFG Scaling & Convergence Diagnosis (`wfg_scaling_diagnosis`)
+
+| Check | Result |
+|---|---|
+| Backend | Python 3.14 / Matplotlib 3.11.2 (`analysis/figures/plot_wfg_analysis.py`) |
+| Unique claim | Reveals the 5-algorithm dimensional phase shift from 87.5% wins at $M=2$ to 34.4% at $M=5$ (`a`), paired `IGD_OADE / IGD_NSGA2` landscape divergence (`b`), and early-jump vs late-stall Hypervolume trajectories on `wfg1_m5` (`c`) and `wfg9_m5` (`d`) |
+| Center / Spread | Panel `b`: exact paired run-level IGD ratios (`n=30` matched seeds, median and IQR error bars); Panels `c, d`: exact `n=30` medians and 25th–75th percentile bands at evaluation checkpoints `2k–18k` plus final completed `n=30` runs near `20k` |
+| Source preflight | PASS (`21 pass, 0 warn, 0 fail` via `validate_figure.py --strict`) |
+| Multi-panel alignment | PASS (`strict=True` via `require_matplotlib_panel_alignment` on 2×2 grid) |
+| PDF glyph floor | PASS (`minimum found: 5.8 pt >= 5.0 pt`, `0 below minimum` via `audit_pdf_text.py`) |
+| Collision audit | PASS (`0 fail, 0 warn`, `80` text boxes, `164` strokes via `audit_figure_collisions.py --strict`) |
+| Export bundle | `wfg_scaling_diagnosis.{pdf,svg,png}`, `wfg_scaling_source_data.csv` (`.tiff`, `.alignment.*`, `.collision-audit.*`, and helper script excluded via `.gitignore`) |
+| Visual inspection | PASS; 2×2 grid, stacked outcome counts, and convergence crossover callout are crisp and unobstructed |
+

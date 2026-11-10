@@ -1,0 +1,27 @@
+global:
+  runs: 30
+  pop_size: 100
+  evaluation_budget: 20000
+  seed_base: 42
+  out_dir: results/wfg_m2_7algo_benchmark
+
+# Full 7-algorithm M=2 WFG comparison covering biased/flat, concave multimodal,
+# non-separable, and deceptive landscapes (all cases use 24 decision variables).
+problems:
+  - {name: wfg1, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg4, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg6, n_obj: 2, n_var: 24, k: 4}
+  - {name: wfg9, n_obj: 2, n_var: 24, k: 4}
+
+algorithm_configs:
+  - config/algorithms/oade_nsga2.yaml
+  - config/algorithms/nsga2.yaml
+  - config/algorithms/rnsga2.yaml
+  - config/algorithms/dnsga2.yaml
+  - config/algorithms/cgde_nsga2.yaml
+  - config/algorithms/nsga2_sdr_ols.yaml
+  - config/algorithms/ce_moea.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII

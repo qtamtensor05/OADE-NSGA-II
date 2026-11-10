@@ -42,9 +42,11 @@ All experiments strictly follow the reporting and replication guidelines of **Na
 * **Independent Experimental Unit**: One complete stochastic run ($n = 30$ paired runs per problem-metric endpoint).
 * **Strict Evaluation Budget**: Fixed at exactly 20,000 function evaluations per run (verified budget utilization $> 99.7\%$).
 * **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
-* **Test Suites (17 Benchmark Configurations)**:
-  * **Bi-objective ZDT (`1,050` runs)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
-  * **Multi-/Many-objective DTLZ1–DTLZ4 (`2,520` runs)**: DTLZ1 ($M \in \{2,3,5\}, D \in \{6,7,9\}$) and DTLZ2–DTLZ4 ($M \in \{2,3,5\}, D \in \{11,12,14\}$).
+* **Test Suites (21 Balanced Benchmark Configurations, 6,210 Main Benchmark Runs)**:
+  * **Bi-objective ZDT (`1,050` runs, 7 algorithms)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
+  * **Multi-/Many-objective DTLZ1–DTLZ4 (`2,520` runs, 7 algorithms)**: DTLZ1 ($M \in \{2,3,5\}, D \in \{6,7,9\}$) and DTLZ2–DTLZ4 ($M \in \{2,3,5\}, D \in \{11,12,14\}$).
+  * **Bi-objective WFG (`840` runs, 7 algorithms)**: `WFG1, WFG4, WFG6, WFG9` ($M=2, D=24, k=4$) testing bias/flatness, separable concave multimodality, non-separability, and deceptive traps.
+  * **Compact WFG Scaling (`1,800` runs, 5 fast algorithms)**: `WFG1, WFG4, WFG6, WFG9` ($M \in \{2,3,5\}, D=24, k \in \{4,8\}$) across `OADE_NSGAII`, `NSGA2`, `DNSGA2`, `RNSGA2`, and `NSGAII_SDR_OLS`.
 * **Competing Baselines (6 Algorithms)**:
   * NSGA-II (Deb et al., 2002)
   * D-NSGA-II (Direction-based NSGA-II)
@@ -52,7 +54,7 @@ All experiments strictly follow the reporting and replication guidelines of **Na
   * CGDE-NSGA-II (Competitive & Guided Differential Evolution)
   * NSGA-II-SDR-OLS (Strengthened Dominance Relation + Orthogonal Local Search)
   * CE-MOEA (Cross-Entropy Multi-Objective Evolutionary Algorithm)
-* **Statistical Inference**: Two-sided paired Wilcoxon signed-rank tests with family-wise error rate controlled via **Holm-Bonferroni step-down correction** separately per metric family ($m = 30$ for ZDT; $m = 72$ for DTLZ1–4; $\alpha = 0.05$).
+* **Statistical Inference**: Two-sided paired Wilcoxon signed-rank tests with family-wise error rate controlled via **Holm-Bonferroni step-down correction** separately per metric family ($m = 30$ for ZDT; $m = 72$ for DTLZ1–4; $m = 24$ for WFG $M=2$ 7-algo; $m = 48$ for Compact WFG 5-algo; $\alpha = 0.05$).
 * **Effect Sizes**: Matched-pairs rank-biserial correlation $r \in [-1, 1]$.
 
 ---
@@ -87,18 +89,33 @@ All experiments strictly follow the reporting and replication guidelines of **Na
 
 Full tables (Median [IQR], Mean ± SD, effect sizes) are archived in [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md).
 
+### WFG Suite Highlights (`results/wfg_m2_7algo_benchmark/` & `results/wfg_compact_benchmark/`, 2,640 Runs)
+
+* **Full 7-Algorithm `WFG M=2` Scorecard (48 Holm tests, 840 runs, 0 invalid)**: **`42 Wins (87.5%) / 0 Ties / 6 Losses (12.5%)`**, Ranked **#1 overall (`1.75` mean rank vs `NSGA2` `3.12`, `CGDE` `3.25`, `CE_MOEA` `3.50`)** — zero losses vs `CE-MOEA` (`8–0–0`), `NSGA-II-SDR-OLS` (`8–0–0`), and `R-NSGA-II` (`8–0–0`).
+  * **Bi-objective ZDT + WFG 7-Algo Combined (108 tests, 9 problems)**: **`100 Wins (92.6%) / 1 Tie / 7 Losses`**!
+* **5-Fast-Algorithm `WFG M = 2 -> 3 -> 5` Scaling (96 Holm tests, 1,800 runs, 0 invalid)**: **`56 Wins (58.3%) / 11 Ties (11.5%) / 29 Losses (30.2%)`** — exposing a sharp dimensional phase shift from **`87.5%` wins at $M=2$** (`28/0/4`) $\to$ **`53.1%` at $M=3$** (`17/4/11`) $\to$ **`34.4%` at $M=5$** (`11/7/14`).
+
+| Problem (Property) | $M=2$ (Full 7-Algo Verdict) | $M=3$ (5-Algo Verdict) | $M=5$ (5-Algo Verdict) |
+|---|---|---|---|
+| **WFG1** *(biased, flat)* | **#1 (`12/12` Wins)**; `1.0264` IGD / `1.7730` HV (`12.5s`) | Beats `NSGA2` `+20.9%` HV; #2 behind `SDR-OLS` | Ties `NSGA2` IGD, beats `NSGA2` `+26.6%` HV (`1303.33`); #2 behind `SDR-OLS` |
+| **WFG4** *(sep., concave)* | **8/12 Wins** (`+beats CE/CGDE`, trails `NSGA2/DNSGA2`) | Trails `NSGA2` & `DNSGA2` (`16.31` vs `19.13` HV) | Trails `NSGA2` & `DNSGA2` (`664.43` vs `883.28` HV); ties `SDR-OLS` |
+| **WFG6** *(non-separable)* | **10/12 Wins**; #2 behind `CGDE` (`0.0526` vs `0.0302`, **101× faster**) | Trails `NSGA2` & `DNSGA2` (`15.51` vs `18.12` HV) | Trails `NSGA2` & `DNSGA2` (`1364.36` vs `1500.76` HV); ties `SDR-OLS` |
+| **WFG9** *(non-sep., deceptive)* | **#1 (`12/12` Wins)**; sole solver escaping `~0.13` trap (`0.0347` IGD in `5.2s`, `~84–88×` faster than `CE/CGDE`) | **Statistical Tie** vs `NSGA2` & `DNSGA2` (`0.3372` IGD) | **Early 2k-eval lead overtaken at ~5k** (`947.63` vs `1313.48–1337.20` HV) |
+
+Full WFG statistical tables and mechanistic analysis are archived in [`docs/wfg_compact_report.md`](docs/wfg_compact_report.md).
+
 ---
 
 ## 4. Strengths & Advantages
 
-1. **Multimodal Escape Across 2–5 Objectives**:
-   OBL initialization and periodic opposition injection break local-optimum traps on ZDT4 ($21^9$ fronts), DTLZ1 (18/18 IGD wins), and DTLZ3 (17/18 IGD wins), where heavy baselines (`CGDE-NSGA-II`, `NSGA-II-SDR-OLS`) repeatedly stall at $\text{HV} = 0$.
+1. **Multimodal & Deceptive Escape Across 2–5 Objectives**:
+   OBL initialization and periodic opposition injection break local-optimum traps on ZDT4 ($21^9$ fronts), DTLZ1 (18/18 IGD wins), DTLZ3 (17/18 IGD wins), and non-separable deceptive **WFG9 ($M=2$)**—where all six comparators (`NSGA-II`, `D-NSGA-II`, `CGDE-NSGA-II`, `CE-MOEA`, `SDR-OLS`, `R-NSGA-II`) stall around IGD `0.128–0.640` while OADE reaches `0.0347` in `5.2s/run`.
 2. **Immunity to Severe Coordinate Bias (DTLZ4 Collapse Resistance)**:
-   While standard SBX algorithms suffer severe corner collapse on DTLZ4 (36.7% failure for `NSGA-II` at $M=2$; **100% failure** for both `NSGA-II` and `D-NSGA-II` at $M=5$), OADE-NSGA-II v2 logged **0 collapses across all 90 DTLZ4 runs** and **510/510 valid fronts** overall (vs 15 `collapsed_front` failures in `SDR-OLS` and 3 in `CGDE`).
+   While standard SBX algorithms suffer severe corner collapse on DTLZ4 (36.7% failure for `NSGA-II` at $M=2$; **100% failure** for both `NSGA-II` and `D-NSGA-II` at $M=5$), OADE-NSGA-II v2 logged **0 collapses across all 90 DTLZ4 runs** and **100% valid fronts** across ZDT (`150/150`), DTLZ1–4 (`360/360`), and WFG (`360/360`) (vs 15 `collapsed_front` failures in `SDR-OLS` and 3 in `CGDE` on DTLZ1–4, plus severe `M=2` WFG front shrinkage down to 20.7 points in `SDR-OLS`).
 3. **Stabilized Variance via Adaptive Restart**:
    The adaptive diversity check prevents premature destruction of converged populations. Standard deviations on ZDT1–ZDT3 dropped by **11× to 27×** compared to classic restart, eliminating late-run archive contamination and boosting ZDT win rate from 39/60 (v1) to **58/60 (v2)**.
 4. **Computational Efficiency**:
-   Averages **10.8–14.8s/run** on ZDT and **2.74–3.04s/run** on DTLZ4 (with `OMP_NUM_THREADS=1`), running **7.7× to 26× faster** than local implementations of `CGDE-NSGA-II` and `CE-MOEA`.
+   Averages **10.8–14.8s/run** on ZDT, **2.74–3.04s/run** on DTLZ4, and **4.42–12.53s/run** on `WFG M=2` (`OMP_NUM_THREADS=1`), running **7.7× to 101× faster** than local implementations of `CGDE-NSGA-II` and `CE-MOEA`.
 5. **Online Parameter Self-Adaptation**:
    $F$ and $CR$ parameters adapt online via Lehmer-mean updates from successful offspring, avoiding problem-specific manual tuning.
 
@@ -108,12 +125,12 @@ Full tables (Median [IQR], Mean ± SD, effect sizes) are archived in [`docs/dtlz
 
 In adherence to Nature reporting rigor, empirically observed weaknesses and boundaries must be stated explicitly:
 
-1. **Confirmed Deficit on Smooth/Biased 3-Objective Spherical Fronts (`dtlz2_m3`, `dtlz4_m3`)**:
-   All 6 IGD losses and 5 of the 7 DTLZ HV losses occur exclusively at $M=3$ on spherical fronts when baselines avoid local traps (`NSGA-II`, `D-NSGA-II`, and `CGDE-NSGA-II` outperform OADE by ~6%–14% IGD and ~2.3%–4.1% HV). When convergence trapping is absent in 3D, coordinate-wise SBX interpolates the spherical surface slightly more uniformly than neighborhood-restricted DE + periodic OBL.
+1. **Confirmed Deficit on Smooth/Concave Multi-Objective Fronts (`dtlz2_m3`, `dtlz4_m3`, `WFG4`, and Scaled `WFG6/9` at $M \ge 3$)**:
+   When local traps are absent or SBX resolves coupling at higher objective dimension, OADE-NSGA-II v2 trails SBX-based `NSGA-II` / `D-NSGA-II` on `dtlz2_m3`, `dtlz4_m3`, separable concave `WFG4` ($M=2,3,5$), `WFG6` ($M=3,5$), and `WFG9` ($M=5$), while `CGDE-NSGA-II` wins bi-objective non-separable `wfg6_m2` (`0.0302` vs `0.0526` IGD) at **101× runtime cost** (`448.1s` vs `4.4s`). Source inspection attributes late-budget 5D stagnation (`wfg9_m5` peaking around 16k evals) to three addressable mechanisms: `n_neighbors: 5` YAML override, `prob_de` updating from generation rate rather than Rank-1 survival rate, and unbounded crowding boundaries on `[0, 2M]` scaled fronts.
 2. **Crowding-Distance Saturation at $M=5$ Under Extreme Multimodality (`dtlz1_m5`, `dtlz3_m5`)**:
    Retaining NSGA-II crowding-distance selection limits convergence pressure at 5 objectives under a 20,000-evaluation cap: 17/30 runs on `dtlz1_m5` ($\text{IGD}_{\text{med}} = 0.8972$, right-skewed max `24.71`) and 30/30 runs on `dtlz3_m5` fail to reach positive Hypervolume (`HV = 0.0`).
 3. **Remaining Test Suite Boundaries**:
-   Current empirical evidence covers continuous unconstrained problems across **ZDT1–4, ZDT6** ($M=2$) and **DTLZ1–4** ($M \in \{2, 3, 5\}$). Performance on **degenerate/disconnected DTLZ5–7** (pending an offline analytical `reference_front` update), **non-separable/scaled WFG1–9**, constrained MOPs (requiring Deb's constrained-domination principle), and discrete problems remains untested.
+   Current empirical evidence covers **ZDT1–4, ZDT6** ($M=2$), **DTLZ1–4** ($M \in \{2, 3, 5\}$), **WFG1, WFG4, WFG6, WFG9** ($M=2$ with all 7 solvers; $M \in \{2,3,5\}$ with the 5 fast solvers). Performance on **degenerate/disconnected DTLZ5–7**, remaining WFG suites (`WFG2, WFG3, WFG5, WFG7, WFG8`), `CE_MOEA`/`CGDE_NSGAII` at $M=3,5$ WFG, constrained MOPs, and discrete problems remains untested.
 4. **Hardware-Dependent Runtime**:
    Reported wall-clock runtimes reflect Python execution overhead and BLAS thread settings (`OMP_NUM_THREADS=1` cut DTLZ4 runtimes ~3× vs unpinned DTLZ1–3 batches), and must **not** be interpreted as hardware-independent asymptotic complexities $\mathcal{O}(\cdot)$.
 5. **Isolated Component Attribution & Inconclusive Tests**:
@@ -129,6 +146,8 @@ All figures are archived reproducibly in vector PDF, SVG, and PNG preview under 
 |---|---|
 | [`integrated_7algo_landscape.png`](results/figures/integrated_7algo_landscape.png) | **Multi-panel overview**: 17-problem rank-biserial effect-size matrix (`a`), 204-test outcome ledger (`b`), and 34-endpoint mean-rank vs runtime Pareto trade-off (`c`). |
 | [`dtlz1_4_scaling_diagnosis.png`](results/figures/dtlz1_4_scaling_diagnosis.png) | **2×2 DTLZ scaling grid ($M=2,3,5$)**: Multimodal escape on DTLZ1/3 (`a, b`), 3-objective spherical deficit on DTLZ2 (`c`), and DTLZ4 corner-collapse immunity (`d`). |
+| [`wfg_m2_7algo_profile.png`](results/figures/wfg_m2_7algo_profile.png) | **7-Algorithm WFG $M=2$ validation**: 48-test IGD/HV effect heatmap (`a`), raw-seed `WFG9` deceptive trap escape (`b`), and 8-endpoint rank vs runtime Pareto front (`c`). |
+| [`wfg_scaling_diagnosis.png`](results/figures/wfg_scaling_diagnosis.png) | **2×2 WFG scaling grid ($M=2 \to 3 \to 5$)**: 5-algo Holm outcome transition (`a`), paired `OADE/NSGA2` IGD ratios (`b`), and `wfg1_m5` / `wfg9_m5` HV convergence (`c, d`). |
 | [`benchmark_v2_outcome_counts.png`](results/figures/benchmark_v2_outcome_counts.png) | Horizontal stacked bar chart displaying the 58 wins, 1 tie, and 1 loss on ZDT v2 against 6 baselines. |
 | [`benchmark_v2_v1_vs_v2_delta.png`](results/figures/benchmark_v2_v1_vs_v2_delta.png) | Direct IGD reduction from OADE v1 to OADE v2 across all 5 ZDT problems (-24.5% to -40.0%). |
 | [`restart_direct_comparison.png`](results/figures/restart_direct_comparison.png) | Grouped boxplots comparing Old Restart, No Restart, and New Restart side-by-side with overlaid raw seeds. |
@@ -150,9 +169,12 @@ OADE-NSGA-II/
 ├── config/                     # YAML configuration files
 │   ├── algorithm_benchmark_v2.yaml  # 7-algorithm ZDT benchmark suite v2
 │   ├── dtlz1_4_benchmark.yaml       # DTLZ1-4 suite (M = 2, 3, 5)
+│   ├── wfg_compact_benchmark.yaml   # Compact WFG scaling suite (5 fast algos, M=2,3,5)
+│   ├── wfg_m2_7algo_benchmark.yaml  # Full 7-algorithm WFG M=2 config
 │   ├── restart_confirmation.yaml    # Held-out seed confirmation config
 │   └── ablations/              # Component ablation specifications
 ├── docs/                       # Formal scientific research reports
+│   ├── wfg_compact_report.md        # Compact WFG 7-algo M=2 & M=2..5 scaling analysis
 │   ├── dtlz1_4_integrated_report.md # Integrated ZDT + DTLZ1-4 analysis
 │   ├── benchmark_v2_results_report.md
 │   ├── restart_confirmation_report.md
@@ -161,6 +183,8 @@ OADE-NSGA-II/
 ├── results/                    # Transparent benchmark outputs (CSV, Logs)
 │   ├── algorithm_benchmark_v2/ # 1,050 ZDT runs, summaries, paired stats
 │   ├── dtlz_benchmark/         # 2,520 DTLZ1-4 runs, summaries, paired stats
+│   ├── wfg_compact_benchmark/  # 1,800 WFG1/4/6/9 runs (M=2,3,5, 5 fast algos)
+│   ├── wfg_m2_7algo_benchmark/ # 840 WFG1/4/6/9 M=2 runs (all 7 algos)
 │   ├── restart_confirmation/   # 450 held-out runs
 │   └── figures/                # Publication figures (PDF, SVG, PNG, Source CSVs)
 ├── scripts/                    # High-level runner utilities
@@ -202,6 +226,13 @@ $env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
 .venv\Scripts\python.exe main.py benchmark-dtlz --config config/dtlz1_4_benchmark.yaml --jobs 8
 ```
 
+### Reproduce Compact WFG Benchmarks (M = 2, 3, 5 & Full 7-Algo M = 2)
+```powershell
+$env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_compact_benchmark.yaml --jobs 8
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_m2_7algo_benchmark.yaml --jobs 10
+```
+
 ### Generate Built-in Summary Plots
 ```powershell
 .venv\Scripts\python.exe main.py plot-algorithm-benchmark
@@ -213,6 +244,7 @@ $env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
 ## 📜 Citation & Research Reports
 
 If you use OADE-NSGA-II in your research, please refer to the detailed evaluation reports in `docs/`:
+* **WFG Compact & M=2 7-Algorithm Report**: [`docs/wfg_compact_report.md`](docs/wfg_compact_report.md)
 * **Integrated ZDT + DTLZ1–4 Report**: [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md)
 * **Benchmark v2 Report (ZDT)**: [`docs/benchmark_v2_results_report.md`](docs/benchmark_v2_results_report.md)
 * **Restart Confirmation Report**: [`docs/restart_confirmation_report.md`](docs/restart_confirmation_report.md)

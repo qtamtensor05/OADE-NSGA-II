@@ -165,7 +165,7 @@ Synthesizing all **17 problems** (ZDT + DTLZ1–4) establishes three supported a
 ## 6. Claim Boundaries, Limitations, and Discriminating Next Steps
 
 1. **Scope Boundary**:
-   Claims in this report are strictly bounded to continuous unconstrained benchmarks across **ZDT1–4, ZDT6** ($M=2$) and **DTLZ1–4** ($M \in \{2, 3, 5\}$) under a 20,000-evaluation cap and $n=30$ paired seeds. Performance on **degenerate/disconnected DTLZ5–7** (which currently requires an offline analytical `reference_front` patch in `algorithm_benchmark.py`), **variable-coupled/non-separable WFG1–9**, constrained MOPs (requiring Deb's constrained-domination principle), and discrete problems remains open.
+   Claims in this report cover the symmetric 7-algorithm continuous unconstrained suite across **ZDT1–4, ZDT6** ($M=2$) and **DTLZ1–4** ($M \in \{2, 3, 5\}$) under a 20,000-evaluation cap and $n=30$ paired seeds. Subsequent validation on **WFG1, WFG4, WFG6, and WFG9** ($M=2$ full 7-algorithm slice and $M \in \{2,3,5\}$ 5-fast-algorithm scaling study) is reported separately in [`wfg_compact_report.md`](wfg_compact_report.md); degenerate/disconnected **DTLZ5–7**, remaining **WFG** instances, constrained MOPs, and discrete problems remain open.
 2. **Runtime Boundary**:
    Observed wall-clock timings depend on Python interpreter vs compiled Cython/NumPy internals (`pymoo` vs local Python baselines) and BLAS threading configuration (`OMP_NUM_THREADS=1` reduced DTLZ4 runtimes ~3× relative to unpinned DTLZ2–3 batches); they must not be interpreted as hardware-independent asymptotic time complexity $\mathcal{O}(\cdot)$.
 3. **Inconclusive Tests**:
@@ -173,7 +173,7 @@ Synthesizing all **17 problems** (ZDT + DTLZ1–4) establishes three supported a
 4. **Actionable Next Engineering Steps**:
    * **Address 3D Spherical Spread (`dtlz2_m3`, `dtlz4_m3`)**: Run a targeted $M=3$ operator ablation testing whether dynamically adjusting `prob_de` (shifting toward SBX on smooth non-stagnating generations) closes the 6%–14% IGD gap without losing multimodal resilience.
    * **Address 5D Selection Pressure (`dtlz1_m5`, `dtlz3_m5`)**: Evaluate replacing crowding distance with reference-direction niching (NSGA-III style) or R2/IGD$^+$ indicator selection for $M \ge 4$.
-   * **Extend Validation**: Patch `reference_front()` for offline `DTLZ5–7` and run **WFG1–WFG9** to test non-separable variable coupling and asymmetric objective scaling.
+   * **Extend Validation**: Patch `reference_front()` for offline `DTLZ5–7` and expand beyond the initial compact WFG study ([`wfg_compact_report.md`](wfg_compact_report.md)) to the remaining WFG suites (`WFG2, WFG3, WFG5, WFG7, WFG8`).
 
 ---
 
@@ -188,4 +188,5 @@ Synthesizing all **17 problems** (ZDT + DTLZ1–4) establishes three supported a
   * `results/dtlz_benchmark/algorithm_benchmark_cost_summary.csv`
 * **ZDT Benchmark v2 Evidence**: `results/algorithm_benchmark_v2/*` (1,050 valid rows; 60 Holm-adjusted rows)
 * **Publication Figures & Source Data**: `results/figures/integrated_7algo_landscape.{pdf,svg,png}`, `results/figures/dtlz1_4_scaling_diagnosis.{pdf,svg,png}`, `results/figures/figure_qa.md` (local generation script & 600-DPI `.tiff` exports excluded via `.gitignore`)
+* **WFG Follow-up Studies (`WFG1, WFG4, WFG6, WFG9`)**: [`docs/wfg_compact_report.md`](wfg_compact_report.md) (`results/wfg_m2_7algo_benchmark/*` and `results/wfg_compact_benchmark/*`)
 * **Statistical & Protocol Hardening**: `src/benchmarking/statistics.py`, `src/benchmarking/algorithm_benchmark.py` (local unit test suite verified at 13/13 passing)
