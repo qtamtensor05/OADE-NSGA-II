@@ -3,14 +3,14 @@
 ## 1. Scope and Objective
 
 This report evaluates the held-out seed confirmation experiment stored in `results/restart_confirmation`. The experiment was designed to address the central recommendation of the component ablation study ([ablation_results_report.md](ablation_results_report.md), Section 9):
-1. **Replication Check**: Test whether the severe degradation and variance inflation caused by the original restart mechanism on ZDT1–ZDT3 replicate under 30 completely new seeds, eliminating any possibility of seed-selection bias or exploratory overfitting.
-2. **Mechanism Validation**: Evaluate whether the newly designed **Adaptive Diversity-Aware Restart** (`OADE_ADAPTIVE_RESTART`) successfully resolves the false-trigger failure mode while preserving robustness on complex multimodal problems such as ZDT4.
+1. **Replication Check**: Test whether the degradation and variance inflation associated with the original restart mechanism on ZDT1–ZDT3 recur under 30 new seeds. New seeds reduce direct seed reuse but do not eliminate selection or tuning bias across design decisions.
+2. **Mechanism Evaluation**: Compare the new **Adaptive Diversity-Aware Restart** (`OADE_ADAPTIVE_RESTART`) with Full OADE and No Restart. The experiment evaluates final outcomes; it does not by itself validate that the adaptive trigger operated as intended.
 
 ---
 
 ## 2. Experimental Design and Statistical Discipline
 
-The protocol adheres to the reporting standards of **Nature Machine Intelligence** and **Nature Portfolio Guidelines**:
+The report records the run unit, paired seeds, test, correction family, effect-size direction, and validation counts. Formal journal compliance depends on the target venue and its applicable checklist.
 
 | Dimension | Specification |
 |---|---|
@@ -18,7 +18,7 @@ The protocol adheres to the reporting standards of **Nature Machine Intelligence
 | **Compared Variants** | 1. `OADE_FULL` (Classic restart: trigger on ideal point norm, 70% random replacement, parameter reset)<br>2. `OADE_NO_RESTART` (Ablated: restart completely disabled)<br>3. `OADE_ADAPTIVE_RESTART` (New: dual-trigger on ideal point + diversity collapse, 80% elite preservation, local OBL/Gaussian perturbation, soft parameter decay) |
 | **Independent Experimental Unit** | One stochastic run ($n = 30$ paired runs per comparison, $N = 450$ total runs) |
 | **Seed Range** | Seeds 1000–1029 (strictly independent from initial exploration seeds 42–71) |
-| **Evaluation Budget** | Strictly fixed at 20,000 function evaluations per run; verified budget utilization > 99.7% |
+| **Evaluation Budget** | Cap of 20,000 objective evaluations per run; actual use may be lower when a generation would cross the cap (utilization > 99.7%) |
 | **Quality Metrics** | Inverted Generational Distance (IGD, lower is better) and Hypervolume (HV, higher is better) |
 | **Statistical Test** | Two-sided paired Wilcoxon signed-rank test |
 | **Multiplicity Correction** | Holm-Bonferroni step-down adjustment separately across comparisons for each metric (10 endpoints/metric) |
@@ -33,7 +33,7 @@ The protocol adheres to the reporting standards of **Nature Machine Intelligence
 * **Trigger Condition**: Kích hoạt khi số thế hệ không cải thiện ideal point vượt quá ngưỡng kiên nhẫn:
   $$\|\mathbf{z}^*_{\text{current}} - \mathbf{z}^*_{\text{last}}\| < 10^{-4} \quad \text{for } 20 \text{ consecutive generations}$$
 * **Hành động**: Giữ lại 30% cá thể đầu tiên (`restart_elite_ratio: 0.30`), thay thế 70% còn lại bằng vector ngẫu nhiên phân bố đều trên toàn miền $[\mathbf{x}_l, \mathbf{x}_u]$, và reset hoàn toàn $\mu_F = \mu_{CR} = 0.5$.
-* **Điểm nghẽn**: Trên các mặt Pareto trơn (ZDT1–ZDT3), ideal point hội tụ rất nhanh về gần $(0, 0)$. Khi thuật toán đang lan tỏa đều dọc theo mặt cong, ideal point hầu như không dịch chuyển $\implies$ thuật toán liên tục kích hoạt restart sai (false restart), ném 70% cá thể ra xa vô tận và lãng phí evaluations.
+* **Giả thuyết cần kiểm chứng**: Trên ZDT1–ZDT3, ideal point có thể ít thay đổi trong khi quần thể vẫn còn phân bố dọc theo mặt Pareto. Khi đó, bộ kích hoạt chỉ dựa trên trì trệ có thể không phân biệt được hội tụ của ideal point với mất đa dạng. Dữ liệu hiện có không lưu số lần kích hoạt/restart, nên chưa xác nhận được restart sai thường xuyên hoặc định lượng số đánh giá bị ảnh hưởng.
 
 ### 3.2 Adaptive Diversity-Aware Restart (`OADE_ADAPTIVE_RESTART`)
 * **Dual-Trigger Condition**: Chỉ kích hoạt khi **đồng thời** thỏa mãn 2 điều kiện:
@@ -41,7 +41,7 @@ The protocol adheres to the reporting standards of **Nature Machine Intelligence
   2. Sụp đổ đa dạng không gian quyết định:
      $$\max_{j \in \{1,\dots,D\}} \sigma\left(\frac{X_{\cdot, j} - x_{l,j}}{x_{u,j} - x_{l,j}}\right) < \delta_{\text{div}} \quad (\delta_{\text{div}} = 0.02)$$
      hoặc độ trải rộng không gian mục tiêu $\max_m (\max F_{\cdot, m} - \min F_{\cdot, m}) < 10^{-3}$.
-  * *Hệ quả*: Nếu quần thể vẫn đang phân bố rộng trên front (như ZDT1–ZDT3), $\max_j \sigma_j \approx 0.288 \gg 0.02$, thuật toán chủ động ngăn chặn restart phá hoại.
+  * *Diễn giải dự kiến*: Khi điều kiện đa dạng không đạt ngưỡng sụp đổ, mã nguồn không thực hiện restart thích nghi ở lần kiểm tra đó. Độ lệch chuẩn khoảng $0.288$ chỉ là mốc lý thuyết cho biến phân bố đều trên $[0,1]$; không nên áp dụng mặc định cho quần thể trên Pareto front. Log trigger chưa được lưu để xác nhận hành vi trên từng run.
 * **Conservative Renewal**:
   * Giữ lại 80% cá thể ưu tú (`restart_elite_ratio: 0.80`).
   * 20% cá thể mới được sinh bằng tìm kiếm có hướng cục bộ quanh elite (50% đối xứng OBL cục bộ, 50% nhiễu Gaussian $\mathcal{N}(0, 0.1^2)$).
@@ -55,16 +55,14 @@ The protocol adheres to the reporting standards of **Nature Machine Intelligence
 ![Direct Metric Comparison](../results/figures/restart_direct_comparison.png)
 
 *Figure 1: Direct grouped boxplots of final IGD (Row 1, lower is better ↓) and Hypervolume (Row 2, higher is better ↑) across all five problems.*
-- **Orange**: Full OADE (Classic Restart) — exhibits visibly elevated IGD and massive dispersion due to destructive late restarts.
-- **Blue**: No Restart — consistently achieves tight, low IGD and maximal HV.
-- **Green**: Adaptive Restart (New) — matches the optimal convergence and low variance of No Restart by inhibiting false triggers.
+- **Orange**: Full OADE (Classic Restart) — exhibits higher IGD and greater dispersion on several tested problems. The final metrics alone do not establish when a restart occurred or its causal role.
+- **Blue**: No Restart — shows low run-to-run variability in several tested problems; the plot is descriptive and does not establish that this pattern generalizes.
+- **Green**: Adaptive Restart (New) — closely matches No Restart in the stored outputs. Trigger counts were not recorded, so the figure cannot show whether the adaptive trigger inhibited restarts.
 
 ### 4.2 Within-Budget Convergence Trajectories
 ![Convergence Trajectories](../results/figures/restart_convergence.png)
 
-*Figure 2: Convergence curves of Median IGD over the 20,000-evaluation budget. Shaded bands depict the interquartile range (IQR, 25th–75th percentiles) across 30 runs.*
-- Under Full OADE (dotted orange), trajectory instabilities and upward spikes occur as premature restarts inject random solutions.
-- Under Adaptive Restart (solid green) and No Restart (dashed blue), trajectories decline monotonically and converge tightly to the optimal front.
+*Figure 2: Median IGD trajectories and interquartile bands over the evaluation cap. The curves are descriptive summaries of 30 runs per variant; they do not identify restart timing or establish a mechanism.*
 
 ### 4.3 Paired Percentage Improvement
 ![Restart Confirmation Paired Differences](../results/figures/restart_confirmation_paired.png)
@@ -105,7 +103,7 @@ Values are reported as Mean ± Sample Standard Deviation [Median, IQR] across 30
 
 Multiplicity correction is applied via the Holm step-down procedure across all comparisons within each metric ($\alpha = 0.05$, $m = 10$).
 
-| Problem | Metric | Comparison vs Full OADE | Median Paired Diff ($\Delta$) | Raw $p$-value | Holm $p_{\text{adj}}$ | Rank-Biserial $r$ | Significant | Inferential Outcome |
+| Problem | Metric | Comparison vs Full OADE | Median Improvement ($\Delta$) | Raw $p$-value | Holm $p_{\text{adj}}$ | Rank-Biserial $r$ | Significant | Inferential Outcome |
 |---|---|---|---:|---:|---:|---:|:---:|---|
 | **ZDT1** | IGD | Adaptive Restart | $+0.00134$ | $1.99 \times 10^{-6}$ | **$1.99 \times 10^{-5}$** | $-0.888$ | **Yes** | Adaptive Restart superior |
 | | IGD | No Restart | $+0.00134$ | $1.99 \times 10^{-6}$ | **$1.99 \times 10^{-5}$** | $-0.888$ | **Yes** | No Restart superior |
@@ -119,47 +117,51 @@ Multiplicity correction is applied via the Holm step-down procedure across all c
 | | IGD | No Restart | $+0.00245$ | $2.76 \times 10^{-6}$ | **$2.21 \times 10^{-5}$** | $-0.880$ | **Yes** | No Restart superior |
 | | HV | Adaptive Restart | $+0.00123$ | $4.71 \times 10^{-7}$ | **$4.71 \times 10^{-6}$** | $-0.923$ | **Yes** | Adaptive Restart superior |
 | | HV | No Restart | $+0.00123$ | $4.71 \times 10^{-7}$ | **$4.71 \times 10^{-6}$** | $-0.923$ | **Yes** | No Restart superior |
-| **ZDT4** | IGD | Adaptive Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | Inconclusive / Equivalent |
-| | IGD | No Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | Inconclusive / Equivalent |
-| | HV | Adaptive Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | Inconclusive / Equivalent |
-| | HV | No Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | Inconclusive / Equivalent |
+| **ZDT4** | IGD | Adaptive Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | No detected difference; equivalence not tested |
+| | IGD | No Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | No detected difference; equivalence not tested |
+| | HV | Adaptive Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | No detected difference; equivalence not tested |
+| | HV | No Restart | $0.00000$ | $0.593$ | $1.000$ | $-0.333$ | No | No detected difference; equivalence not tested |
 | **ZDT6** | IGD | Adaptive Restart | $+0.00031$ | $7.30 \times 10^{-4}$ | **$2.19 \times 10^{-3}$** | $-0.677$ | **Yes** | Adaptive Restart superior |
 | | IGD | No Restart | $+0.00032$ | $3.45 \times 10^{-4}$ | **$1.38 \times 10^{-3}$** | $-0.712$ | **Yes** | No Restart superior |
 | | HV | Adaptive Restart | $+0.00038$ | $6.29 \times 10^{-5}$ | **$2.51 \times 10^{-4}$** | $-0.781$ | **Yes** | Adaptive Restart superior |
 | | HV | No Restart | $+0.00038$ | $7.91 \times 10^{-5}$ | **$2.51 \times 10^{-4}$** | $-0.772$ | **Yes** | No Restart superior |
 
+Here $\Delta$ is oriented so a positive value favours the candidate: for IGD, $\Delta = \text{Full} - \text{candidate}$; for HV, $\Delta = \text{candidate} - \text{Full}$. The stored `median_paired_difference` column uses `reference - comparison` for both metrics, so its HV sign is reversed relative to this display column. The rank-biserial effect is negative when the candidate is favoured.
+
 ---
 
 ## 7. Key Findings and Scientific Interpretation
 
-### 7.1 Complete Confirmation on Held-Out Evidence
+### 7.1 Held-out outcomes are consistent with the earlier restart finding
 Across ZDT1, ZDT2, ZDT3 and ZDT6, the stored paired tests favour both No Restart and Adaptive Restart over Full OADE for IGD and HV after Holm adjustment. This held-out-seed result is consistent with the earlier finding that the tested classic restart policy can reduce final quality on these four problems. It does not establish that all restart policies are harmful or that the result generalizes beyond the tested suite.
 
 ### 7.2 Collapse of Run-to-Run Variance
-Under Full OADE, random destruction triggered near the end of the 20,000-evaluation budget frequently left the final archive contaminated with unrefined random solutions. Disabling restart or using Adaptive Restart reduced the sample standard deviation by **11× to 27×**:
+Full OADE had greater run-to-run variability on several tested problems. Both No Restart and Adaptive Restart reduced the sample standard deviation by **11× to 27×** in the listed examples. The run-level summaries do not record enough trigger information to attribute this change specifically to false restarts or archive contamination:
 - On ZDT1: IGD standard deviation fell from $0.004754$ to $0.000329$ (a 14.4-fold stabilization).
 - On ZDT3: IGD standard deviation fell from $0.008300$ to $0.000324$ (a 25.6-fold stabilization).
 - On ZDT6: IGD standard deviation fell from $0.005021$ to $0.000183$ (a 27.4-fold stabilization).
 
-### 7.3 Adaptive Restart Successfully Prevents False Triggers
-The raw data require an implementation audit before this mechanism claim is accepted: No Restart and Adaptive Restart have exactly identical IGD and HV values in 296 of 300 paired problem-seed records. Such near identity may indicate that the adaptive trigger rarely activated, or that both configurations followed the same execution path. The result tables alone cannot distinguish these explanations. Report restart counts and trigger diagnostics by run, and verify that the adaptive configuration is wired into the runner before attributing the outcome to the dual-trigger mechanism.
+### 7.3 Adaptive trigger activity remains unverified
+No Restart and Adaptive Restart have identical IGD and HV values in **148 of 150 paired problem-seed rows** (296 of 300 individual metric values): all 30 rows on each of ZDT1–ZDT4 and 28/30 rows on ZDT6. This near identity is consistent with the trigger rarely activating, but could also reflect the same execution path. The raw data do not contain per-run restart counts or trigger diagnostics, so they cannot distinguish these explanations. Verify that the adaptive settings reach the solver and record trigger/restart counts before attributing performance to the dual-trigger mechanism.
 
-### 7.4 No Penalty on Multimodal Landscapes
+### 7.4 ZDT4 comparison did not detect a difference
 On ZDT4, the paired tests did not detect a corrected difference between either candidate and Full OADE. This is not an equivalence result and does not identify which component prevents failure. The separate ablation supports an OBL contribution on the tested ZDT4 configuration, but this experiment does not establish that OBL is the sole mechanism.
 
 ---
 
 ## 8. Recommendations for Manuscript Integration
 
-1. **Production Algorithm Configuration**:
-   - `OADE_NO_RESTART` is recommended as the default standard configuration for bi-objective benchmark evaluations due to algorithmic simplicity and computational speed.
-   - `OADE_ADAPTIVE_RESTART` is established as the defensive production configuration for unknown or severely deceptive optimization domains where diversity collapse is a genuine failure risk.
-2. **Deprecation**:
-   - The classic ideal-point-only restart policy should be permanently retired.
+1. **Configuration supported by these data**:
+   - No Restart is a simpler candidate for the tested static ZDT problems. Both No Restart and Adaptive Restart had better corrected outcomes than Full OADE on ZDT1–ZDT3 and ZDT6; neither comparison detected a difference on ZDT4.
+   - The experiment does not establish an advantage of Adaptive Restart over No Restart or its performance on unknown, dynamic, or severely deceptive domains.
+2. **Next validation**:
+   - Audit the adaptive trigger implementation and log trigger counts. If a restart policy is retained, compare it with No Restart on a prespecified suite where diversity collapse is expected and report both quality and failure rates.
 
 ---
 
 ## 9. Data Provenance and Reproducibility
+
+The held-out experiment compared classic restart (`OADE_FULL`) with adaptive restart (`OADE_ADAPTIVE_RESTART`), then the solver default was changed from classic to adaptive. The original `OADE_FULL` config relied on the old default and did not set `restart_mode`; it now pins `restart_mode: classic` explicitly so reruns under the current source preserve the intended comparison. This config edit does not alter the archived results.
 
 The complete evidentiary chain is archived in the workspace repository:
 - **Experiment Config**: `config/restart_confirmation.yaml`

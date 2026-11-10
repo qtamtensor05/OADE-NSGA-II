@@ -2,19 +2,18 @@
 
 ## 1. Executive Summary
 
-This report evaluates the **Benchmark v2** results stored in `results/algorithm_benchmark_v2`. In this iteration, **OADE-NSGA-II v2** incorporates the newly validated **Adaptive Diversity-Aware Restart** policy (`restart_mode: "adaptive"`, `restart_elite_ratio: 0.80`, `diversity_threshold: 0.02`), while keeping the essential Opposition-Based Learning (OBL) and adaptive operators intact.
+This report evaluates the **Benchmark v2** results stored in `results/algorithm_benchmark_v2`. In this iteration, **OADE-NSGA-II v2** uses the **Adaptive Diversity-Aware Restart** configuration (`restart_mode: "adaptive"`, `restart_elite_ratio: 0.80`, `diversity_threshold: 0.02`), alongside Opposition-Based Learning (OBL) and adaptive operators. This benchmark compares complete configurations; it does not isolate the restart policy's contribution.
 
-The benchmark evaluates 1,050 independent runs under a strictly fixed budget of 20,000 objective evaluations across the 5 bi-objective ZDT problems, pairing OADE-NSGA-II directly against 6 established baseline algorithms: NSGA-II, CGDE-NSGA-II, NSGA-II-SDR-OLS, CE-MOEA, D-NSGA-II, and R-NSGA-II on the exact same 30 paired seeds ($42 \dots 71$).
+The benchmark schedules 1,050 runs across five bi-objective ZDT problems and pairs OADE-NSGA-II with six baseline implementations: NSGA-II, CGDE-NSGA-II, NSGA-II-SDR-OLS, CE-MOEA, D-NSGA-II, and R-NSGA-II. Each configuration uses the same 30 seeds ($42 \dots 71$) and a cap of 20,000 objective evaluations; actual evaluation counts can be lower.
 
-### Key Scientific Findings:
-1. **Dramatic Elevation in Competitive Dominance**:
-   * In Benchmark v1 (with classic restart), OADE-NSGA-II achieved **39 wins, 20 ties, and 1 loss** out of 60 Holm-corrected paired Wilcoxon comparisons.
-   * In Benchmark v2 (with Adaptive Restart), OADE-NSGA-II achieves **58 WINS, 1 tie, and 1 loss** out of 60 comparisons.
-2. **Definitive Conquest of ZDT2**:
-   * In v1, NSGA-II had outperformed OADE on ZDT2 due to classic restart destroying converged populations.
-   * In v2, OADE-NSGA-II decisively defeats NSGA-II on ZDT2 on both IGD ($p_{\text{adj}} = 7.82 \times 10^{-8}$) and HV ($p_{\text{adj}} = 5.58 \times 10^{-8}$).
-3. **Top Rank in 8 Out of 10 Endpoints**:
-   * OADE-NSGA-II v2 achieves the **#1 lowest IGD and #1 highest Hypervolume** on ZDT1, ZDT2, ZDT3, and ZDT4. On ZDT6, it ranks #2 (statistically indistinguishable from CGDE on IGD, while running 7.7× faster than CGDE).
+### Main findings
+1. **More favorable pairwise outcomes in the v2 benchmark**:
+   * In the v1 result set (classic restart), OADE-NSGA-II had 39 significant wins, 20 comparisons with no detected difference, and 1 significant loss among 60 comparisons.
+   * In v2 (adaptive restart), it had 58 significant wins, 1 comparison with no detected difference, and 1 significant loss. These are counts from two separately analysed benchmark versions; they are not a direct statistical test of v2 against v1.
+2. **ZDT2 comparison with NSGA-II**:
+   * In v2, OADE-NSGA-II had lower IGD and higher HV than NSGA-II, with Holm-adjusted $p = 7.82 \times 10^{-8}$ and $p = 5.58 \times 10^{-8}$, respectively, within the configured per-metric family.
+3. **Descriptive rank across endpoints**:
+   * OADE-NSGA-II v2 had the best mean on 8 of 10 problem-metric endpoints. On ZDT6, CGDE-NSGA-II had the best mean for both metrics; the IGD comparison was not significant after correction, while the HV comparison favored CGDE-NSGA-II.
 
 ---
 
@@ -26,7 +25,7 @@ The benchmark evaluates 1,050 independent runs under a strictly fixed budget of 
 | **Compared Algorithms (7)** | 1. OADE-NSGA-II v2 (Adaptive Restart)<br>2. NSGA-II (Deb et al., 2002)<br>3. D-NSGA-II (Direction-based NSGA-II)<br>4. R-NSGA-II (Reference point NSGA-II)<br>5. CGDE-NSGA-II (Competitive & Guided DE)<br>6. NSGA-II-SDR-OLS (Strengthened Dominance Relation + Orthogonal Local Search)<br>7. CE-MOEA (Cross-Entropy MOEA) |
 | **Replication Unit** | One stochastic run ($n = 30$ paired runs per comparison, $N = 1,050$ total observations) |
 | **Seed Range** | Seeds 42–71 (exact paired seed correspondence across all 7 algorithms) |
-| **Evaluation Budget** | Strictly capped at 20,000 function evaluations per run |
+| **Evaluation Budget** | Capped at 20,000 objective evaluations per run; actual use can be slightly lower when a generation would cross the cap |
 | **Validation Diagnostics** | 1,050 valid runs (`ok`); 0 collapsed fronts; 0 out-of-bounds violations |
 | **Hypothesis Testing** | Two-sided paired Wilcoxon signed-rank test |
 | **Multiplicity Control** | Holm-Bonferroni step-down adjustment separately across the 30 comparisons per metric |
@@ -39,12 +38,12 @@ The benchmark evaluates 1,050 independent runs under a strictly fixed budget of 
 ### 3.1 Pairwise Outcome Counts Across 60 Comparisons
 ![Benchmark v2 Outcome Counts](../results/figures/benchmark_v2_outcome_counts.png)
 
-*Figure 1: Pairwise Holm-adjusted Wilcoxon test outcomes for OADE-NSGA-II v2 against each of the six competitor algorithms across 10 problem-metric endpoints. OADE-NSGA-II v2 wins 58 out of 60 comparisons (96.7%), ties 1, and loses only 1.*
+*Figure 1: Pairwise Wilcoxon outcomes after the configured Holm correction for OADE-NSGA-II v2 against six comparators across 10 problem-metric endpoints. OADE-NSGA-II v2 had 58 significant wins, 1 comparison with no detected difference, and 1 significant loss. The adjustment is applied separately within each metric family; “no detected difference” does not establish equivalence.*
 
 ### 3.2 Generational Leap: OADE v1 vs OADE v2
 ![OADE v1 vs v2 Delta](../results/figures/benchmark_v2_v1_vs_v2_delta.png)
 
-*Figure 2: Mean IGD comparison between OADE v1 (classic restart) and OADE v2 (adaptive restart). Across the continuous problems ZDT1, ZDT2, and ZDT3, mean IGD drops by 24.5% to 40.0%, stabilizing final convergence without harming ZDT4.*
+*Figure 2: Descriptive mean IGD comparison between OADE v1 (classic restart) and OADE v2 (adaptive restart). Mean IGD was 24.5%–40.0% lower on ZDT1–ZDT3 in v2. The figure does not report a direct paired inferential comparison between v1 and v2, so these deltas should be read descriptively.*
 
 ---
 
@@ -107,8 +106,8 @@ All comparisons evaluate OADE-NSGA-II v2 as the reference ($n = 30$ paired runs)
   * ZDT2: OADE wins both IGD and HV ($p_{\text{adj}} < 10^{-7}$).
   * ZDT3: OADE wins both IGD and HV ($p_{\text{adj}} < 10^{-7}$).
   * ZDT4: OADE wins both IGD and HV ($p_{\text{adj}} < 10^{-7}$, CGDE failed with HV = 0).
-  * ZDT6: Tie on IGD ($p_{\text{adj}} = 0.776$); CGDE wins on HV ($p_{\text{adj}} = 5.58 \times 10^{-8}$).
-  * Total against CGDE: **8 wins, 1 tie, 1 loss**.
+  * ZDT6: no difference detected on IGD ($p_{\text{adj}} = 0.776$); CGDE is significantly better on HV ($p_{\text{adj}} = 5.58 \times 10^{-8}$).
+  * Total against CGDE: **8 significant wins, 1 comparison with no detected difference, 1 significant loss**.
 
 ---
 
@@ -117,7 +116,7 @@ All comparisons evaluate OADE-NSGA-II v2 as the reference ($n = 30$ paired runs)
 * **OADE-NSGA-II v2 Runtime**: Averaged **10.8 to 14.8 seconds** per run across the five problems.
 * **Heavy Competitors**: Local Python implementations of CGDE-NSGA-II and CE-MOEA required **39.6 to 144.5 seconds** per run (up to 10× slower than OADE).
 * **Lightweight Competitors**: C-optimized pymoo implementations (NSGA-II, D-NSGA-II) required 0.8 to 2.2 seconds.
-* **Cost-Benefit Ratio**: OADE-NSGA-II v2 provides an extraordinary accuracy gain (outperforming NSGA-II across all 10 endpoints) for a modest, predictable evaluation cost.
+* **Observed quality-runtime trade-off**: OADE-NSGA-II v2 had better corrected outcomes than NSGA-II on all 10 endpoints in this benchmark, but its measured runtime was longer than the pymoo-based NSGA-II implementation. Runtime comparisons describe these implementations and this execution environment, not algorithm-independent complexity.
 
 ---
 
@@ -145,7 +144,7 @@ All raw runs, statistical tests, summaries, and figures are archived reproducibl
 
 To test whether the Benchmark v2 gains generalize beyond continuous bi-objective ZDT problems, the identical 7-algorithm suite was subsequently evaluated across **DTLZ1–DTLZ4** ($M \in \{2, 3, 5\}$, 12 configurations, 2,520 runs; see [`docs/dtlz1_4_integrated_report.md`](dtlz1_4_integrated_report.md)):
 
-* **Integrated 17-Problem Scorecard (ZDT + DTLZ1–DTLZ4, 204 Holm-Adjusted Comparisons)**: **149 wins (73.0%), 41 ties (20.1%), 14 losses (6.9%)** across 3,570 total stochastic runs (`510/510` valid fronts for OADE-NSGA-II v2).
-* **Additional Strengths Confirmed**: Decisive superiority on high-dimensional multimodal landscapes (DTLZ1, DTLZ3; $r = +1.000$ at $M=3$), total immunity to DTLZ4 coordinate-power collapse (**0/90** collapses vs **11/30** at $M=2$ and **30/30** at $M=5$ for NSGA-II), and zero losses at $M=5$.
+* **Integrated 17-problem outcome count (ZDT + DTLZ1–DTLZ4, 204 comparisons)**: **149 significant wins (73.0%), 41 comparisons with no detected difference (20.1%), and 14 significant losses (6.9%)** across 3,570 stochastic runs (`510/510` valid OADE fronts). The ZDT and DTLZ p-values were Holm-adjusted within separate suite-by-metric families; this combined count is descriptive, not a single 204-test correction.
+* **Results from later DTLZ validation**: Favorable corrected outcomes were observed on selected DTLZ1/3 comparisons, with some maximal effect sizes at $M=3$. No OADE collapsed front was recorded in 90 DTLZ4 runs, compared with 11/30 and 30/30 collapsed fronts for NSGA-II at $M=2$ and $M=5$. Across the 48 $M=5$ comparisons, OADE had no significant losses against NSGA-II or D-NSGA-II. These findings are bounded to the tested configurations and seeds; they do not establish immunity or general superiority.
 * **Specific Weaknesses Revealed**: On smooth or biased 3-objective spherical fronts (`dtlz2_m3`, `dtlz4_m3`), SBX-based NSGA-II/D-NSGA-II and CGDE-NSGA-II outperform OADE-NSGA-II v2 (~6%–14% IGD, ~2.3%–4.1% HV); at $M=5$ under extreme multimodality (`dtlz1_m5`, `dtlz3_m5`), crowding-distance saturation still limits Hypervolume penetration into the reference box ($\text{HV}_{\text{med}} = 0.0$).
 

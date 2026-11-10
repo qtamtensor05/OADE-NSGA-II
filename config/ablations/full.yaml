@@ -1,6 +1,7 @@
 name: OADE_FULL
 runner: local_oade
 params: &full
+  restart_mode: classic
   stagnation_patience: 20
   stagnation_tolerance: 0.0001
   restart_elite_ratio: 0.30

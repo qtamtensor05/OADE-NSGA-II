@@ -4,6 +4,8 @@
 
 This report evaluates the fixed-budget component ablation stored in `results/ablation`. The central question is whether each OADE-NSGA-II component improves final IGD or HV under the five tested bi-objective ZDT problems. The analysis treats one stochastic run as the independent unit and pairs variants by problem and run index.
 
+**Status update:** The held-out restart confirmation and DTLZ/WFG benchmark suites have since been completed and are reported in `docs/restart_confirmation_report.md`, `docs/dtlz1_4_integrated_report.md`, and `docs/wfg_compact_report.md`. Those suites extend algorithm-level evaluation but do not replace component ablations on DTLZ/WFG.
+
 ## Design and completeness
 
 | Item | Value |
@@ -11,7 +13,7 @@ This report evaluates the fixed-budget component ablation stored in `results/abl
 | Problems | ZDT1, ZDT2, ZDT3, ZDT4, and ZDT6 |
 | Variants | Full OADE, five single-component removals, and OADE Basic |
 | Runs | 30 paired runs per problem and variant |
-| Evaluation budget | 20,000 objective evaluations per run |
+| Evaluation budget | Cap of 20,000 objective evaluations per run; actual use can be lower when a generation would cross the cap |
 | Final observations | 1,050 |
 | Validation | 1,050 `ok`; 0 invalid |
 | Metrics | IGD (lower is better) and HV (higher is better) |
@@ -109,23 +111,25 @@ Mean runtime averaged across the five problems ranged from 3.21 to 3.87 seconds 
 
 ## Research conclusion
 
-The ablation changes the recommended algorithm-development priority. OBL should be retained because it prevents systematic failure on ZDT4. The restart policy should be redesigned or made conditional because it reduced quality and increased variability on ZDT1-ZDT3 without a detected benefit on ZDT4 or ZDT6. The evidence does not currently justify claiming that F/CR adaptation, probability adaptation, or neighbourhood selection independently improves final quality, although the latter two may reduce rare ZDT4 failures.
+The ablation changes the recommended algorithm-development priority. Retaining OBL is supported for the tested ZDT4 configuration, although this experiment does not separate initial OBL from periodic opposition injection. The held-out restart confirmation later found better corrected outcomes for both No Restart and Adaptive Restart than Full OADE on ZDT1–ZDT3 and ZDT6, with no detected difference on ZDT4. Adaptive Restart and No Restart had identical final IGD/HV in 148/150 paired rows, so the adaptive mechanism itself remains unverified. The ablation does not establish an isolated final-quality benefit for F/CR adaptation, probability adaptation, or neighbourhood selection; non-significance is not equivalence.
 
-A defensible next version is not simply OADE Basic. The most evidence-supported candidate is Full OADE with restart disabled, followed by a preregistered comparison against Full OADE and Basic. A second candidate should retain OBL while testing simpler adaptive configurations. These candidates must be evaluated on new seeds and on DTLZ/WFG problems to avoid selecting a configuration solely on the same ZDT evidence used to design it.
+A useful next candidate is Full OADE with restart disabled, but confirmation on new seeds has already been reported. Further component claims should use new, prespecified comparisons and keep the OBL, restart, and adaptation changes separable. The existing DTLZ/WFG benchmark results do not establish that the ZDT component effects generalize to those suites.
 
 ## Recommended next experiments
 
-1. **Confirm the no-restart candidate on held-out seeds.** Compare Full OADE, No Restart, and Basic on the five ZDT problems using 30 new paired seeds. The primary hypothesis should be that No Restart improves ZDT1-ZDT3 without degrading ZDT4.
-2. **Test an adaptive or conservative restart trigger.** Trigger restart only when both stagnation and diversity collapse are observed, or reduce the restarted fraction. Compare this candidate with No Restart rather than only with Full OADE.
-3. **Run DTLZ and WFG before finalizing the method.** Include three-objective problems to determine whether OBL and restart effects generalize beyond the five bi-objective ZDT tasks.
-4. **Resolve possible component interactions.** Use a targeted factorial design involving OBL, restart, and probability adaptation on ZDT4. This can determine whether probability adaptation prevents tail failures only when OBL is active.
-5. **Add uncertainty intervals.** Bootstrap the paired median difference or another prespecified paired effect estimate. Current rank-biserial effects have no stored confidence intervals.
+1. **Audit restart execution and mechanism.** Record per-run restart counts, trigger conditions, and trigger timing for Full OADE and Adaptive Restart. Verify that the adaptive configuration reaches the solver; the stored final outcomes alone cannot do this.
+2. **Test restart on a prespecified diversity-collapse case.** Compare No Restart and a verified adaptive policy on new seeds, with quality and collapse/failure rates defined before analysis.
+3. **Resolve component interactions on ZDT4.** Use a targeted factorial design involving OBL, restart, and probability adaptation to determine whether the apparent tail-risk differences depend on component interactions.
+4. **Extend component-level evidence beyond ZDT.** Use the completed DTLZ/WFG suites to select targeted ablations; do not infer component effects from the full algorithm comparisons alone.
+5. **Report uncertainty for paired effects.** Add a prespecified confidence-interval method for paired differences or rank-biserial effects. The stored ablation statistics currently do not include such intervals.
 
 ## Claim boundary
 
 The ablation supports component claims only for the five tested bi-objective ZDT problems, 20,000 evaluations, the present parameter settings, and the current implementations. It does not establish component importance on constrained, noisy, dynamic, many-objective, DTLZ, or WFG problems. It also does not establish equivalence when a corrected comparison is non-significant.
 
 ## Data provenance
+
+The archived ablation used the classic restart default. Because the solver default later changed to adaptive, `config/ablations/full.yaml` now sets `restart_mode: classic` explicitly to preserve the archived control policy on reruns.
 
 - `results/ablation/algorithm_benchmark_raw_runs.csv`
 - `results/ablation/algorithm_benchmark_igd_hv_summary.csv`

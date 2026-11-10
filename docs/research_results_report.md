@@ -4,6 +4,8 @@
 
 This report evaluates the completed fixed-budget benchmark stored in `results/algorithm_benchmark`. It replaces the earlier provisional assessment based on smaller and methodologically inconsistent experiment sets. Claims are restricted to the five tested bi-objective ZDT problems and the seven implementations included in this repository.
 
+> **Status:** This is the historical ZDT benchmark using the classic-restart OADE configuration (`results/algorithm_benchmark`). The later v2, held-out restart, DTLZ, WFG, and sensitivity results are documented separately. The open-work list below has been updated to avoid repeating experiments that are already complete.
+
 ## Terminology ledger
 
 | Canonical term | Definition used in this report |
@@ -34,7 +36,7 @@ The completed component ablation materially qualifies the benchmark result. Oppo
 | Decision variables | 30 for ZDT1-ZDT3; 10 for ZDT4 and ZDT6 |
 | Algorithms | OADE-NSGA-II, NSGA-II, R-NSGA-II, D-NSGA-II, CGDE-NSGA-II, NSGA-II-SDR-OLS, and CE-MOEA |
 | Independent runs | 30 per algorithm and problem |
-| Evaluation budget | 20,000 evaluations per run |
+| Evaluation budget | Cap of 20,000 evaluations per run; actual use can be lower when a generation would cross the cap |
 | Final observations | 1,050 |
 | Validation result | 1,050 `ok`; 0 invalid |
 | Primary metrics | IGD and HV |
@@ -152,15 +154,15 @@ The ablation further limits attribution of the benchmark gains. The current evid
 
 ### P0: required for attribution and trustworthy interpretation
 
-1. **Redesign and confirm the restart policy.** Compare Full OADE, No Restart, and a conservative diversity-aware restart on new paired seeds. The completed ablation indicates that the current restart harms ZDT1-ZDT3 without a detected benefit on ZDT4 or ZDT6.
-2. **Inspect ZDT4 failure fronts.** Plot and inspect representative and worst CGDE-NSGA-II and NSGA-II-SDR-OLS fronts. Also inspect the tail failures produced by No Probability Adaptation and No Neighbourhood. Confirm that initialization, bounds, selection, and reference-point handling match their intended algorithms.
-3. **Add uncertainty intervals.** Report bootstrap confidence intervals for median paired differences or another prespecified paired effect estimate. The current effect sizes are useful, but no uncertainty interval is stored.
-4. **Document the execution environment.** Record CPU, memory, operating system, Python version, dependency versions, worker count, and whether competing implementations were independently verified against their source publications.
+1. **Audit the adaptive restart mechanism.** A held-out comparison is available in `docs/restart_confirmation_report.md`, but the near-identical Adaptive Restart and No Restart outputs and missing trigger counts leave the mechanism unexplained. Log trigger/restart counts and verify the configured code path before attributing the v2 improvement to adaptive restarts.
+2. **Inspect ZDT4 failure fronts.** Plot representative and worst CGDE-NSGA-II and NSGA-II-SDR-OLS fronts. Also inspect the tail failures produced by No Probability Adaptation and No Neighbourhood. Confirm initialization, bounds, selection, and reference-point handling against the intended baseline definitions.
+3. **Add uncertainty intervals.** Report a prespecified confidence-interval method for paired differences or rank-biserial effects. Current paired-statistics files do not store these intervals.
+4. **Document execution and baseline provenance.** Record CPU, memory, operating system, Python and package versions, worker count, and the source/version/citation for each baseline implementation.
 
 ### P1: required for generalization
 
-5. **Run the configured DTLZ and WFG suites.** Include three- and five-objective cases and preserve the same paired-budget protocol. ZDT evidence alone cannot establish many-objective performance.
-6. **Complete fixed-budget sensitivity studies.** Evaluate population size, stagnation patience, and adaptive initial values at equal objective-evaluation budgets. Report paired effects rather than relying only on omnibus significance.
+5. **Use completed DTLZ/WFG evidence to plan component studies.** The current suites reveal both strengths and deficits but do not isolate component effects. Prioritize targeted ablations on the smooth three-objective deficits and the five-objective WFG regressions.
+6. **Interpret the completed sensitivity study.** `docs/sensitivity_analysis.md` now summarizes the stored sweep and its correction families; the sweep uses the classic-restart configuration and should not be presented as direct tuning evidence for v2.
 7. **Summarize convergence statistically.** Align trajectories by actual evaluations, plot medians with uncertainty bands, and compare an anytime measure such as normalized area under the IGD/HV curve.
 8. **Repeat from a clean locked environment.** Regenerate the raw runs and summaries with a single documented command and publish checksums for the result package.
 
