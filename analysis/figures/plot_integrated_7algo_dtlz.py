@@ -375,7 +375,9 @@ def build_integrated_landscape_figure(
     ax_b.set_xlim(0, 35.5)
     ax_b.set_xticks([0, 10, 20, 30, 34])
     ax_b.set_xlabel("Paired comparisons (IGD + HV, max 34)", fontsize=7.0)
-    ax_b.set_title("Combined: 149W / 41T / 14L (73.0%)", fontsize=7.3, fontweight="bold", pad=14.0)
+    total_wins, total_ties, total_losses = int(wins.sum()), int(ties.sum()), int(losses.sum())
+    win_percentage = 100 * total_wins / len(all_stats)
+    ax_b.set_title(f"Combined: {total_wins}W / {total_ties}T / {total_losses}L ({win_percentage:.1f}%)", fontsize=7.3, fontweight="bold", pad=14.0)
     ax_b.legend(loc="lower center", bbox_to_anchor=(0.48, 0.99), ncol=3, fontsize=5.8, handlelength=1.1, columnspacing=0.9)
     add_panel_label(ax_b, "b", x_offset_pt=-8.0, y_offset_pt=14.0)
 

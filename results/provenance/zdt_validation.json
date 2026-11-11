@@ -1,0 +1,113 @@
+{
+  "kind": "result_validation",
+  "observed_utc": "2026-11-11T19:41:31.447980+00:00",
+  "datasets": {
+    "algorithm_benchmark": {
+      "rows": 1050,
+      "valid": 1050,
+      "retained_rows_verified": 900,
+      "rnsga2_rows_verified": 150,
+      "independent_pvalue_and_holm_check": "PASS",
+      "summary_and_cost_check": "PASS",
+      "outcomes": {
+        "no_significant_difference": 20,
+        "reference_better": 39,
+        "comparison_better": 1
+      }
+    },
+    "algorithm_benchmark_v2": {
+      "rows": 1050,
+      "valid": 1050,
+      "retained_rows_verified": 900,
+      "rnsga2_rows_verified": 150,
+      "independent_pvalue_and_holm_check": "PASS",
+      "summary_and_cost_check": "PASS",
+      "outcomes": {
+        "reference_better": 58,
+        "no_significant_difference": 1,
+        "comparison_better": 1
+      }
+    }
+  },
+  "checks": "record identity, paired seeds, budget counters, retained-block equality, independent SciPy Wilcoxon and manual Holm recalculation, summaries and costs",
+  "boundary": "No optimizer was run during validation. Final decision/objective vectors are not archived, so IGD/HV cannot be independently reconstructed from final fronts. This check verifies consistency of stored measurements and analyses, not universal algorithm correctness.",
+  "pdf_checks": {
+    "benchmark_rank_heatmap": {
+      "pdf_sha256": "4f8f82e8a33524cd2d616316794e0d941b8c78999db244737442c279af1819ed",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "benchmark_top_rank_counts": {
+      "pdf_sha256": "b16f1eca905fa0c6378d8109c17f84af4305135109b541130bbf2eeafcbc6103",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "benchmark_runtime": {
+      "pdf_sha256": "07022008ccf0c830542971b332724d7a9f6a9eca36eef0402bb528642508c6f0",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "benchmark_convergence_zdt4": {
+      "pdf_sha256": "012fcf4b9e54e47fcc0387f66cb0237379faae67cba3140e46a2c847e430b7f2",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "benchmark_convergence_zdt6": {
+      "pdf_sha256": "d5cd7b66bf4df050e81587311cec652f3ccb3aee089bf166a6cda3a1f2f6595a",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "ablation_effect_heatmap": {
+      "pdf_sha256": "f3ac56c32d2bde7bb663aa2a5986248306ad6514c67430f10e8fb244ed6461d9",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "ablation_outcome_counts": {
+      "pdf_sha256": "f3d0cc53ac404f8d9b91700f3f9bd09197fcbb330f96405b022e559d15b21422",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "ablation_restart_paired": {
+      "pdf_sha256": "745164ef3ef1c87dec7ef8c188684a6a41629e091b7456a5b4ca18f914fd1aa5",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 6.0
+    },
+    "benchmark_v2_outcome_counts": {
+      "pdf_sha256": "715cdb5da3742f6af83bdd245c3cd08a608b84dc2fa0fd8f1dfef91bce5520b9",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 7.5
+    },
+    "benchmark_v2_v1_vs_v2_delta": {
+      "pdf_sha256": "07cb7dcf63d7d21e0d894267bbc884089c2ca036f621e179b1475d42aa6f808a",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 7.5
+    },
+    "integrated_7algo_landscape": {
+      "pdf_sha256": "02b9df3ee535e41645de9645d594095b052b77f251eba95d5481e503e63c0719",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 5.25
+    },
+    "dtlz1_4_scaling_diagnosis": {
+      "pdf_sha256": "431c33999ffc8f2e425a83b03aa029dd1b476b1cadde575f2fdef360286c554f",
+      "collision_fail": 0,
+      "collision_warn": 0,
+      "minimum_font_pt": 5.25
+    }
+  },
+  "visual_preview_review": [
+    "benchmark_v2_outcome_counts",
+    "benchmark_v2_v1_vs_v2_delta",
+    "integrated_7algo_landscape"
+  ]
+}

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Generate Nature-standard publication figures for Benchmark v2.
+Generate research figures for Benchmark v2.
 Compares OADE-NSGA-II v2 against 6 baseline algorithms (NSGA-II, CGDE, SDR-OLS, CE-MOEA, DNSGA-II, RNSGA-II)
-and visualizes the massive leap from v1 to v2.
+and displays descriptive differences between the v1 and v2 configurations.
 """
 
 from __future__ import annotations
@@ -108,12 +108,17 @@ def plot_v2_figures(
     ax.set_yticks(y_pos)
     ax.set_yticklabels([comp_labels[c] for c in comparators], fontweight="bold", fontsize=8)
     ax.set_xlabel("Number of Metric Endpoints (Total = 10 per algorithm)", fontsize=8.5)
-    ax.set_title("Benchmark v2: Pairwise Holm-Adjusted Wilcoxon Outcomes (Total: 58 Wins / 60)", fontweight="bold", fontsize=9.5)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.15), ncol=3, frameon=False, fontsize=8)
+    total_wins = sum(oade_better_counts)
+    # Title and legend occupy separate figure-level rows above the axes.
+    fig.suptitle(f"Benchmark v2: Holm-adjusted outcomes ({total_wins} wins / {len(stat_rows)})",
+                 y=0.98, fontweight="bold", fontsize=9.5)
+    fig.legend(handles=[p1, p2, p3], loc="upper center", bbox_to_anchor=(0.5, 0.91),
+               ncol=3, frameon=False, fontsize=7.5)
     ax.set_xlim(0, 10.5)
-    ax.grid(axis="x", linestyle=":", alpha=0.5)
+    # Tick marks convey the count scale without grid strokes through in-bar numbers.
+    ax.grid(False)
 
-    plt.tight_layout()
+    fig.subplots_adjust(left=0.20, right=0.98, bottom=0.18, top=0.74)
     fig.savefig(output_dir / "benchmark_v2_outcome_counts.png", dpi=300)
     fig.savefig(output_dir / "benchmark_v2_outcome_counts.pdf")
     fig.savefig(output_dir / "benchmark_v2_outcome_counts.svg")
@@ -147,11 +152,13 @@ def plot_v2_figures(
     rects2 = ax.bar(x + width/2, v2_igds, width, label="OADE v2 (Adaptive Restart)", color="#31A354", alpha=0.85)
 
     ax.set_ylabel("Mean IGD (Lower is better ↓)", fontsize=8.5, fontweight="bold")
-    ax.set_title("OADE-NSGA-II Performance Leap: v1 vs v2", fontweight="bold", fontsize=9.5)
+    fig.suptitle("OADE-NSGA-II: v1 vs v2 mean IGD", y=0.98, fontweight="bold", fontsize=9.5)
     ax.set_xticks(x)
     ax.set_xticklabels([p.upper() for p in problems], fontweight="bold", fontsize=8.5)
-    ax.legend(frameon=False, fontsize=8)
-    ax.grid(axis="y", linestyle=":", alpha=0.5)
+    fig.legend(handles=[rects1, rects2], loc="upper center", bbox_to_anchor=(0.5, 0.91),
+               ncol=2, frameon=False, fontsize=8)
+    ax.grid(False)
+    ax.set_ylim(0, max(v1_igds + v2_igds) * 1.20)
 
     # Annotate percentage reductions
     for i, (v1, v2) in enumerate(zip(v1_igds, v2_igds)):
@@ -166,7 +173,7 @@ def plot_v2_figures(
                 fontsize=7.5, fontweight="bold", color="#1B7837"
             )
 
-    plt.tight_layout()
+    fig.subplots_adjust(left=0.15, right=0.98, bottom=0.16, top=0.74)
     fig.savefig(output_dir / "benchmark_v2_v1_vs_v2_delta.png", dpi=300)
     fig.savefig(output_dir / "benchmark_v2_v1_vs_v2_delta.pdf")
     fig.savefig(output_dir / "benchmark_v2_v1_vs_v2_delta.svg")

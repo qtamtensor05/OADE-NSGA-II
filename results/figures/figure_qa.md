@@ -1,9 +1,8 @@
 # Research Figure QA Record
 
-## Remediation QA — 12 November 2026
+## Current result QA — 12 November 2026
 
-The four Python bundles below were regenerated from unchanged historical source
-CSV values. Alignment JSON and PDF collision JSON are included with the source.
+The four Python bundles below use the current source CSV values. Alignment JSON and PDF collision JSON are included with the source.
 The current Python audit environment is captured separately; old execution
 versions are not inferred from it.
 
@@ -24,6 +23,9 @@ Preview review covers the panel labels, effect direction, declared center/spread
 annotation meaning and readable composition. IQRs show run dispersion, not effect
 confidence intervals. The current automated results do not certify all earlier
 figures or replace physical-size inspection for a particular journal submission.
+
+
+The final ZDT figure review found no title/legend overlap in the outcome chart or the v1/v2 chart; in-bar numbers are not crossed by grid strokes. Both are single-panel figures. Twelve current PDF bundles have zero collision failures/warnings; all visible text spans also meet the 5 pt floor under PyMuPDF inspection, including the R PDF streams that the basic text scanner cannot fully decode. Minimum sizes are 6 pt for the original R family, 7.5 pt for the two ZDT v2 figures and 5.25 pt for the integrated/DTLZ figures. PDF hashes and the scope of visual preview review are in [zdt_validation.json](../provenance/zdt_validation.json).
 
 ## Shared contract
 

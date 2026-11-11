@@ -1,0 +1,51 @@
+{
+  "kind": "dataset_composition",
+  "schema": 1,
+  "observed_utc": "2026-11-11T19:41:31.062296+00:00",
+  "datasets": {
+    "algorithm_benchmark": {
+      "records": 1050,
+      "rnsga2_records": 150,
+      "other_records": 900,
+      "primary_and_derived_sha256": {
+        "algorithm_benchmark_raw_runs.csv": "1691b89306b9a8a32d448d55a4c3ee2f732a653c57a98bf9490f5193177dc96d",
+        "algorithm_benchmark_validation.csv": "bf029f94d3cdd124b552a0bc136d08560053647fe0ab8664b24cc176c1b23cb5",
+        "algorithm_benchmark_convergence.csv": "2a27023feb297fda0f253e798b67f885d2b544e7c31ce36f3e6c46afbb29071c",
+        "algorithm_benchmark_igd_hv_summary.csv": "32bfcc76867c7bdcb43d67f487442ee9c07d2e2824145b5ea1b4c70944fa44dc",
+        "algorithm_benchmark_paired_statistics.csv": "0311dab46ebb770cc897a92e204b6ad0044361db4bd61d48bde1f444cd70356f",
+        "algorithm_benchmark_cost_summary.csv": "b6e8750882b815e45732da3b2280fe8825cf7d9cebe899c540f0be1771a46f89"
+      },
+      "rnsga2_provenance": "captured execution manifest; the filtered RNSGA2 primary CSV blocks reconstruct its artifact checksums",
+      "other_algorithms_provenance": "historical source/package versions not captured; retained recorded seed/problem protocol",
+      "outcomes": {
+        "no_significant_difference": 20,
+        "reference_better": 39,
+        "comparison_better": 1
+      }
+    },
+    "algorithm_benchmark_v2": {
+      "records": 1050,
+      "rnsga2_records": 150,
+      "other_records": 900,
+      "primary_and_derived_sha256": {
+        "algorithm_benchmark_raw_runs.csv": "0e33aa7f53d04ea7f0b9e57ca33e7133974d854f9dbcf1b94e29388f9c811fbe",
+        "algorithm_benchmark_validation.csv": "f252bb1315dda7086fe22bafda908e237c8cbc12fb88ee6b1dad004fb1fe4edc",
+        "algorithm_benchmark_convergence.csv": "cabd2b49370f529bc88c41667279e7968b2563d2aafd6bb7dd51f401aaea00c0",
+        "algorithm_benchmark_igd_hv_summary.csv": "19db9b118bd68f2011164105ed20f089b56f19925988488b90a3dd66a2d7a74b",
+        "algorithm_benchmark_paired_statistics.csv": "cfad6b4e5776217969ec6ebc66392b006a0381e3433da5dec2cd49732f308d04",
+        "algorithm_benchmark_cost_summary.csv": "993569e243027c91593fd358bde93573317a7b96351f5167bec84706be416cf7"
+      },
+      "rnsga2_provenance": "captured execution manifest; the filtered RNSGA2 primary CSV blocks reconstruct its artifact checksums",
+      "other_algorithms_provenance": "historical source/package versions not captured; retained recorded seed/problem protocol",
+      "outcomes": {
+        "reference_better": 58,
+        "no_significant_difference": 1,
+        "comparison_better": 1
+      }
+    }
+  },
+  "execution_manifest": "rnsga2_zdt_execution.json",
+  "lineage_record": "zdt_dataset_lineage.json",
+  "scope": "Current ZDT tables. The same 150-run RNSGA2 block is shared by v1 and v2; datasets are not independent new seven-algorithm executions.",
+  "other_suites": "DTLZ/WFG retain their archived RNSGA2 accounting convention; see experiment registry."
+}

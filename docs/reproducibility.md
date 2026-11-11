@@ -28,15 +28,15 @@ The same entry point accepts the DTLZ, WFG, ablation and restart YAMLs. A manife
 
 An interruption inside a problem does not create a resumable partial problem. If interruption occurs while writing multiple checkpoint files, checksum disagreement blocks resume; preserve that directory for inspection rather than manually certifying it. A manifest without checkpoint files can resume from an empty start. Existing primary evidence is never overwritten by a fresh run.
 
-The baseline-reuse runner `scripts/run_benchmark_v2.py` accepts `--baseline-dir`, `--out-dir` and `--preflight-only`. It requires execution-time provenance, matching comparator protocol/source/environment and complete diagnostic/trajectory records before starting OADE. Historical v1 CSVs lack this proof and are rejected for new reuse. Use the full seven-algorithm command above for a new reproduction. The already archived v2 remains a historical analysis containing 900 reused baseline records; its inventory does not retroactively certify those records against current code.
+The baseline-reuse runner `scripts/run_benchmark_v2.py` accepts `--baseline-dir`, `--out-dir` and `--preflight-only`. It requires execution-time provenance, matching comparator protocol/source/environment and complete diagnostic/trajectory records before starting OADE. Historical v1 CSVs lack this proof and are rejected for new reuse. Use the full seven-algorithm command above for a new reproduction. The current ZDT tables share comparator blocks. The RNSGA2 block has an execution manifest; the other blocks retain archived provenance. See [dataset composition](../results/provenance/zdt_composition.json).
 
-## Historical inventory
+## Artifact inventory
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/inventory_research.py
 ```
 
-This writes results/research_inventory.json: observed CSV hashes, record counts, invalid diagnostics, valid pair ranges and descriptive outcome counts. It never creates an execution manifest in historical output directories. The inventory describes files as observed now; historical execution versions remain unknown. See [experiment registry](experiment_registry.md) for config drift, including v1's classic restart versus today's adaptive default.
+This writes results/research_inventory.json with observed CSV hashes, record counts, invalid diagnostics, valid-pair ranges and descriptive outcomes. For ZDT, the inventory links to algorithm-block provenance in results/provenance/. The RNSGA2 primary blocks can be reconstructed by filtering either main table and checked against the retained execution manifest. Archived versions without captured manifests remain unknown. See the [experiment registry](experiment_registry.md).
 
 ## Figures
 
@@ -60,6 +60,6 @@ Thirty runs are scheduled per configuration. DTLZ has 26–30 valid matched pair
 
 `invalid collapsed_front` means all returned objective rows are identical after rounding to 12 decimals, with more than one row. The current validator accepts a single-point front if other checks pass. This is a structural validity rule, not a general convergence or diversity guarantee. `Corner collapse` in the historical DTLZ narrative is a quality diagnosis applied to some structurally valid outputs. Its complete run-level historical classification rule is not recorded; counts must be described as historical diagnostics, not validator failure rates or a reproducible new endpoint. HV=0 alone is not proof of identical objective vectors.
 
-## Prospective budget-accounting correction
+## Evaluation accounting
 
-The archived runner derived RNSGA2 aspiration points by evaluating the initial population outside the budget proxy and before its runtime timer. Its recorded search counter therefore omitted one population-sized setup evaluation. New runs include that work in the cap and runtime; they can differ from archived RNSGA2 results even with identical seeds. Manifests mark this as budget-accounting v2. No archived metric or recorded evaluation count has been rewritten. Other reference PF/indicator computations are benchmark measurement overhead, not solver objective-search evaluations.
+ZDT includes RNSGA2 aspiration-point setup in the cap and runtime. Archived DTLZ/WFG use a search-budget convention; see the [precise suite boundaries](experiment_registry.md#budget-definition). Dataset composition, execution metadata and validation are stored in results/provenance/.

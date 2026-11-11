@@ -15,7 +15,5 @@ Start with [the integrated research manuscript](manuscript.md) for the central q
 | [Restart confirmation](restart_confirmation_report.md) | Held-out ZDT seeds; adaptive mechanism remains unconfirmed |
 | [Sensitivity](sensitivity_analysis.md) | Classic-restart parameter sweeps; exploratory multiplicity |
 | [Historical v1 report](research_results_report.md) | Archived classic-restart findings, not the current overview |
-| [Audit](research_audit_2026-11-12.md) | Original findings; retained as a dated record |
-| [Remediation record](research_remediation_2026-11-12.md) | Changes, validation and remaining evidence gaps |
 
-Numeric source data remain in results/. Methodological corrections do not rewrite archived raw observations. Figure QA is documented in [figure_qa.md](../results/figures/figure_qa.md).
+Current numeric source data are in results/. ZDT algorithm-block provenance, checksums and validation are in [results/provenance](../results/provenance/). Figure QA is documented in [figure_qa.md](../results/figures/figure_qa.md).

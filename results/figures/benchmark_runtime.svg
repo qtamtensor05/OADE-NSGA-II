@@ -40,7 +40,7 @@
 <rect x='77.40' y='188.98' width='41.54' height='17.58' style='stroke-width: 0.82; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BDBDBD;' />
 <rect x='77.40' y='160.63' width='60.87' height='17.58' style='stroke-width: 0.82; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BDBDBD;' />
 <rect x='77.40' y='103.93' width='87.11' height='17.58' style='stroke-width: 0.82; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D24B40;' />
-<rect x='77.40' y='132.28' width='64.79' height='17.58' style='stroke-width: 0.82; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BDBDBD;' />
+<rect x='77.40' y='132.28' width='83.95' height='17.58' style='stroke-width: 0.82; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #BDBDBD;' />
 <polyline points='439.09,87.48 439.09,81.24 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
 <polyline points='439.09,84.36 343.49,84.36 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
 <polyline points='343.49,87.48 343.49,81.24 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
@@ -59,9 +59,9 @@
 <polyline points='189.55,115.83 189.55,109.60 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
 <polyline points='189.55,112.71 99.74,112.71 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
 <polyline points='99.74,115.83 99.74,109.60 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
-<polyline points='158.84,144.18 158.84,137.95 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
-<polyline points='158.84,141.07 92.42,141.07 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
-<polyline points='92.42,144.18 92.42,137.95 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
+<polyline points='212.55,144.18 212.55,137.95 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
+<polyline points='212.55,141.07 131.24,141.07 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
+<polyline points='131.24,144.18 131.24,137.95 ' style='stroke-width: 0.96; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjcuNzJ8MC4wMHwyODMuNDY=)'>
 <text x='43.39' y='228.81' text-anchor='end' style='font-size: 7.50px; font-weight: bold;fill: #4D4D4D; font-family: "Arial";' textLength='31.27px' lengthAdjust='spacingAndGlyphs'>DNSGA2</text>

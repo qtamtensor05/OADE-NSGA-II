@@ -1,5 +1,7 @@
 # OADE-NSGA-II: Adaptive Opposition-Based Differential Evolution NSGA-II
 
+**Language / Ngôn ngữ:** **English** | [Tiếng Việt](README.vi.md)
+
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Protocol](https://img.shields.io/badge/Benchmark-Fixed--Budget%2020k-orange.svg)](#2-experimental-protocol--statistical-discipline)
 [![Reproducible Benchmarks](https://img.shields.io/badge/Benchmarks-Reproducible-blue.svg)](#2-experimental-protocol--statistical-discipline)
@@ -31,7 +33,7 @@ This project studies four mechanisms added to an NSGA-II-based search procedure.
 3. **Neighborhood-Directed DE Mutation (DE/current-to-pbest/1)**: Uses neighborhood information when constructing differential-evolution mutation candidates. Its isolated contribution has not been established across all tested suites.
 4. **Adaptive Diversity-Aware Restart (v2 configuration)**: Implements a dual-condition trigger:
    * **Stagnation detection**: Tracks ideal point progress ($\|\Delta \mathbf{z}^*\| < 10^{-4}$).
-   * **Diversity collapse verification**: Checks whether decision-space variance $\max_j \sigma_j < 0.02$ or objective spread $< 10^{-3}$.
+   * **Diversity collapse verification**: Checks whether normalized decision-space standard deviation $\max_j \sigma_j < 0.02$ or objective spread $< 10^{-3}$.
    * **Renewal rule**: Retains 80% of selected individuals and generates replacements using local OBL and Gaussian perturbations, with soft decay of adaptation history ($\mu_F, \mu_{CR}$). Held-out results do not yet verify that this trigger caused the measured outcomes; trigger counts were not recorded.
 
 ---
@@ -41,7 +43,7 @@ This project studies four mechanisms added to an NSGA-II-based search procedure.
 The reports document the benchmark design, run-level data, statistical tests, and known limitations. This project summary is not a formal compliance claim for a journal; requirements should be checked against the selected venue before submission.
 
 * **Independent Experimental Unit**: One complete stochastic run (30 scheduled runs per configuration; 26–30 valid matched pairs per comparison in DTLZ, 30 in the other core suites).
-* **Evaluation Budget**: Archived search counters are capped at 20,000 evaluations per run; they omitted RNSGA2 aspiration-point setup (one population-sized evaluation). New runs include this work in the cap and runtime; see [accounting correction](docs/reproducibility.md#prospective-budget-accounting-correction). Actual use can be lower when a generation would exceed the cap; OADE typically uses about 99.7–99.9% of it.
+* **Evaluation Budget**: ZDT uses a 20,000-evaluation cap including RNSGA2 aspiration-point setup and runtime. Archived DTLZ/WFG counters use the search-budget convention described in the [experiment registry](docs/experiment_registry.md#budget-definition). Actual use may be lower when the next batch would exceed the cap; OADE typically uses about 99.7–99.9%.
 * **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
 * **Test Suites (21 core configurations plus 12 compact-WFG scaling configurations; 6,210 stored records; some baselines and settings are reused across batches)**:
   * **Bi-objective ZDT (`1,050` runs, 7 algorithms)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
@@ -141,16 +143,16 @@ The reports state the following observed weaknesses and boundaries:
 
 ## 6. Visual Evidence & Figures
 
-All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures/) (oversized `.tiff` print files, QA audit overlays, and standalone figure-helper scripts are excluded via `.gitignore`):
+All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures/) (oversized `.tiff` print files and diagnostic overlay PDFs are local; figure sources and JSON QA records are included):
 
 | Figure File | Description |
 |---|---|
-| [`integrated_7algo_landscape.png`](results/figures/integrated_7algo_landscape.png) | **Multi-panel overview**: 17-problem rank-biserial effect-size matrix (`a`), 204-test outcome ledger (`b`), and 34-endpoint mean-rank vs runtime Pareto trade-off (`c`). |
-| [`dtlz1_4_scaling_diagnosis.png`](results/figures/dtlz1_4_scaling_diagnosis.png) | **2×2 DTLZ scaling grid ($M=2,3,5$)**: IGD summaries on DTLZ1/3 (`a, b`), 3-objective DTLZ2 comparison (`c`), and observed DTLZ4 collapse counts (`d`). |
-| [`wfg_m2_7algo_profile.png`](results/figures/wfg_m2_7algo_profile.png) | **7-Algorithm WFG $M=2$ validation**: 48-test IGD/HV effect heatmap (`a`), raw-seed `WFG9` deceptive trap escape (`b`), and 8-endpoint rank vs runtime Pareto front (`c`). |
+| [`integrated_7algo_landscape.png`](results/figures/integrated_7algo_landscape.png) | **Multi-panel overview**: 17-problem rank-biserial effect-size matrix (`a`), 204-test outcome ledger (`b`), and 34-endpoint mean rank vs DTLZ4 runtime proxy (`c`). |
+| [`dtlz1_4_scaling_diagnosis.png`](results/figures/dtlz1_4_scaling_diagnosis.png) | **2×2 DTLZ scaling grid ($M=2,3,5$)**: IGD summaries on DTLZ1/3 (`a, b`), 3-objective DTLZ2 comparison (`c`), and observed DTLZ4 median HV (`d`). |
+| [`wfg_m2_7algo_profile.png`](results/figures/wfg_m2_7algo_profile.png) | **7-Algorithm WFG $M=2$ validation**: 48-test IGD/HV effect heatmap (`a`), run-level `WFG9` IGD distributions (`b`), and 8-endpoint quality rank vs measured runtime (`c`). |
 | [`wfg_scaling_diagnosis.png`](results/figures/wfg_scaling_diagnosis.png) | **2×2 WFG scaling grid ($M=2 \to 3 \to 5$)**: 5-algo Holm outcome transition (`a`), paired `OADE/NSGA2` IGD ratios (`b`), and `wfg1_m5` / `wfg9_m5` HV convergence (`c, d`). |
 | [`benchmark_v2_outcome_counts.png`](results/figures/benchmark_v2_outcome_counts.png) | Horizontal stacked bar chart displaying 58 significant wins, 1 comparison with no detected difference, and 1 significant loss on ZDT v2 against 6 baselines. |
-| [`benchmark_v2_v1_vs_v2_delta.png`](results/figures/benchmark_v2_v1_vs_v2_delta.png) | Direct IGD reduction from OADE v1 to OADE v2 across all 5 ZDT problems (-24.5% to -40.0%). |
+| [`benchmark_v2_v1_vs_v2_delta.png`](results/figures/benchmark_v2_v1_vs_v2_delta.png) | Descriptive mean IGD reductions from OADE v1 to v2 across five ZDT problems (2.1%–40.1%); this does not isolate the restart mechanism. |
 | [`restart_direct_comparison.png`](results/figures/restart_direct_comparison.png) | Grouped boxplots comparing Old Restart, No Restart, and New Restart side-by-side with overlaid raw seeds. |
 | [`restart_convergence.png`](results/figures/restart_convergence.png) | Within-budget convergence trajectories (Median IGD + IQR shaded bands) over 20,000 evaluations. |
 | [`restart_confirmation_paired.png`](results/figures/restart_confirmation_paired.png) | Paired percentage improvement distribution on 30 held-out seeds ($1000 \dots 1029$). |

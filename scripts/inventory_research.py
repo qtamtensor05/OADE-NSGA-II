@@ -1,4 +1,4 @@
-"""Inventory existing evidence without asserting historical execution provenance."""
+"""Inventory result artifacts and link any recorded algorithm-block provenance."""
 from __future__ import annotations
 
 import csv
@@ -13,6 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def inventory() -> dict:
     studies = {}
+    composition_path = ROOT / "results/provenance/zdt_composition.json"
+    composition = (json.loads(composition_path.read_text(encoding="utf-8"))
+                   if composition_path.exists() else {"datasets": {}})
     for directory in sorted((ROOT / "results").iterdir()):
         if not directory.is_dir() or directory.name.startswith("smoke"):
             continue
@@ -27,7 +30,11 @@ def inventory() -> dict:
         invalid = [r for r in raw if r["valid"].lower() != "true"]
         keys = {(r["problem"], r["algorithm"], r["run_idx"]) for r in raw}
         studies[directory.name] = {
-            "historical_execution_environment": "unknown; not inferred from current environment",
+            "execution_environment_provenance": (
+                "results/provenance/zdt_composition.json: RNSGA2 execution captured; other blocks archived"
+                if directory.name in composition["datasets"]
+                else "unknown; not inferred from current environment"
+            ),
             "observed_artifact_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                          for p in sorted(directory.glob("*.csv"))},
             "records": len(raw), "duplicate_keys": len(raw) - len(keys),
@@ -40,7 +47,7 @@ def inventory() -> dict:
                                  max(int(r["n_pairs"]) for r in stats)] if stats else None,
             "outcomes": dict(Counter(r["result"] for r in stats)),
         }
-    return {"kind": "historical_inventory", "schema": 1,
+    return {"kind": "artifact_inventory", "schema": 1,
             "observed_utc": datetime.now(timezone.utc).isoformat(),
             "boundary": "Observed file hashes are not execution-time provenance or independent replications",
             "studies": studies}
@@ -49,4 +56,4 @@ def inventory() -> dict:
 if __name__ == "__main__":
     target = ROOT / "results/research_inventory.json"
     target.write_text(json.dumps(inventory(), indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {target.relative_to(ROOT)}; historical primary evidence unchanged")
+    print(f"Wrote {target.relative_to(ROOT)}; primary evidence unchanged")

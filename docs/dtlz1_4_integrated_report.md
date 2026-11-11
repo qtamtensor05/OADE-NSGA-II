@@ -1,7 +1,5 @@
 # OADE-NSGA-II v2: Integrated 7-Algorithm Evaluation Report (ZDT + DTLZ1–DTLZ4)
 
-> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
-
 ## 1. Executive Summary
 
 This report integrates the **DTLZ1–DTLZ4 multi- and many-objective benchmark** (`results/dtlz_benchmark`, $M \in \{2, 3, 5\}$, 12 problem configurations, 2,520 scheduled stochastic runs) with the **ZDT Benchmark v2** (`results/algorithm_benchmark_v2`, $M = 2$, 5 problems, 1,050 scheduled stochastic runs). Together, these evaluations cover **17 problem configurations and 3,570 scheduled runs**, comparing **OADE-NSGA-II v2** (Adaptive Diversity-Aware Restart) against six baseline implementations. Each run has a 20,000-evaluation cap; some algorithms stop below the cap.

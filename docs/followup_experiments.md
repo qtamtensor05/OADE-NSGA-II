@@ -1,8 +1,8 @@
-# Follow-up experiments: decisions after the audit
+# Research evidence priorities
 
 ## Claim retained now
 
-The current claim concerns the performance and failure boundaries of the implemented OADE configurations on selected continuous unconstrained benchmarks. It does not assert a new adaptive-restart mechanism, Sobol initialization benefit or superiority to the state of the art. Correcting names, formulas and documentation does not require rerunning archived benchmarks.
+The current claim concerns the performance and failure boundaries of the implemented OADE configurations on selected continuous unconstrained benchmarks. It does not assert a new adaptive-restart mechanism, Sobol initialization benefit or superiority to the state of the art.
 
 ## Prioritized evidence plan
 
@@ -17,6 +17,6 @@ The current claim concerns the performance and failure boundaries of the impleme
 
 ## Execution decision
 
-No full benchmark rerun is required for this documentation/provenance correction. The code paths receive small smoke checks; historical observations remain intact. Do not launch all six proposals as a single expensive batch. Baseline identity and the intended contribution determine which new scientific experiment is necessary. The safe fresh-run and manifest infrastructure is available for that next stage.
+The current ZDT tables have been validated against their paired run records and recorded provenance. The remaining proposals address distinct scientific questions and should not be launched as one batch. Baseline identity and the intended contribution determine which additional experiment is necessary; any new study should use a fresh output directory and an execution manifest.
 
 Suggested next scientific focus is adaptive vs no restart with telemetry, if the author intends adaptive restart as the primary contribution. Otherwise prioritize verified task-aligned baselines and uncertainty for the bounded empirical claim. Neither choice implies journal acceptance or novelty has already been established.

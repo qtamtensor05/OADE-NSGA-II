@@ -1,11 +1,11 @@
 {
-  "kind": "historical_inventory",
+  "kind": "artifact_inventory",
   "schema": 1,
-  "observed_utc": "2026-11-11T19:00:01.446412+00:00",
+  "observed_utc": "2026-11-11T19:44:23.438454+00:00",
   "boundary": "Observed file hashes are not execution-time provenance or independent replications",
   "studies": {
     "ablation": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "unknown; not inferred from current environment",
       "observed_artifact_sha256": {
         "algorithm_benchmark_convergence.csv": "0464d1d7b9845d696eaba8a7e2e133720a121d279fe92988c05e92c6f6feceda",
         "algorithm_benchmark_cost_summary.csv": "8c8eb9bec2973ef67eeaec6082b66b1040d7aeb09ead787c5f89be621cd666e6",
@@ -62,14 +62,14 @@
       }
     },
     "algorithm_benchmark": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "results/provenance/zdt_composition.json: RNSGA2 execution captured; other blocks archived",
       "observed_artifact_sha256": {
-        "algorithm_benchmark_convergence.csv": "9f83d6c66e05869cc3a6a8a95ad48f591ec22d7c6791a07a5f0b3413701aac83",
-        "algorithm_benchmark_cost_summary.csv": "efa0b2380585ac0e4a5bbec3ba82306cf8066f6b539de75cfaaa50deef821de0",
-        "algorithm_benchmark_igd_hv_summary.csv": "ec8e668452345e2c79c2f3c23654c186f782df7e7538f506c239355ffc819e5e",
-        "algorithm_benchmark_paired_statistics.csv": "0d0a16483392da200effd42335474186363967f574a0e1e841436fd9570607c8",
-        "algorithm_benchmark_raw_runs.csv": "67ed7e68dc61896241ed58d0a0c30b55510acdde9091be07b459dc0e34de00ed",
-        "algorithm_benchmark_validation.csv": "3835c8ea32c4eea0510ec4790415aa7c99dcd1a5ae580a6c06f0e2d67c66d1bd"
+        "algorithm_benchmark_convergence.csv": "2a27023feb297fda0f253e798b67f885d2b544e7c31ce36f3e6c46afbb29071c",
+        "algorithm_benchmark_cost_summary.csv": "b6e8750882b815e45732da3b2280fe8825cf7d9cebe899c540f0be1771a46f89",
+        "algorithm_benchmark_igd_hv_summary.csv": "32bfcc76867c7bdcb43d67f487442ee9c07d2e2824145b5ea1b4c70944fa44dc",
+        "algorithm_benchmark_paired_statistics.csv": "0311dab46ebb770cc897a92e204b6ad0044361db4bd61d48bde1f444cd70356f",
+        "algorithm_benchmark_raw_runs.csv": "1691b89306b9a8a32d448d55a4c3ee2f732a653c57a98bf9490f5193177dc96d",
+        "algorithm_benchmark_validation.csv": "bf029f94d3cdd124b552a0bc136d08560053647fe0ab8664b24cc176c1b23cb5"
       },
       "records": 1050,
       "duplicate_keys": 0,
@@ -119,14 +119,14 @@
       }
     },
     "algorithm_benchmark_v2": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "results/provenance/zdt_composition.json: RNSGA2 execution captured; other blocks archived",
       "observed_artifact_sha256": {
-        "algorithm_benchmark_convergence.csv": "e829bc0da68dd9b553bdde4fef50e7af80e9e81d7f979319ff3bd1e73ae01dbe",
-        "algorithm_benchmark_cost_summary.csv": "121f14d01a68de3e02615fd59ecf8896763fc9fffe1108a7c46079930f27da16",
-        "algorithm_benchmark_igd_hv_summary.csv": "4a74a3f95f7cecfa6e36f3b1b78ab8951b7125693d1f62c00e9394fc4de1a9d8",
-        "algorithm_benchmark_paired_statistics.csv": "008cf17dd449997a7bd75136db8102ca810a8c5c8ebc5ba3be79bb2919bb1f81",
-        "algorithm_benchmark_raw_runs.csv": "a32a167a665f9e4718505ec443df7e26cc0654c747883b4f96f8c8e0e3f6c02f",
-        "algorithm_benchmark_validation.csv": "4d11822c1c29291a3adcea7946dca59d996c68c7209f437da1f9e1674957712e"
+        "algorithm_benchmark_convergence.csv": "cabd2b49370f529bc88c41667279e7968b2563d2aafd6bb7dd51f401aaea00c0",
+        "algorithm_benchmark_cost_summary.csv": "993569e243027c91593fd358bde93573317a7b96351f5167bec84706be416cf7",
+        "algorithm_benchmark_igd_hv_summary.csv": "19db9b118bd68f2011164105ed20f089b56f19925988488b90a3dd66a2d7a74b",
+        "algorithm_benchmark_paired_statistics.csv": "cfad6b4e5776217969ec6ebc66392b006a0381e3433da5dec2cd49732f308d04",
+        "algorithm_benchmark_raw_runs.csv": "0e33aa7f53d04ea7f0b9e57ca33e7133974d854f9dbcf1b94e29388f9c811fbe",
+        "algorithm_benchmark_validation.csv": "f252bb1315dda7086fe22bafda908e237c8cbc12fb88ee6b1dad004fb1fe4edc"
       },
       "records": 1050,
       "duplicate_keys": 0,
@@ -176,7 +176,7 @@
       }
     },
     "dtlz_benchmark": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "unknown; not inferred from current environment",
       "observed_artifact_sha256": {
         "algorithm_benchmark_convergence.csv": "c6226df97272308a16d0805d30e467ecbd473d7127fbc059da33d70ec466d0ed",
         "algorithm_benchmark_cost_summary.csv": "8c00fb17afebfbc451b0f2bc5045bfd6e2578e8e491da60b3cad0b7deb31dc5e",
@@ -242,7 +242,7 @@
       }
     },
     "restart_confirmation": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "unknown; not inferred from current environment",
       "observed_artifact_sha256": {
         "algorithm_benchmark_convergence.csv": "38f81305e538ed678958e142160228e76b679a9119486a64f058cfe2d75ba430",
         "algorithm_benchmark_cost_summary.csv": "a0ec387e52fa7aefd81f6e22628a4f507c9dfd3570cfb392dc58cd73b1f9aab4",
@@ -298,7 +298,7 @@
       }
     },
     "wfg_compact_benchmark": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "unknown; not inferred from current environment",
       "observed_artifact_sha256": {
         "algorithm_benchmark_convergence.csv": "80420a7be617fd3c53a4994ad7b4efa4b740826ef6e47f3fd259364726342e2e",
         "algorithm_benchmark_cost_summary.csv": "2d345ba1ba046593e1d3e411878b0933f99c76aaed6cf1045c89529e76f976bb",
@@ -355,7 +355,7 @@
       }
     },
     "wfg_m2_7algo_benchmark": {
-      "historical_execution_environment": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "unknown; not inferred from current environment",
       "observed_artifact_sha256": {
         "algorithm_benchmark_convergence.csv": "31b447cc2c92e631f5d4467c0441f6eacdc4ab077091f60d03db2fba53403de7",
         "algorithm_benchmark_cost_summary.csv": "4a6d38f0b9d083a4853e197939150efa1766fae799f814448b4f3d87d76faac6",

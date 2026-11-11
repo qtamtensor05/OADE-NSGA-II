@@ -1,7 +1,5 @@
 # OADE-NSGA-II v2: Compact WFG Benchmark & Scaling Report (Non-Separability, Deception, and Objective Scaling)
 
-> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
-
 ## 1. Executive Summary
 
 To evaluate **OADE-NSGA-II v2** on four selected **WFG (Walking Fish Group)** problems ($D = 24$ decision variables; evaluation cap 20,000; $n = 30$ paired runs per configuration), we executed two benchmark experiments:

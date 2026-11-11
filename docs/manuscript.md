@@ -65,7 +65,7 @@ while another requested evaluation batch fits within the cap:
 return the last complete solver population; benchmark extracts nondominated output
 ```
 
-The budget proxy rejects a batch before its evaluation if it would exceed the cap. The archived RNSGA2 path omitted a population-sized aspiration-point setup evaluation from its counter and timer; new runs charge that work, so historical budget fairness has this stated exception. Actual recorded search evaluation use may be lower; this pseudocode does not imply every run consumes exactly 20,000 evaluations or that each partial internal operation is a completed generation.
+The budget proxy rejects a batch before its evaluation if it would exceed the cap. The current ZDT RNSGA2 block includes aspiration-point setup in its evaluation counter and runtime. Archived DTLZ/WFG results use the separate search-budget convention in the [experiment registry](experiment_registry.md#budget-definition). Actual recorded search evaluation use may be lower; this pseudocode does not imply every run consumes exactly 20,000 evaluations or that each partial internal operation is a completed generation.
 
 ## 4. Experimental protocol
 
@@ -105,7 +105,7 @@ The next evidence should resolve these uncertainties rather than simply expand t
 
 ## 7. Reproducibility and availability
 
-Code, configurations, tests, figure sources, detailed reports and run-level CSVs are organized in this repository. [Reproducibility instructions](reproducibility.md) distinguish present-day environment snapshots and historical artifact inventories from prospective execution manifests. Historical source/package versions cannot be certified retroactively. New runs record code/config/environment identity and primary artifact checksums, and refuse unsafe resume or overwrite.
+Code, configurations, tests, figure sources, detailed reports and run-level CSVs are organized in this repository. [Reproducibility instructions](reproducibility.md) distinguish present-day environment snapshots and historical artifact inventories from prospective execution manifests. The RNSGA2 ZDT execution manifest and composition of the ZDT tables are recorded in results/provenance/. Other archived source/package versions cannot be certified retroactively. New runs record code/config/environment identity and primary artifact checksums, and refuse unsafe resume or overwrite.
 
 ## Evidence allocation
 
