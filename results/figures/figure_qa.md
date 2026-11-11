@@ -1,13 +1,39 @@
 # Research Figure QA Record
 
+## Remediation QA — 12 November 2026
+
+The four Python bundles below were regenerated from unchanged historical source
+CSV values. Alignment JSON and PDF collision JSON are included with the source.
+The current Python audit environment is captured separately; old execution
+versions are not inferred from it.
+
+| Bundle | Alignment | PDF text floor | Collision status |
+|---|---|---|---|
+| integrated_7algo_landscape | PASS, 1.5 pt tolerance | 5.25 pt, PASS | PASS: 0 fail, 0 warn |
+| dtlz1_4_scaling_diagnosis | PASS, 1.5 pt tolerance | 5.25 pt, PASS | PASS: 0 fail, 0 warn |
+| wfg_m2_7algo_profile | PASS, 1.5 pt tolerance | 5.8 pt, PASS | PASS: 0 fail, 0 warn |
+| wfg_scaling_diagnosis | PASS, 1.5 pt tolerance | 5.8 pt, PASS | PASS: 0 fail, 0 warn |
+
+The integrated runtime panel explicitly uses DTLZ4 as a proxy for an aggregate
+quality rank, not a full-suite speed frontier. The DTLZ4 annotation now reports
+the observed M=5 median HV threshold rather than an unverified universal
+collapse rate. WFG labels describe observed medians and implementation runtime,
+without claiming an isolated escape mechanism or a tested landscape interaction.
+
+Preview review covers the panel labels, effect direction, declared center/spread,
+annotation meaning and readable composition. IQRs show run dispersion, not effect
+confidence intervals. The current automated results do not certify all earlier
+figures or replace physical-size inspection for a particular journal submission.
+
 ## Shared contract
 
-- Backend: R 4.6.2 with project-local `renv` dependencies.
+- Original v1/ablation figure family: R, with the available project-local `renv` snapshot (R 4.6.2). This snapshot does not certify all historical execution environments.
+- Later integrated/restart/v2/WFG figure family: Python/matplotlib; source scripts are in analysis/figures.
 - Independent unit: one stochastic run.
 - Replication: 30 runs per algorithm-problem or variant-problem group.
 - Export size: figure-specific within 165-180 mm width and 105-125 mm height.
 - Formats: editable PDF/SVG, 600-dpi TIFF, and 300-dpi PNG preview.
-- Multi-panel alignment: not applicable; each deliverable contains one plot area.
+- The single-plot QA records below apply to the original R figures only. Later Python multi-panel figures require their own alignment/collision records; the original PASS entries do not certify them.
 
 ## Benchmark rank heatmap
 

@@ -1,5 +1,7 @@
 # OADE-NSGA-II: Fixed-Budget Benchmark v2 Results Report
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## 1. Executive Summary
 
 This report evaluates the **Benchmark v2** results stored in `results/algorithm_benchmark_v2`. In this iteration, **OADE-NSGA-II v2** uses the **Adaptive Diversity-Aware Restart** configuration (`restart_mode: "adaptive"`, `restart_elite_ratio: 0.80`, `diversity_threshold: 0.02`), alongside Opposition-Based Learning (OBL) and adaptive operators. This benchmark compares complete configurations; it does not isolate the restart policy's contribution.
@@ -22,7 +24,7 @@ The benchmark schedules 1,050 runs across five bi-objective ZDT problems and pai
 | Design Element | Specification |
 |---|---|
 | **Problems** | ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$), and ZDT6 ($D=10$) |
-| **Compared Algorithms (7)** | 1. OADE-NSGA-II v2 (Adaptive Restart)<br>2. NSGA-II (Deb et al., 2002)<br>3. D-NSGA-II (Direction-based NSGA-II)<br>4. R-NSGA-II (Reference point NSGA-II)<br>5. CGDE-NSGA-II (Competitive & Guided DE)<br>6. NSGA-II-SDR-OLS (Strengthened Dominance Relation + Orthogonal Local Search)<br>7. CE-MOEA (Cross-Entropy MOEA) |
+| **Compared Algorithms (7)** | 1. OADE-NSGA-II v2 (Adaptive Restart)<br>2. NSGA-II (Deb et al., 2002)<br>3. D-NSGA-II (Dynamic NSGA-II)<br>4. R-NSGA-II (Reference point NSGA-II)<br>5. CGDE-NSGA-II (Cross-Generation DE (local implementation))<br>6. NSGA-II-SDR-OLS (Strengthened Dominance Relation + Opposition and Local Search)<br>7. CE-MOEA (Continuous Encoding MOEA (continuous-search adaptation)) |
 | **Replication Unit** | One stochastic run ($n = 30$ paired runs per comparison, $N = 1,050$ total observations) |
 | **Seed Range** | Seeds 42–71 (exact paired seed correspondence across all 7 algorithms) |
 | **Evaluation Budget** | Capped at 20,000 objective evaluations per run; actual use can be slightly lower when a generation would cross the cap |
@@ -146,5 +148,5 @@ To test whether the Benchmark v2 gains generalize beyond continuous bi-objective
 
 * **Integrated 17-problem outcome count (ZDT + DTLZ1–DTLZ4, 204 comparisons)**: **149 significant wins (73.0%), 41 comparisons with no detected difference (20.1%), and 14 significant losses (6.9%)** across 3,570 stochastic runs (`510/510` valid OADE fronts). The ZDT and DTLZ p-values were Holm-adjusted within separate suite-by-metric families; this combined count is descriptive, not a single 204-test correction.
 * **Results from later DTLZ validation**: Favorable corrected outcomes were observed on selected DTLZ1/3 comparisons, with some maximal effect sizes at $M=3$. No OADE collapsed front was recorded in 90 DTLZ4 runs, compared with 11/30 and 30/30 collapsed fronts for NSGA-II at $M=2$ and $M=5$. Across the 48 $M=5$ comparisons, OADE had no significant losses against NSGA-II or D-NSGA-II. These findings are bounded to the tested configurations and seeds; they do not establish immunity or general superiority.
-* **Specific Weaknesses Revealed**: On smooth or biased 3-objective spherical fronts (`dtlz2_m3`, `dtlz4_m3`), SBX-based NSGA-II/D-NSGA-II and CGDE-NSGA-II outperform OADE-NSGA-II v2 (~6%–14% IGD, ~2.3%–4.1% HV); at $M=5$ under extreme multimodality (`dtlz1_m5`, `dtlz3_m5`), crowding-distance saturation still limits Hypervolume penetration into the reference box ($\text{HV}_{\text{med}} = 0.0$).
+* **Specific Weaknesses Revealed**: On smooth or biased 3-objective spherical fronts (`dtlz2_m3`, `dtlz4_m3`), SBX-based NSGA-II/D-NSGA-II and CGDE-NSGA-II outperform OADE-NSGA-II v2 (~6%–14% IGD, ~2.3%–4.1% HV); at $M=5$ under extreme multimodality (`dtlz1_m5`, `dtlz3_m5`), Hypervolume remains at the reference-box floor in many runs; crowding-distance saturation is a candidate explanation that has not been isolated ($\text{HV}_{\text{med}} = 0.0$).
 

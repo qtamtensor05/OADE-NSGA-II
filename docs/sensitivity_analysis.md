@@ -1,5 +1,7 @@
 # Phân tích độ nhạy tham số
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## Phạm vi và phiên bản cấu hình
 
 Nghiên cứu này đánh giá riêng OADE-NSGA-II trên năm bài toán ZDT, với 30 run cho mỗi cấu hình, seed `42–71` và mức trần 20.000 lần đánh giá hàm mục tiêu. Các sweep thay đổi `pop_size`, `stagnation_patience` và giá trị khởi tạo F/CR. Đây là mức trần: số đánh giá thực tế có thể thấp hơn khi một thế hệ vượt ngân sách.

@@ -31,6 +31,9 @@ from algorithms.nsga2_sdr_ols import ProblemAdapter as SDROLSProblemAdapter
 from src.benchmarking.evaluation import BudgetedProblem, EvaluationBudgetExceeded, validate_result
 from src.benchmarking.pymoo_compare import make_initial_population, make_rnsga2_ref_points
 from src.benchmarking.statistics import STATISTICS_FIELDNAMES, paired_wilcoxon_rows
+from src.benchmarking.provenance import (
+    make_manifest, prepare_manifest, checkpoint_manifest, validate_records,
+)
 from src.oade_nsga2 import OADE_NSGAII, ProblemWrapper
 from src.utils.config import load_yaml_config
 from src.utils.csv_io import write_csv
@@ -198,10 +201,12 @@ def _run_pymoo(spec, problem, pop_size, budget, initial_x, seed, recorder) -> Ru
     params.setdefault("pop_size", pop_size)
     if spec.sampling == "initial_population":
         params.setdefault("sampling", FixedInitialSampling(initial_x, seed))
-    if spec.auto_ref_points:
-        params.setdefault("ref_points", make_rnsga2_ref_points(problem, initial_x))
-    algorithm = import_class(spec.class_path)(**params)
     start = time.perf_counter()
+    if spec.auto_ref_points and "ref_points" not in params:
+        # Aspiration-point setup is objective work too; include it in both the
+        # budget and runtime rather than evaluating the unwrapped problem.
+        params["ref_points"] = make_rnsga2_ref_points(budgeted, initial_x)
+    algorithm = import_class(spec.class_path)(**params)
     result = None
     try:
         with warnings.catch_warnings():
@@ -560,6 +565,7 @@ def run_one_problem(
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default=str(DEFAULT_CONFIG_PATH))
+    parser.add_argument("--out-dir", help="new output directory; existing evidence is never overwritten")
     parser.add_argument(
         "--resume",
         action="store_true",
@@ -573,12 +579,19 @@ def main(argv: list[str] | None = None) -> None:
     )
     args = parser.parse_args(argv)
     cfg = load_yaml_config(Path(args.config))
+    if args.out_dir:
+        cfg["global"]["out_dir"] = args.out_dir
+    jobs = int(args.jobs or cfg["global"].get("jobs", 1))
+    if jobs < 1:
+        raise ValueError("--jobs must be at least 1")
     specs = load_algorithm_specs([str(path) for path in cfg["algorithm_configs"]])
     out_dir = Path(cfg["global"]["out_dir"])
+    manifest = prepare_manifest(out_dir, make_manifest(cfg, specs), resume=args.resume)
     if args.resume:
         raw_rows = read_rows(out_dir / RAW_CSV, RAW_FIELDNAMES)
         validation_rows = read_rows(out_dir / VALIDATION_CSV, VALIDATION_FIELDNAMES)
         convergence_rows = read_rows(out_dir / CONVERGENCE_CSV, CONVERGENCE_FIELDNAMES)
+        validate_records(raw_rows, validation_rows, cfg, specs, convergence=convergence_rows)
         # Fail fast on schema/type/aggregation regressions before spending time
         # on another problem. This also repairs derived files after a previous
         # process stopped after primary evidence was checkpointed.
@@ -590,6 +603,7 @@ def main(argv: list[str] | None = None) -> None:
             specs,
             cfg.get("statistics", {}),
         )
+        checkpoint_manifest(out_dir, manifest)
         print(
             f"Resume preflight passed for {len(raw_rows)} existing run rows.",
             flush=True,
@@ -597,9 +611,6 @@ def main(argv: list[str] | None = None) -> None:
     else:
         raw_rows, validation_rows, convergence_rows = [], [], []
     expected_per_problem = int(cfg["global"]["runs"]) * len(specs)
-    jobs = int(args.jobs or cfg["global"].get("jobs", 1))
-    if jobs < 1:
-        raise ValueError("--jobs must be at least 1")
     print(f"Using {jobs} seed worker(s).", flush=True)
     for problem_cfg in cfg["problems"]:
         label = configured_problem_label(problem_cfg)
@@ -618,6 +629,7 @@ def main(argv: list[str] | None = None) -> None:
         raw_rows.extend(problem_rows)
         validation_rows.extend(problem_validation)
         convergence_rows.extend(problem_convergence)
+        validate_records(raw_rows, validation_rows, cfg, specs, convergence=convergence_rows)
         persist_outputs(
             out_dir,
             raw_rows,
@@ -626,7 +638,10 @@ def main(argv: list[str] | None = None) -> None:
             specs,
             cfg.get("statistics", {}),
         )
+        checkpoint_manifest(out_dir, manifest)
         print(f"[{label}] checkpoint saved to {out_dir.as_posix()}.")
+    validate_records(raw_rows, validation_rows, cfg, specs, require_complete=True,
+                     convergence=convergence_rows)
     invalid = sum(not row_is_valid(row) for row in raw_rows)
     print(f"Saved benchmark outputs to {out_dir.as_posix()} ({invalid} invalid runs).")
 

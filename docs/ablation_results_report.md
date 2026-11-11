@@ -1,5 +1,7 @@
 # OADE-NSGA-II Component Ablation Report
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## Scope
 
 This report evaluates the fixed-budget component ablation stored in `results/ablation`. The central question is whether each OADE-NSGA-II component improves final IGD or HV under the five tested bi-objective ZDT problems. The analysis treats one stochastic run as the independent unit and pairs variants by problem and run index.
@@ -111,7 +113,7 @@ Mean runtime averaged across the five problems ranged from 3.21 to 3.87 seconds 
 
 ## Research conclusion
 
-The ablation changes the recommended algorithm-development priority. Retaining OBL is supported for the tested ZDT4 configuration, although this experiment does not separate initial OBL from periodic opposition injection. The held-out restart confirmation later found better corrected outcomes for both No Restart and Adaptive Restart than Full OADE on ZDT1–ZDT3 and ZDT6, with no detected difference on ZDT4. Adaptive Restart and No Restart had identical final IGD/HV in 148/150 paired rows, so the adaptive mechanism itself remains unverified. The ablation does not establish an isolated final-quality benefit for F/CR adaptation, probability adaptation, or neighbourhood selection; non-significance is not equivalence.
+The ablation changes the recommended algorithm-development priority. Retaining OBL is supported for the tested ZDT4 configuration, although this experiment evaluates periodic opposition injection under a common uniform warm start; initial Sobol/OBL is bypassed. The held-out restart confirmation later found better corrected outcomes for both No Restart and Adaptive Restart than Full OADE on ZDT1–ZDT3 and ZDT6, with no detected difference on ZDT4. Adaptive Restart and No Restart had identical final IGD/HV in 148/150 paired rows, so the adaptive mechanism itself remains unverified. The ablation does not establish an isolated final-quality benefit for F/CR adaptation, probability adaptation, or neighbourhood selection; non-significance is not equivalence.
 
 A useful next candidate is Full OADE with restart disabled, but confirmation on new seeds has already been reported. Further component claims should use new, prespecified comparisons and keep the OBL, restart, and adaptation changes separable. The existing DTLZ/WFG benchmark results do not establish that the ZDT component effects generalize to those suites.
 

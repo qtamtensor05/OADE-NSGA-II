@@ -1,5 +1,7 @@
 # OADE-NSGA-II Restart Confirmation Report (Held-Out Seeds)
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## 1. Scope and Objective
 
 This report evaluates the held-out seed confirmation experiment stored in `results/restart_confirmation`. The experiment was designed to address the central recommendation of the component ablation study ([ablation_results_report.md](ablation_results_report.md), Section 9):

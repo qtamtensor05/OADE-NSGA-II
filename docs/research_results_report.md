@@ -1,5 +1,7 @@
 # OADE-NSGA-II: Fixed-Budget Benchmark Results
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## Report scope
 
 This report evaluates the completed fixed-budget benchmark stored in `results/algorithm_benchmark`. It replaces the earlier provisional assessment based on smaller and methodologically inconsistent experiment sets. Claims are restricted to the five tested bi-objective ZDT problems and the seven implementations included in this repository.

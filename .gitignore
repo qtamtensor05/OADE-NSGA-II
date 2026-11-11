@@ -9,24 +9,20 @@ htmlcov/
 *.tmp
 scratch/
 
-# Unit tests and smoke-test configs/outputs (kept locally only)
-tests/
-config/smoke_*.yaml
+# Reproducible test inputs are tracked; generated smoke outputs are local.
 results/smoke*/
 
 # Local report-writing, figure-generation scripts, and heavy/QA artifacts
 .r-bootstrap/
-.Rprofile
-renv.lock
-renv/
+renv/library/
+renv/staging/
+renv/cache/
+renv/python/
 .Rhistory
 .RData
 .Ruserdata
-analysis/
-scripts/render_research_figures.ps1
-results/figures/*.alignment.json
+analysis/**/__pycache__/
 results/figures/*.alignment.svg
-results/figures/*.collision-audit.json
 results/figures/*.collision-audit.pdf
 results/figures/*.tiff
 

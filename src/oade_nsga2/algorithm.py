@@ -30,7 +30,7 @@ class OADE_NSGAII:
     ------------------------------------------------
     - Khởi tạo OBL + Sobol/LHS thay vì phân phối đều thuần tuý
     - Đột biến DE/current-to-pbest/1 hướng láng giềng thay SBX đơn thuần
-    - Tham số F, CR tự thích nghi theo Lehmer-mean (SaDE-style)
+    - F cập nhật theo Lehmer mean, CR theo trung bình cộng của DE có rank 1
     - Phun đa dạng định kỳ qua OBL mỗi 10 thế hệ
     - Phát hiện trì trệ và partial restart khi ideal point ngừng cải thiện
     """
@@ -260,9 +260,9 @@ class OADE_NSGAII:
     # Cập nhật tham số thích nghi
     def _update_adaptive_parameters(self, offspring: List[Individual]) -> None:
         """
-        Cập nhật prob_de, mean_F, mean_CR dựa trên con lai đạt Pareto front 1.
+        Cập nhật prob_de theo tỷ phần con DE được sinh; F/CR theo DE có rank 1.
 
-        prob_de : EMA của tỉ lệ DE thành công trong offspring
+        prob_de : EMA của tỷ phần DE được sinh, không phải tỷ lệ thành công
         mean_F  : Lehmer mean của F — ưu giá trị lớn, khuyến khích khám phá
         mean_CR : trung bình cộng của CR
         """

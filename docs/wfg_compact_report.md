@@ -1,5 +1,7 @@
 # OADE-NSGA-II v2: Compact WFG Benchmark & Scaling Report (Non-Separability, Deception, and Objective Scaling)
 
+> [Implementation identity correction] Names refer to the implementations in [baseline registry](baselines.md): Dynamic NSGA-II, local Cross-Generation DE, continuous-search CE adaptation, and opposition/local-search SDR-OLS. Fixed-budget OADE uses a common uniform warm start, bypassing standalone Sobol/initial OBL. DTLZ comparisons have 26–30 valid matched pairs; historical corner-collapse diagnostics are distinct from invalid `collapsed_front` records.
+
 ## 1. Executive Summary
 
 To evaluate **OADE-NSGA-II v2** on four selected **WFG (Walking Fish Group)** problems ($D = 24$ decision variables; evaluation cap 20,000; $n = 30$ paired runs per configuration), we executed two benchmark experiments:
@@ -118,7 +120,7 @@ To evaluate **OADE-NSGA-II v2** on four selected **WFG (Walking Fish Group)** pr
 The convergence trajectories (`results/wfg_compact_benchmark/algorithm_benchmark_convergence.csv`) and solver source suggest hypotheses for the observed performance differences across these dimensions. They do not establish causal explanations:
 
 1. **Early-budget observations (`WFG1`, `WFG9`)**:
-   At the recorded 2,000-evaluation checkpoint, `wfg1_m5` HV was `1283.63` for OADE and `272.87` for NSGA-II. On `wfg9_m2`, OADE had lower final IGD than the tested comparators. These observations are consistent with strong early exploration, but the experiment does not isolate Sobol initialization, OBL, DE mutation, or periodic injection as the cause. OADE also retained a mean front size of 100 in the 12 compact configurations; this is descriptive, not a quality guarantee.
+   At the recorded 2,000-evaluation checkpoint, `wfg1_m5` HV was `1283.63` for OADE and `272.87` for NSGA-II. On `wfg9_m2`, OADE had lower final IGD than the tested comparators. These observations are consistent with strong early exploration, but the experiment does not isolate DE mutation or periodic OBL injection as the cause; Sobol/initial OBL is bypassed by the common uniform warm start. OADE also retained a mean front size of 100 in the 12 compact configurations; this is descriptive, not a quality guarantee.
 2. **Candidate causes of 3D/5D regression (`WFG4/6/9` at $M = 3, 5$)**:
    *(Source-level hypotheses only; no component-level WFG ablation has been run to quantify individual contributions.)*
    * **Hard-coded `n_neighbors: 5` Config Override**: Although [`OADE_NSGAII.__init__`](../src/oade_nsga2/algorithm.py#L53-L54) specifies scaling `n_neighbors` up to `15` for $M \ge 3$, [`config/algorithms/oade_nsga2.yaml`](../config/algorithms/oade_nsga2.yaml#L10) sets `n_neighbors: 5`, restricting [`_neighborhood_mutant`](../src/oade_nsga2/operators.py#L140-L160) to `top_k = 1` neighbor even in 5-objective spaces.
