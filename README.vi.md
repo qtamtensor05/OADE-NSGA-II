@@ -40,8 +40,8 @@ Báo cáo ghi rõ thiết kế benchmark, dữ liệu từng lần chạy, kiể
 
 | Thành phần | Thiết lập và cách diễn giải |
 |---|---|
-| Đơn vị phân tích | Một lần chạy ngẫu nhiên hoàn chỉnh; lên lịch 30 lần/cấu hình. DTLZ có 26–30 cặp hợp lệ mỗi so sánh; các bộ benchmark chính còn lại có 30 cặp. |
-| Ngân sách | ZDT có trần 20.000 đánh giá/lần, bao gồm bước tạo aspiration points và runtime của RNSGA2. DTLZ/WFG lưu theo quy ước ngân sách tìm kiếm riêng; xem [định nghĩa ngân sách](docs/experiment_registry.md#budget-definition). |
+| Đơn vị phân tích | Một lần chạy ngẫu nhiên; 30 lần/cấu hình. Số cặp hợp lệ hiện tại: algorithm_benchmark_v2: 30–30; dtlz_benchmark: 26–30; wfg_m2_7algo_benchmark: 30–30; wfg_compact_benchmark: 30–30. |
+| Ngân sách | Các khối RNSGA2 trên ZDT, DTLZ, WFG tính cả aspiration-point setup trong trần 20.000 đánh giá và runtime; xem [quy ước theo suite](docs/experiment_registry.md#budget-definition). |
 | Sử dụng ngân sách | Có thể dừng dưới trần nếu lô đánh giá tiếp theo vượt ngân sách; OADE thường dùng khoảng 99,7–99,9%. |
 | Ghép cặp | Các thuật toán được cấp cùng quần thể ban đầu và cùng seed cho mỗi lần chạy. |
 | Chỉ số chất lượng | IGD càng thấp càng tốt; HV càng cao càng tốt. |
@@ -75,53 +75,14 @@ Xem [bảng baseline](docs/baselines.md) để biết nguồn mã, cấu hình v
 
 ## 3. Kết quả đã ghi nhận
 
-### Tổng hợp ZDT v2 và DTLZ1–4
-
-Trong **204 so sánh** từ 3.570 bản ghi, OADE có **149 thắng (73,0%), 41 không phát hiện khác biệt (20,1%) và 14 thua (6,9%)**. OADE có 510/510 lần chạy hợp lệ. Tổng này gộp các họ Holm riêng và chỉ mang ý nghĩa mô tả.
-
-| Bộ kết quả | Thắng | Không phát hiện khác biệt | Thua | Xếp hạng mô tả |
+| Bộ kết quả | Bản ghi | Không hợp lệ | So sánh | OADE thắng / không phát hiện khác biệt / thua |
 |---|---:|---:|---:|---|
-| ZDT v2 | 58 | 1 | 1 | Hạng 1 theo trung bình trên 8/10 tổ hợp bài toán–chỉ số. |
-| DTLZ1–4 | 91 | 40 | 13 | Hạng 1 trên 8/12 trung vị IGD và 7/12 trung bình HV; không có so sánh thua có ý nghĩa thống kê tại $M=5$ trong bộ này. |
+| algorithm_benchmark_v2 | 1050 | 0 | 60 | 58 / 1 / 1 |
+| dtlz_benchmark | 2520 | 18 | 144 | 91 / 40 / 13 |
+| wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
+| wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
-Trên 17 cấu hình, số thắng/không phát hiện khác biệt/thua lần lượt là: CE-MOEA **23/11/0**, SDR-OLS **30/4/0**, R-NSGA-II **31/3/0**, NSGA-II **22/7/5**, D-NSGA-II **22/7/5** và CGDE **21/9/4**.
-
-### ZDT v2
-
-Giá trị OADE dưới đây là **trung bình ± độ lệch chuẩn** trên 30 lần chạy. Xếp hạng mô tả không thay thế kiểm định ghép cặp.
-
-| Bài toán | IGD ↓ của OADE | HV ↑ của OADE | Diễn giải |
-|---|---:|---:|---|
-| ZDT1 | 0.004475 ± 0.000251 | 0.870866 ± 0.000232 | Tốt nhất theo trung bình ở cả hai chỉ số; thắng NSGA-II sau Holm. |
-| ZDT2 | 0.004756 ± 0.000292 | 0.537674 ± 0.000222 | Tốt nhất theo trung bình ở cả hai chỉ số; thắng NSGA-II sau Holm. |
-| ZDT3 | 0.004986 ± 0.000336 | 1.051221 ± 0.000152 | Tốt nhất theo trung bình ở cả hai chỉ số. |
-| ZDT4 | 0.006831 ± 0.003329 | 0.865051 ± 0.005679 | Tốt nhất theo trung bình ở cả hai chỉ số; thắng NSGA-II sau Holm. |
-| ZDT6 | 0.003844 ± 0.000193 | 0.438177 ± 0.000253 | CGDE có trung bình tốt hơn; IGD không phát hiện khác biệt ($p_{adj}=0.776$), HV nghiêng về CGDE ($p_{adj}\approx5.58\times10^{-8}$). |
-
-Bảng đối chứng đầy đủ, p-value và cỡ hiệu ứng nằm trong [báo cáo ZDT v2](docs/benchmark_v2_results_report.md).
-
-### Điểm nổi bật trên DTLZ1–4
-
-- **DTLZ1:** kết quả thuận lợi trên các cấu hình đa cực trị. Tại $M=5$, trung vị IGD của OADE là `0.8972`, so với NSGA-II `40.17`; chỉ 13/30 lần OADE có HV dương, các baseline đều 0/30 trong cấu hình này.
-- **DTLZ2:** tại $M=3$, OADE có IGD kém hơn NSGA-II/D-NSGA-II và CGDE; tại $M=5$, OADE có trung vị IGD `0.4214` và HV `0.4517`.
-- **DTLZ3:** OADE có kết quả IGD thuận lợi ở nhiều so sánh, nhưng tại $M=5$ cả bảy thuật toán đều có HV bằng 0 trong toàn bộ 30 lần chạy.
-- **DTLZ4:** tại $M=3$, OADE vẫn có thiếu hụt IGD trước một số đối chứng; tại $M=5$, OADE có trung vị IGD `0.3746`. OADE không có đầu ra bị validator đánh dấu không hợp lệ trong 90 lần DTLZ4. Các chẩn đoán corner-collapse lịch sử là tiêu chuẩn khác, chưa có rule ghi lại đầy đủ; không diễn giải chúng như tỷ lệ lỗi cấu trúc.
-
-Toàn bộ DTLZ có **18 đầu ra không hợp lệ** từ các đối chứng; các kiểm định chất lượng dùng cặp hợp lệ và vì vậy có điều kiện theo valid output. Xem [báo cáo tích hợp](docs/dtlz1_4_integrated_report.md).
-
-### WFG hai mục tiêu và mở rộng số mục tiêu
-
-| Thí nghiệm | Thắng / không phát hiện khác biệt / thua | Phạm vi |
-|---|---|---|
-| WFG $M=2$, 7 thuật toán | **42 / 0 / 6** trên 48 so sánh | 840 bản ghi, 0 không hợp lệ; OADE có hạng trung bình mô tả 1.75. |
-| Compact WFG, 5 thuật toán | **56 / 11 / 29** trên 96 so sánh | 1.800 bản ghi, 0 không hợp lệ. |
-| Compact WFG tại $M=2$ | 28 / 0 / 4 | Tỷ lệ thắng 87,5%. |
-| Compact WFG tại $M=3$ | 17 / 4 / 11 | Tỷ lệ thắng 53,1%. |
-| Compact WFG tại $M=5$ | 11 / 7 / 14 | Tỷ lệ thắng 34,4%. |
-
-OADE thuận lợi trên WFG1 và WFG9 hai mục tiêu. Với `wfg9_m2`, trung vị IGD là `0.0347`, trong khi sáu đối chứng có trung vị khoảng `0.128–0.640`. Với `wfg6_m2`, CGDE có IGD tốt hơn (`0.0302` so với `0.0526`) nhưng runtime đo được lớn hơn khoảng 101 lần trong môi trường và bản triển khai này. WFG4 và một số WFG6/9 ở số mục tiêu cao bộc lộ hạn chế của OADE.
-
-Tổng hợp ZDT + WFG hai mục tiêu cho 100/1/7 trên 108 so sánh, nhưng vẫn là mô tả các họ kiểm định riêng. Xem [báo cáo WFG](docs/wfg_compact_report.md); không suy diễn xu hướng trên bốn hàm thành quy luật mở rộng tổng quát.
+Bảng đầy đủ: [ZDT](docs/benchmark_v2_results_report.md), [DTLZ](docs/dtlz_results_report.md), [ZDT/DTLZ tích hợp](docs/dtlz1_4_integrated_report.md), [WFG](docs/wfg_compact_report.md). W/ND/L là thắng/không phát hiện khác biệt/thua của OADE. Holm áp dụng riêng theo suite/chỉ số; tổng qua nhiều suite chỉ mang tính mô tả. Hai bảng WFG dùng chung 120 bản ghi RNSGA2 tại M=2, không phải hai lần xác nhận độc lập.
 
 <a id="diem-manh"></a>
 
@@ -143,7 +104,7 @@ Tổng hợp ZDT + WFG hai mục tiêu cho 100/1/7 trên 108 so sánh, nhưng v�
 - **Baseline cần diễn giải đúng:** một số đối chứng là bản cục bộ hoặc adaptation; chưa đủ căn cứ cho kết luận vượt state of the art.
 - **Chưa cô lập đầy đủ đóng góp thành phần:** ablation hỗ trợ periodic OBL trên ZDT4, chưa xác nhận lợi ích riêng của mọi cập nhật thích nghi hay adaptive restart.
 - **Bất định và thất bại:** chưa có khoảng tin cậy cho paired effects; cần bổ sung phân tích có xét thất bại, đồng thời giữ rõ định nghĩa structural invalid và quality collapse.
-- **Provenance lịch sử chưa đầy đủ:** không thể dùng snapshot môi trường audit để chứng nhận phiên bản tạo dữ liệu cũ. Khối RNSGA2 trên ZDT có manifest thực thi; các khối khác giữ nguồn gốc theo từng đợt, và DTLZ/WFG dùng quy ước ngân sách tìm kiếm riêng.
+- **Provenance lịch sử chưa đầy đủ:** không thể dùng snapshot môi trường audit để chứng nhận phiên bản tạo dữ liệu cũ. Các khối RNSGA2 trên ZDT/DTLZ/WFG có manifest thực thi; các khối thuật toán khác giữ nguồn gốc theo từng đợt, được ghi trong danh mục thí nghiệm.
 
 Xem [kế hoạch thí nghiệm tiếp theo](docs/followup_experiments.md).
 

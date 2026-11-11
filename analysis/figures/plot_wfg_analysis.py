@@ -292,7 +292,8 @@ def build_wfg_m2_7algo_figure(
     cbar.set_ticklabels(["-1 (Base wins)", "0", "+1 (OADE wins)"])
     cbar.ax.tick_params(labelsize=5.8, length=2.0, pad=1.5)
     cbar.outline.set_linewidth(0.5)
-    cax.set_title("Holm rank-biserial effect r (42W / 0T / 6L)", fontsize=6.0, pad=3.0)
+    outcomes = Counter(row["result"] for row in stats)
+    cax.set_title(f"Effect r ({outcomes['reference_better']}W / {outcomes['no_significant_difference']}ND / {outcomes['comparison_better']}L)", fontsize=6.0, pad=3.0)
     add_panel_label(ax_a, "a", x_offset_pt=-8.0, y_offset_pt=20.0)
 
     # Panel b: Raw-seed IGD distributions on non-separable deceptive WFG9 (M=2, n=30)
@@ -600,7 +601,9 @@ def build_wfg_scaling_figure(
     ax_a.set_ylim(0, 36.5)
     ax_a.set_yticks([0, 8, 16, 24, 32])
     ax_a.set_ylabel("Holm tests per M (max 32)", fontsize=7.0)
-    ax_a.set_title("5-algo scaling: 87.5% to 34.4% wins", fontsize=7.3, fontweight="bold", pad=12.0)
+    first_rate = 100 * wins[0] / (wins[0] + ties[0] + losses[0])
+    last_rate = 100 * wins[-1] / (wins[-1] + ties[-1] + losses[-1])
+    ax_a.set_title(f"5-algo scaling: {first_rate:.1f}% to {last_rate:.1f}% wins", fontsize=7.3, fontweight="bold", pad=12.0)
     ax_a.legend(loc="lower center", bbox_to_anchor=(0.50, 0.96), ncol=3,
                 fontsize=5.8, handlelength=1.0, columnspacing=0.8)
     add_panel_label(ax_a, "a", x_offset_pt=-22.0, y_offset_pt=12.0)

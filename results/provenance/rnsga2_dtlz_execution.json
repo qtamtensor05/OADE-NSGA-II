@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "kind": "captured_before_execution",
+  "created_utc": "2026-11-11T20:06:01.389874+00:00",
+  "protocol": {
+    "global": {
+      "runs": 30,
+      "pop_size": 100,
+      "evaluation_budget": 20000,
+      "seed_base": 42
+    },
+    "problems": [
+      {
+        "name": "dtlz1",
+        "n_obj": 2,
+        "n_var": 6
+      },
+      {
+        "name": "dtlz1",
+        "n_obj": 3,
+        "n_var": 7
+      },
+      {
+        "name": "dtlz1",
+        "n_obj": 5,
+        "n_var": 9
+      },
+      {
+        "name": "dtlz2",
+        "n_obj": 2,
+        "n_var": 11
+      },
+      {
+        "name": "dtlz2",
+        "n_obj": 3,
+        "n_var": 12
+      },
+      {
+        "name": "dtlz2",
+        "n_obj": 5,
+        "n_var": 14
+      },
+      {
+        "name": "dtlz3",
+        "n_obj": 2,
+        "n_var": 11
+      },
+      {
+        "name": "dtlz3",
+        "n_obj": 3,
+        "n_var": 12
+      },
+      {
+        "name": "dtlz3",
+        "n_obj": 5,
+        "n_var": 14
+      },
+      {
+        "name": "dtlz4",
+        "n_obj": 2,
+        "n_var": 11
+      },
+      {
+        "name": "dtlz4",
+        "n_obj": 3,
+        "n_var": 12
+      },
+      {
+        "name": "dtlz4",
+        "n_obj": 5,
+        "n_var": 14
+      }
+    ],
+    "algorithms": [
+      {
+        "name": "RNSGA2",
+        "runner": "pymoo",
+        "params": {},
+        "class_path": "pymoo.algorithms.moo.rnsga2.RNSGA2",
+        "sampling": "initial_population",
+        "auto_ref_points": true
+      }
+    ],
+    "statistics": {
+      "alpha": 0.05,
+      "reference_algorithm": "RNSGA2"
+    },
+    "initialization": "common numpy.default_rng(seed).uniform warm start",
+    "reference_front": "problem.pareto_front; Das-Dennis H=200/20/6 for M=2/3/5 unless configured",
+    "hypervolume_reference": "max(reference_front, axis=0) + 0.1",
+    "budget_accounting": "v2: includes RNSGA2 aspiration-point objective evaluations"
+  },
+  "source_hashes": {
+    "algorithms/__init__.py": "917a1b4852fdcad9004c0460fc340389399099faace679b929799200ed4af2a3",
+    "algorithms/ce_moea/__init__.py": "e14bf9a8bab2c70ce2ef0651f78c118615ad8b5ccbf58f3e25e6e670af3daf19",
+    "algorithms/ce_moea/algorithm.py": "3754c41a815a04384e13627ff67de2f7f2a2b681514350c37db388e632aac625",
+    "algorithms/ce_moea/core.py": "bf99f6ef6e3df9af7f2d859049f8a7602c00fc6f527dc822c18270d11b7a7d6f",
+    "algorithms/ce_moea/encoding.py": "24e23a1faa14828eae73d95722ee3b009e6dc56c4eec51c48edc548d8b16d56d",
+    "algorithms/ce_moea/nsga2.py": "c64a434a0495a3fdd5cae8386887a8e46cc05c2caeb60610b3047022bf059f02",
+    "algorithms/ce_moea/objectives.py": "09aea293bd8a482ccb84b536a1b7b34f33c11670d62a311831c8c33789d158fe",
+    "algorithms/ce_moea/operators.py": "8b884949df8c937e7e3d819631b1613304ec4abe0e02561a5f294a91969069a3",
+    "algorithms/cgde_nsga2/__init__.py": "067b67f5741644a6766473a27164b261db4610332b3f59e3c12fdfc45d179a2e",
+    "algorithms/cgde_nsga2/algorithm.py": "3c8cb09ee75330a9967d6ca68778be0ba86851e80865ad2bd366f03bbea698fb",
+    "algorithms/cgde_nsga2/core.py": "50c0ca58a45f9e1faa35bfc56f41a8064c13cc8b261632a86622152aaaddecf1",
+    "algorithms/cgde_nsga2/nsga2.py": "c886dbf65b7f99e0a53df5b1d1e7587fa5cdde50d2898e4c701d45fad03a8016",
+    "algorithms/cgde_nsga2/operators.py": "ed0dab6051dce2872ee240f98a8322e1d5fa6f963a3a6086bfa0ee31392fda1f",
+    "algorithms/nsga2_sdr_ols/__init__.py": "2d321a3be0dbd51429ab38774eb421802e482cd5f9826739c1d863a8f8332548",
+    "algorithms/nsga2_sdr_ols/algorithm.py": "3ef3652b078451942efeda2aec543b0ea5a7e0d47bae00883c6857b4b64c5b8a",
+    "algorithms/nsga2_sdr_ols/core.py": "2cd1a8e18182bc89fda80a735944b7227dda96b5cce9ece2223865609e96ecf5",
+    "algorithms/nsga2_sdr_ols/operators.py": "398e97077c5a824eb650262832376285b5989f52ccaf783375d1dfe84b3e1f18",
+    "algorithms/nsga2_sdr_ols/sdr.py": "0ee26f3f9971348831b1251226f9b69507cadace9ca085355672266f157a7849",
+    "requirements.txt": "82dab81f421f3ebe98ebcd09e04fd687d8e495771b19b482de6a5b2f67820e7d",
+    "scripts/run_benchmark_v2.py": "63438565fed4b4ed810052b8431e58cbfb82f9a562cc12ce21348c0c601fc83f",
+    "src/__init__.py": "8f66c031b900461bad8b9183ec9fe1252a9d1b8c00000426d90574b32991a8af",
+    "src/benchmarking/__init__.py": "4f2c2bf8dd059971c4397ccde02150cf8a7651a10f6afec0dd98dcc47bb0c082",
+    "src/benchmarking/ablation.py": "6c771914a64d7d5c4d232d5abe67d398561282e27a4a1e6470dc02046a985bce",
+    "src/benchmarking/algorithm_benchmark.py": "9db3e768e5c408462c72a59fbf2e46b07c6a0a9d16889bb181f10820bc957d8a",
+    "src/benchmarking/dtlz_benchmark.py": "e99e094374d792ef85e1320cfb1dec1f2b3e432ab2920a0940c5621eb8cd93a5",
+    "src/benchmarking/evaluation.py": "98f9cb26e64b330acfe276048d861c42a07b8b472c7817f76c337e2102e744e1",
+    "src/benchmarking/provenance.py": "3e11b92e702b1ae76fe14f4acf42e1fe166ca5543c8166638a77963e0c0bdc87",
+    "src/benchmarking/pymoo_compare.py": "69e231743579c106ac84efbaeff9514c7a301113166f914529b51dd01332606e",
+    "src/benchmarking/statistics.py": "b0aa9561e7a1a768598340d054c8781e0b5198d944ea2078f6d5d17d13369375",
+    "src/benchmarking/wfg_benchmark.py": "51146537dc257deb3538797f9f672a04119eb03461f0ecf380a846ab90645a59",
+    "src/oade_nsga2/__init__.py": "3a2a7e6f0b2be53cb95bf6344b955f6b9156a935c14af320d5add89d58cad4ce",
+    "src/oade_nsga2/algorithm.py": "ccd95b3917b62c6ff9f4ed1875d283b1e591564508d6e216d31376f46c36cacc",
+    "src/oade_nsga2/core.py": "7a3af86abc19ac6e9b5fdb67c1f09625002dc24b524ee987cb400e6fd7f7acd2",
+    "src/oade_nsga2/operators.py": "c33b33bba5b8ffd3f43417ba599f5c93d1c1ee8270b92f2cec22eef83ba37995",
+    "src/oade_nsga2/selection.py": "bbf9e1eeb4d9e6ee4c4755c26b7bb64fa2b852ce2ce6acf458b5203536d41129",
+    "src/plotting/__init__.py": "8ba7d181da368c7497342a9b6698f6ff1dff7fb72302504ed9a7b44b99fcfe61",
+    "src/plotting/algorithm_benchmark.py": "6c14dd62e6bdc46a5a2be16af5fd35572ea72c13408f4fa052289e4fe3680b9f",
+    "src/plotting/all_problems.py": "0961bd736fa4067cbb7730e051b840707eb3c0d387c187681519dbb6d5cc9ec5",
+    "src/plotting/common.py": "26505c50851a96cdf6f980a1617d17e9e844c51d4a03808526d9d62654288bf4",
+    "src/plotting/convergence.py": "ab8fddc9e256327f7c807bedc01d3feb1c0ecaea2f65c71c4730e53630ff2e6d",
+    "src/plotting/parameter_sensitivity.py": "85b48ca252303f46b9f87916a0260d488d7099880d2b62018985eea010a839dc",
+    "src/plotting/wilcoxon_results.py": "dbdbbd46e246ec6735acd78a08ff89cfeee49000dd1d298aab608004a3039f01",
+    "src/sensitivity/__init__.py": "a6ab5f117e13ec06e452201d5209bfea6825e05246a0ca611aa801cbfc2be668",
+    "src/sensitivity/parameter_analysis.py": "4b4e756e8ec256ba4a17797bc99cf7c2d5b1a9b53f024afa41b39ed0adf75670",
+    "src/utils/__init__.py": "d472c4eb866a20cd5f4295e06313fc030c4658058a0bd47c072099d8c8224ccd",
+    "src/utils/config.py": "f897c4062c20e8e9165cd789d473d4278819e16a89c06bbe90ec43c33afcfed8",
+    "src/utils/csv_io.py": "740a718b9aba4be4775b7d8c6b321ae32b0fd1acd45c9d72aa58dc443bb79a92"
+  },
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pymoo": "0.6.2",
+      "PyYAML": "6.0.3"
+    },
+    "threads": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "git_commit": "d90b70a2fa0774155cf3817f99598f9eceda9ee0",
+  "git_dirty": true,
+  "artifacts": {
+    "algorithm_benchmark_raw_runs.csv": "1a132e12616a13ed77986216ecd5bfa65cce7443753f1988c389d8e292578159",
+    "algorithm_benchmark_validation.csv": "9eaae319792cc19ec1efd78a2cc708479879e552f6a92dcb8af139b072c703b1",
+    "algorithm_benchmark_convergence.csv": "6f8f5f277bfe6ace3cf34ee4d384fcf04e60d017f9cf2c98cc0379dde3d1a365"
+  }
+}

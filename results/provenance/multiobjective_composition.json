@@ -1,0 +1,95 @@
+{
+  "kind": "dataset_composition",
+  "schema": 1,
+  "observed_utc": "2026-11-11T20:28:20.238810+00:00",
+  "datasets": {
+    "dtlz_benchmark": {
+      "records": 2520,
+      "rnsga2_records": 360,
+      "other_records": 2160,
+      "invalid_records": 18,
+      "invalid_rnsga2_records": 0,
+      "valid_pair_range": [
+        26,
+        30
+      ],
+      "statistics_rows": 144,
+      "outcomes": {
+        "reference_better": 91,
+        "no_significant_difference": 40,
+        "comparison_better": 13
+      },
+      "primary_and_derived_sha256": {
+        "algorithm_benchmark_raw_runs.csv": "9e8196bc7f11c891cd8e0203f66212d2fb7471e9ce60b2567b488184fe8fe99f",
+        "algorithm_benchmark_validation.csv": "4d7e0820f48abeff21d54937e1097e609e630c0cfac21da093feebb0d9318dea",
+        "algorithm_benchmark_convergence.csv": "2577c5b9f3d8d26aa8a6a26940f5d6f766344338a10b85e96ae73ca7adb80ac4",
+        "algorithm_benchmark_igd_hv_summary.csv": "4755261d8575520c1db865b1ab0e3c03af8b2d249431af7944c0f54f0c7d70d2",
+        "algorithm_benchmark_paired_statistics.csv": "a5030a36bdf0a0ee2b4a1240bea6b95b6ddd1f00afc4d352ae121839e078493f",
+        "algorithm_benchmark_cost_summary.csv": "8e9d6adbcec7b84ba9f3f8d6e6353fa7e50ed6f899a4fb7049651764bf1eb522"
+      },
+      "execution_manifest": "rnsga2_dtlz_execution.json",
+      "rnsga2_provenance": "Captured execution manifest. Filtering RNSGA2 from the full DTLZ or compact WFG table reconstructs primary block hashes. The M=2 WFG table contains the matching subset.",
+      "other_algorithms_provenance": "Archived blocks retain recorded seeds, dimensions and budgets; historical source/package versions are not retroactively assigned.",
+      "budget": "20000 evaluations including RNSGA2 aspiration-point setup and runtime"
+    },
+    "wfg_m2_7algo_benchmark": {
+      "records": 840,
+      "rnsga2_records": 120,
+      "other_records": 720,
+      "invalid_records": 0,
+      "invalid_rnsga2_records": 0,
+      "valid_pair_range": [
+        30,
+        30
+      ],
+      "statistics_rows": 48,
+      "outcomes": {
+        "reference_better": 42,
+        "comparison_better": 6
+      },
+      "primary_and_derived_sha256": {
+        "algorithm_benchmark_raw_runs.csv": "fbc895f37c1c10ba357c2273e5b6159b5a06c9427287d14df89ed6185ae5f7c9",
+        "algorithm_benchmark_validation.csv": "823defda647b8555519103b395b7d8178bc2960fe401316c5728e6130cae7344",
+        "algorithm_benchmark_convergence.csv": "d3e4fe794313ec891bc1c044caf0ff76f3f89d418d28d6012068d292159ec509",
+        "algorithm_benchmark_igd_hv_summary.csv": "d407c0b8b9ef0e6a0795351b7a06022f4742bee86f366d8cdd5b25989c74e290",
+        "algorithm_benchmark_paired_statistics.csv": "fe385ad7db03809f370495d07d38fc34dcb766d4d60dcbc22b4594b773326013",
+        "algorithm_benchmark_cost_summary.csv": "8d858e13c24a17011fcb2835e81fada848900436ff0cd28de7b353c8b1cf7dfd"
+      },
+      "execution_manifest": "rnsga2_wfg_execution.json",
+      "rnsga2_provenance": "Captured execution manifest. Filtering RNSGA2 from the full DTLZ or compact WFG table reconstructs primary block hashes. The M=2 WFG table contains the matching subset.",
+      "other_algorithms_provenance": "Archived blocks retain recorded seeds, dimensions and budgets; historical source/package versions are not retroactively assigned.",
+      "budget": "20000 evaluations including RNSGA2 aspiration-point setup and runtime"
+    },
+    "wfg_compact_benchmark": {
+      "records": 1800,
+      "rnsga2_records": 360,
+      "other_records": 1440,
+      "invalid_records": 0,
+      "invalid_rnsga2_records": 0,
+      "valid_pair_range": [
+        30,
+        30
+      ],
+      "statistics_rows": 96,
+      "outcomes": {
+        "reference_better": 56,
+        "comparison_better": 29,
+        "no_significant_difference": 11
+      },
+      "primary_and_derived_sha256": {
+        "algorithm_benchmark_raw_runs.csv": "b75ff5836efd09607451e717bb3a83cc1c0c697c2212cff39c141aca5e0df8c1",
+        "algorithm_benchmark_validation.csv": "9a7148bd04c65e99b0bc46751f4ab4a80a5ead77ceadfbc1504c121b79fbada6",
+        "algorithm_benchmark_convergence.csv": "43b18ada3a29069ab605ca4a510921ecf05dbfceb23387593326056876b55d05",
+        "algorithm_benchmark_igd_hv_summary.csv": "c9567d21491646f81e2c7b54bce91e701618b5bccb6ab3a859903defcffa4823",
+        "algorithm_benchmark_paired_statistics.csv": "ccfd5db0ac0d2375d0272ba56d87baf5b578032dec8c6f1754e74f2a60843739",
+        "algorithm_benchmark_cost_summary.csv": "bca6dbc544b89a39ebf8d02a1cb1bfb8b44b9e52f4aa8f79a7c0f033392c7186"
+      },
+      "execution_manifest": "rnsga2_wfg_execution.json",
+      "rnsga2_provenance": "Captured execution manifest. Filtering RNSGA2 from the full DTLZ or compact WFG table reconstructs primary block hashes. The M=2 WFG table contains the matching subset.",
+      "other_algorithms_provenance": "Archived blocks retain recorded seeds, dimensions and budgets; historical source/package versions are not retroactively assigned.",
+      "budget": "20000 evaluations including RNSGA2 aspiration-point setup and runtime"
+    }
+  },
+  "shared_wfg_block": "The same 120 RNSGA2 M=2 records are shared by the WFG seven-algorithm and compact tables; not independent replication.",
+  "lineage_record": "multiobjective_lineage.json"
+}

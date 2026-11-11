@@ -42,8 +42,8 @@ This project studies four mechanisms added to an NSGA-II-based search procedure.
 
 The reports document the benchmark design, run-level data, statistical tests, and known limitations. This project summary is not a formal compliance claim for a journal; requirements should be checked against the selected venue before submission.
 
-* **Independent Experimental Unit**: One complete stochastic run (30 scheduled runs per configuration; 26–30 valid matched pairs per comparison in DTLZ, 30 in the other core suites).
-* **Evaluation Budget**: ZDT uses a 20,000-evaluation cap including RNSGA2 aspiration-point setup and runtime. Archived DTLZ/WFG counters use the search-budget convention described in the [experiment registry](docs/experiment_registry.md#budget-definition). Actual use may be lower when the next batch would exceed the cap; OADE typically uses about 99.7–99.9%.
+* **Independent Experimental Unit**: One stochastic run; 30 scheduled per configuration. Current valid matched-pair counts: algorithm_benchmark_v2: 30–30; dtlz_benchmark: 26–30; wfg_m2_7algo_benchmark: 30–30; wfg_compact_benchmark: 30–30.
+* **Evaluation Budget**: The RNSGA2 blocks for ZDT, DTLZ, WFG include aspiration-point setup within the 20,000-evaluation cap and runtime. See the [suite-specific accounting](docs/experiment_registry.md#budget-definition). Other algorithms may finish below the cap when another batch would exceed it.
 * **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
 * **Test Suites (21 core configurations plus 12 compact-WFG scaling configurations; 6,210 stored records; some baselines and settings are reused across batches)**:
   * **Bi-objective ZDT (`1,050` runs, 7 algorithms)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
@@ -64,50 +64,14 @@ The reports document the benchmark design, run-level data, statistical tests, an
 
 ## 3. Reported Results
 
-### Combined 7-Algorithm Scorecard (ZDT + DTLZ1–DTLZ4; 204 Pairwise Comparisons, 3,570 Runs)
+| Dataset | Records | Invalid | Comparisons | OADE W / ND / L |
+|---|---:|---:|---:|---|
+| algorithm_benchmark_v2 | 1050 | 0 | 60 | 58 / 1 / 1 |
+| dtlz_benchmark | 2520 | 18 | 144 | 91 / 40 / 13 |
+| wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
+| wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
-* **Combined outcome count**: **149 significant wins (73.0%) / 41 comparisons with no detected difference (20.1%) / 14 significant losses (6.9%)** across 3,570 runs (`OADE-NSGA-II v2`: **510/510 valid runs**, 0 validation failures). Each adjusted p-value belongs to its suite-by-metric Holm family; the combined count is descriptive and is not a single 204-test family-wise analysis.
-  * **ZDT Benchmark v2 (60 comparisons)**: **58 wins / 1 comparison with no detected difference / 1 loss** (descriptive Rank #1 on 8/10 endpoints).
-  * **DTLZ1–DTLZ4 Benchmark (144 comparisons)**: **91 wins / 40 with no detected difference / 13 losses** (Rank #1 on 8/12 IGD medians and 7/12 HV means; no losses at $M=5$ in this suite).
-* **Pairwise outcome counts across the 17 tested configurations**: OADE-NSGA-II v2 had no significant losses against **`CE-MOEA`** (23–11–0), **`NSGA-II-SDR-OLS`** (30–4–0), or **`R-NSGA-II`** (31–3–0), while results against **`NSGA-II`** (22–7–5), **`D-NSGA-II`** (22–7–5), and **`CGDE-NSGA-II`** (21–9–4) were mixed. Counts are descriptive; each comparison uses the correction family stated above.
-
-### Bi-Objective ZDT Benchmark v2 (`results/algorithm_benchmark_v2/`, 1,050 Runs)
-
-| Problem | Metric | OADE-NSGA-II v2 | Best Competitor | Competitor Name | $p_{\text{adj}}$ (Holm) | Effect Size ($r$) | Inferential Result |
-|---|---|---:|---:|---|---:|---:|---|
-| **ZDT1** | IGD ↓<br>HV ↑ | **0.004475 ± 0.000251**<br>**0.870866 ± 0.000232** | 0.005175 ± 0.000298<br>0.868053 ± 0.000417 | NSGA-II<br>NSGA-II | $5.59 \times 10^{-8}$<br>$5.59 \times 10^{-8}$ | $+1.000$<br>$+1.000$ | **OADE v2 Wins (#1)**<br>**OADE v2 Wins (#1)** |
-| **ZDT2** | IGD ↓<br>HV ↑ | **0.004756 ± 0.000292**<br>**0.537674 ± 0.000222** | 0.005405 ± 0.000306<br>0.534072 ± 0.000611 | NSGA-II<br>NSGA-II | $7.82 \times 10^{-8}$<br>$5.59 \times 10^{-8}$ | $+0.983$<br>$+1.000$ | **OADE v2 Wins (#1)**<br>**OADE v2 Wins (#1)** |
-| **ZDT3** | IGD ↓<br>HV ↑ | **0.004986 ± 0.000336**<br>**1.051221 ± 0.000152** | 0.005568 ± 0.000291<br>1.047182 ± 0.006699 | D-NSGA-II<br>NSGA-II | $1.17 \times 10^{-5}$<br>$5.59 \times 10^{-8}$ | $+0.884$<br>$+1.000$ | **OADE v2 Wins (#1)**<br>**OADE v2 Wins (#1)** |
-| **ZDT4** | IGD ↓<br>HV ↑ | **0.006831 ± 0.003329**<br>**0.865051 ± 0.005679** | 0.009953 ± 0.005080<br>0.859362 ± 0.007910 | NSGA-II<br>NSGA-II | $4.04 \times 10^{-3}$<br>$8.72 \times 10^{-4}$ | $+0.626$<br>$+0.669$ | **OADE v2 Wins (#1)**<br>**OADE v2 Wins (#1)** |
-| **ZDT6** | IGD ↓<br>HV ↑ | 0.003844 ± 0.000193<br>0.438177 ± 0.000253 | **0.003823 ± 0.000223**<br>**0.439057 ± 0.000199** | CGDE-NSGA-II<br>CGDE-NSGA-II | $0.776$ (no detected difference)<br>$5.58 \times 10^{-8}$ | $-0.062$<br>$-1.000$ | No detected difference (#2)<br>CGDE better (#2) |
-
-### Multi-/Many-Objective DTLZ1–DTLZ4 Highlights (`results/dtlz_benchmark/`, 2,520 Runs)
-
-| Problem Family | $M=2$ Outcome | $M=3$ Outcome | $M=5$ Outcome |
-|---|---|---|---|
-| **DTLZ1** (Multimodal linear) | **6/6 IGD & HV Wins** (`0.0022` med IGD) | **6/6 Wins ($r = +1.000, W=0$)**; `0.0292` vs NSGA-II `0.0967` | **6/6 IGD Wins** (`0.8972` vs `40.17` NSGA-II); **13/30 HV>0** vs **0/30** all baselines |
-| **DTLZ2** (Unimodal sphere) | **No detected IGD difference** vs NSGA-II (`0.0050`); NSGA-II +0.11% HV | **Trails SBX & CGDE** (`0.0762` vs `0.0685`–`0.0720` IGD) | **Rank #1** (`0.4214` IGD, `0.4517` HV); beats D-NSGA-II, CGDE, CE-MOEA, R-NSGA-II, SDR-OLS |
-| **DTLZ3** (Hard multimodal sphere) | **6/6 IGD Wins** (`1.0708` med, **11/30 HV>0**) | **6/6 IGD Wins ($r = +1.000$)**; `2.5460` vs `14.1763`–`108.7107` | **5/6 IGD Wins** (`72.7081` vs `108.3939`–`258.9448`; no detected difference vs SDR-OLS); **0/30 HV>0** all algorithms |
-| **DTLZ4** ($\alpha=100$ biased sphere) | **0/30 collapsed fronts** (`0.0051` median); NSGA-II collapses **11/30** (`0.2753` mean) | **Trails SBX & CGDE** (`0.0780` vs `0.0686`–`0.0704` IGD) | **Rank #1 IGD (`0.3746`, 0/30 collapsed fronts)**; no detected difference vs CE-MOEA/CGDE, with lower measured runtime in this implementation; NSGA-II/D-NSGA-II collapse **30/30** (`HV = 0.0205`/`0.0422`) |
-
-Full tables (Median [IQR], Mean ± SD, effect sizes) are archived in [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md).
-
-### WFG Suite Highlights (`results/wfg_m2_7algo_benchmark/` & `results/wfg_compact_benchmark/`, 2,640 Runs)
-
-* **Full 7-Algorithm `WFG M=2` Outcome Count (48 comparisons, 840 runs, 0 invalid)**: **`42 wins (87.5%) / 0 with no detected difference / 6 losses (12.5%)`**, Ranked **#1 overall (`1.75` mean rank vs `NSGA2` `3.12`, `CGDE` `3.25`, `CE_MOEA` `3.50`)** — no detected losses vs `CE-MOEA` (`8–0–0`), `NSGA-II-SDR-OLS` (`8–0–0`), and `R-NSGA-II` (`8–0–0`).
-  * **Bi-objective ZDT + WFG 7-algorithm descriptive count (108 comparisons, 9 problems)**: **`100 wins / 1 with no detected difference / 7 losses`**. These outcomes combine separately corrected suite results; they do not form one Holm family.
-* **5-Fast-Algorithm `WFG M=2 -> 3 -> 5` Outcome Count (96 comparisons, 1,800 runs, 0 invalid)**: **`56 wins (58.3%) / 11 with no detected difference (11.5%) / 29 losses (30.2%)`**. In these four WFG problems, the win fraction declined from **87.5% at $M=2$** (`28/0/4`) to **53.1% at $M=3$** (`17/4/11`) and **34.4% at $M=5$** (`11/7/14`). This pattern is limited to the selected functions and algorithm pool.
-
-| Problem (Property) | $M=2$ (Full 7-Algo Verdict) | $M=3$ (5-Algo Verdict) | $M=5$ (5-Algo Verdict) |
-|---|---|---|---|
-| **WFG1** *(biased, flat)* | **#1 (`12/12` Wins)**; `1.0264` IGD / `1.7730` HV (`12.5s`) | Beats `NSGA2` `+20.9%` HV; #2 behind `SDR-OLS` | No detected IGD difference vs `NSGA2`; beats it by `+26.6%` HV (`1303.33`); #2 behind `SDR-OLS` |
-| **WFG4** *(sep., concave)* | **8/12 Wins** (`+beats CE/CGDE`, trails `NSGA2/DNSGA2`) | Trails `NSGA2` & `DNSGA2` (`16.31` vs `19.13` HV) | Trails `NSGA2` & `DNSGA2` (`664.43` vs `883.28` HV); no detected difference vs `SDR-OLS` |
-| **WFG6** *(non-separable)* | **10/12 Wins**; #2 behind `CGDE` (`0.0526` vs `0.0302`, **101× slower for CGDE**) | Trails `NSGA2` & `DNSGA2` (`15.51` vs `18.12` HV) | Trails `NSGA2` & `DNSGA2` (`1364.36` vs `1500.76` HV); no detected difference vs `SDR-OLS` |
-| **WFG9** *(non-sep., deceptive)* | **#1 (`12/12` Wins)**; OADE had median IGD `0.0347` (`5.2s/run`), versus comparator medians around `0.13–0.64` | No detected IGD difference vs `NSGA2` and `DNSGA2` | **Early 2k-eval lead overtaken at ~5k** (`947.63` vs `1313.48–1337.20` HV) |
-
-Full WFG statistical tables and mechanistic analysis are archived in [`docs/wfg_compact_report.md`](docs/wfg_compact_report.md).
-
----
+Detailed tables: [ZDT](docs/benchmark_v2_results_report.md), [DTLZ](docs/dtlz_results_report.md), [integrated ZDT/DTLZ](docs/dtlz1_4_integrated_report.md), [WFG](docs/wfg_compact_report.md). W/ND/L means OADE win/no detected difference/loss. Each metric/suite has its own Holm family; cross-suite counts are descriptive. The same 120 RNSGA2 WFG M=2 records are shared by both WFG tables.
 
 ## 4. Observed Strengths in Tested Suites
 

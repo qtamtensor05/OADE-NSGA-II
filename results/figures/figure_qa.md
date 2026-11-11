@@ -25,7 +25,7 @@ confidence intervals. The current automated results do not certify all earlier
 figures or replace physical-size inspection for a particular journal submission.
 
 
-The final ZDT figure review found no title/legend overlap in the outcome chart or the v1/v2 chart; in-bar numbers are not crossed by grid strokes. Both are single-panel figures. Twelve current PDF bundles have zero collision failures/warnings; all visible text spans also meet the 5 pt floor under PyMuPDF inspection, including the R PDF streams that the basic text scanner cannot fully decode. Minimum sizes are 6 pt for the original R family, 7.5 pt for the two ZDT v2 figures and 5.25 pt for the integrated/DTLZ figures. PDF hashes and the scope of visual preview review are in [zdt_validation.json](../provenance/zdt_validation.json).
+The final ZDT figure review found no title/legend overlap in the outcome chart or the v1/v2 chart; in-bar numbers are not crossed by grid strokes. Both are single-panel figures. The reviewed ZDT and multiobjective PDF bundles have zero collision failures/warnings; all visible text spans also meet the 5 pt floor under PyMuPDF inspection, including the R PDF streams that the basic text scanner cannot fully decode. Minimum sizes are 6 pt for the original R family, 7.5 pt for the two ZDT v2 figures and 5.25 pt for the integrated/DTLZ figures. PDF hashes and visual preview review scopes are in [ZDT validation](../provenance/zdt_validation.json) and [multiobjective validation](../provenance/multiobjective_validation.json).
 
 ## Shared contract
 
@@ -244,3 +244,7 @@ The final ZDT figure review found no title/legend overlap in the outcome chart o
 | Export bundle | `wfg_scaling_diagnosis.{pdf,svg,png}`, `wfg_scaling_source_data.csv` (`.tiff`, `.alignment.*`, `.collision-audit.*`, and helper script excluded via `.gitignore`) |
 | Visual inspection | PASS; 2×2 grid, stacked outcome counts, and convergence crossover callout are crisp and unobstructed |
 
+
+## DTLZ/WFG result review — 12 November 2026
+
+All four current Python multi-panel bundles were inspected panel by panel in their PNG previews. Labels, effect directions, outcome counts and runtime-proxy scope match the current source tables. Rendered alignment and strict collision checks pass with zero failures/warnings; independent PyMuPDF text-span inspection confirms minimum 5.25 pt (integrated/DTLZ) and 5.8 pt (WFG). PDF checksums and the review scope are recorded in [multiobjective_validation.json](../provenance/multiobjective_validation.json). These checks do not replace a journal-specific physical-size review.

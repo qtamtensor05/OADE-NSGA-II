@@ -16,6 +16,12 @@ def inventory() -> dict:
     composition_path = ROOT / "results/provenance/zdt_composition.json"
     composition = (json.loads(composition_path.read_text(encoding="utf-8"))
                    if composition_path.exists() else {"datasets": {}})
+    provenance_links = {name: "results/provenance/zdt_composition.json"
+                        for name in composition["datasets"]}
+    multi_path = ROOT / "results/provenance/multiobjective_composition.json"
+    if multi_path.exists():
+        provenance_links.update({name: "results/provenance/multiobjective_composition.json"
+                                 for name in json.loads(multi_path.read_text(encoding="utf-8"))["datasets"]})
     for directory in sorted((ROOT / "results").iterdir()):
         if not directory.is_dir() or directory.name.startswith("smoke"):
             continue
@@ -31,8 +37,10 @@ def inventory() -> dict:
         keys = {(r["problem"], r["algorithm"], r["run_idx"]) for r in raw}
         studies[directory.name] = {
             "execution_environment_provenance": (
-                "results/provenance/zdt_composition.json: RNSGA2 execution captured; other blocks archived"
-                if directory.name in composition["datasets"]
+                provenance_links[directory.name] + ": RNSGA2 execution captured; other blocks archived"
+                if directory.name in provenance_links
+                else str((directory / "experiment_manifest.json").relative_to(ROOT))
+                if (directory / "experiment_manifest.json").exists()
                 else "unknown; not inferred from current environment"
             ),
             "observed_artifact_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()

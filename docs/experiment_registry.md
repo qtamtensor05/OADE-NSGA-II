@@ -8,18 +8,16 @@ This registry describes the current result sets. Stored rows are not necessarily
 | algorithm_benchmark_v2 | config/algorithm_benchmark_v2.yaml | ZDT, adaptive OADE, 1,050 records; shares the same RNSGA2 block and the other five comparator blocks with the classic table. |
 | ablation | config/ablation.yaml | Classic Full OADE and six removals/basic variants; 1,050 records, seeds 42–71; periodic OBL ablation under uniform warm start. |
 | restart_confirmation | config/restart_confirmation.yaml | Classic Full, No Restart, Adaptive; 450 records, seeds 1000–1029; trigger telemetry was not saved. |
-| dtlz_benchmark | config/dtlz1_4_benchmark.yaml | DTLZ1–4, M=2/3/5; 2,520 records, 18 invalid, 26–30 valid matched pairs. |
-| wfg_m2_7algo_benchmark | config/wfg_m2_7algo_benchmark.yaml | Four WFG functions, seven implementations, M=2; 840 records. |
-| wfg_compact_benchmark | config/wfg_compact_benchmark.yaml | Four WFG functions, five implementations, M=2/3/5; 1,800 records; overlapping M=2 settings/seeds are not independent replication. |
+| dtlz_benchmark | config/dtlz1_4_benchmark.yaml | 2520 records; 18 invalid; 26–30 valid matched pairs. RNSGA2: 360 records with captured execution provenance; other blocks archived. |
+| wfg_m2_7algo_benchmark | config/wfg_m2_7algo_benchmark.yaml | 840 records; 0 invalid; 30–30 valid matched pairs. RNSGA2: 120 records with captured execution provenance; other blocks archived. |
+| wfg_compact_benchmark | config/wfg_compact_benchmark.yaml | 1800 records; 0 invalid; 30–30 valid matched pairs. RNSGA2: 360 records with captured execution provenance; other blocks archived. |
 | sensitivity | config/sensitivity.yaml | Classic restart, seeds 42–71; exploratory parameter sweeps, not direct v2 sensitivity evidence. |
 
 Each core configuration schedules 30 runs. Cross-suite win counts summarize separately adjusted Holm families. The default OADE YAML specifies adaptive restart; use the explicit classic reproduction configuration for classic OADE.
 
 ## Budget definition
 
-Current ZDT RNSGA2 records include aspiration-point setup within the 20,000-evaluation cap and runtime. Their recorded count is 20,000 for all 150 runs. Other solvers may finish below the cap when another requested batch would exceed it.
-
-Archived DTLZ/WFG RNSGA2 counters cover search evaluations and exclude population-sized aspiration-point setup. Those suites have not been rerun under total-cost accounting and should not be presented as verified total-evaluation-budget comparisons for RNSGA2. Indicator/reference-Pareto-front calculations are measurement overhead rather than solver search evaluations.
+RNSGA2 aspiration-point setup is included within the 20,000-evaluation cap and runtime for ZDT, DTLZ, WFG. Other solvers can finish below the cap when another batch would exceed it. Reference-front/indicator calculations are measurement overhead rather than solver objective-search evaluations.
 
 ## Source data and traceability
 
@@ -30,3 +28,7 @@ Archived DTLZ/WFG RNSGA2 counters cover search evaluations and exclude populatio
 - [Dataset lineage](../results/provenance/zdt_dataset_lineage.json): machine-readable traceability separate from the main research narrative.
 
 Source/package versions for archived blocks without execution manifests remain unknown. Do not assign the current environment to them. Older results/benchmark and results/three_algorithms use legacy protocols and are excluded from the main fixed-budget claim.
+
+Multiobjective algorithm-block provenance and dataset checksums: [multiobjective composition](../results/provenance/multiobjective_composition.json). The same 120-run RNSGA2 M=2 block is shared by both WFG tables.
+
+Multiobjective execution manifests: [DTLZ](../results/provenance/rnsga2_dtlz_execution.json) and [WFG](../results/provenance/rnsga2_wfg_execution.json). See [current validation](../results/provenance/multiobjective_validation.json) for the independent p-value/Holm/effect-size checks and PDF checksums.

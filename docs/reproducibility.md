@@ -56,10 +56,14 @@ Running figure scripts updates their bundles/source-data exports; review the dif
 
 The shared pipeline uses two-sided SciPy Wilcoxon signed-rank tests, `zero_method="wilcox"`, with SciPy's default method selection (`auto` in the audited environment). Exact numerical behavior for ties/zeros can depend on SciPy version. All-zero differences return statistic 0 and p=1. Holm adjustment is applied separately over each metric's configured problem–comparator family. Rank-biserial effects omit zero differences and use average ranks for ties. Positive effect favors the reference for IGD and HV; stored median_paired_difference is reference minus comparison for both, so HV improvement has the opposite sign.
 
-Thirty runs are scheduled per configuration. DTLZ has 26–30 valid matched pairs per comparison after 18 invalid outputs; other core benchmark families have 30. Report both run failures and conditional quality. Sample SD/IQR are run dispersion, not confidence intervals for paired effects.
+Thirty runs are scheduled per configuration. DTLZ currently has 26–30 valid matched pairs and 18 invalid outputs; consult current per-comparison n for each suite. Report both run failures and conditional quality. Sample SD/IQR are run dispersion, not confidence intervals for paired effects.
 
 `invalid collapsed_front` means all returned objective rows are identical after rounding to 12 decimals, with more than one row. The current validator accepts a single-point front if other checks pass. This is a structural validity rule, not a general convergence or diversity guarantee. `Corner collapse` in the historical DTLZ narrative is a quality diagnosis applied to some structurally valid outputs. Its complete run-level historical classification rule is not recorded; counts must be described as historical diagnostics, not validator failure rates or a reproducible new endpoint. HV=0 alone is not proof of identical objective vectors.
 
 ## Evaluation accounting
 
-ZDT includes RNSGA2 aspiration-point setup in the cap and runtime. Archived DTLZ/WFG use a search-budget convention; see the [precise suite boundaries](experiment_registry.md#budget-definition). Dataset composition, execution metadata and validation are stored in results/provenance/.
+RNSGA2 setup is charged within the cap and runtime for ZDT, DTLZ, WFG. See the [suite-specific definitions](experiment_registry.md#budget-definition). Execution manifests and dataset composition retain the provenance of each algorithm block.
+
+## Current result evidence
+
+The full suite YAMLs above remain the normal reproduction route. Current RNSGA2 blocks in ZDT/DTLZ/WFG include setup in their cap and runtime. Algorithm-block manifests, dataset composition and validation are in results/provenance/. The WFG M=2 block is shared between the two WFG tables and is not an independent replication. Filtering the RNSGA2 records reconstructs the primary block checksums in the retained execution manifests.

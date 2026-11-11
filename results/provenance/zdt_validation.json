@@ -91,23 +91,12 @@
       "collision_fail": 0,
       "collision_warn": 0,
       "minimum_font_pt": 7.5
-    },
-    "integrated_7algo_landscape": {
-      "pdf_sha256": "02b9df3ee535e41645de9645d594095b052b77f251eba95d5481e503e63c0719",
-      "collision_fail": 0,
-      "collision_warn": 0,
-      "minimum_font_pt": 5.25
-    },
-    "dtlz1_4_scaling_diagnosis": {
-      "pdf_sha256": "431c33999ffc8f2e425a83b03aa029dd1b476b1cadde575f2fdef360286c554f",
-      "collision_fail": 0,
-      "collision_warn": 0,
-      "minimum_font_pt": 5.25
     }
   },
   "visual_preview_review": [
     "benchmark_v2_outcome_counts",
     "benchmark_v2_v1_vs_v2_delta",
     "integrated_7algo_landscape"
-  ]
+  ],
+  "related_current_figure_validation": "multiobjective_validation.json"
 }

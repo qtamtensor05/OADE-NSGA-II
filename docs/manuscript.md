@@ -4,7 +4,17 @@ Working research manuscript, updated 12 November 2026. This document integrates 
 
 ## Abstract
 
-Combining differential evolution, opposition-based search and restart with NSGA-II introduces interacting design choices whose benefits can depend on the test landscape and objective count. We evaluated the repository's OADE-NSGA-II configuration under a cap of 20,000 objective evaluations and 30 scheduled stochastic runs per configuration. The fixed-budget protocol used common uniform initial populations; the solver's standalone Sobol/initial-opposition branch was bypassed. In the archived ZDT v2 comparison, OADE had 58 favorable, one inconclusive and one unfavorable Holm-adjusted pairwise metric comparisons against six configured implementations. DTLZ1–4 produced 91 favorable, 40 inconclusive and 13 unfavorable comparisons, conditional on valid matched output. Bi-objective WFG produced 42 favorable and six unfavorable comparisons, whereas a five-algorithm WFG scaling study showed a declining favorable fraction from M=2 to M=5. Held-out restart comparisons did not distinguish the adaptive mechanism from disabling restart: their final IGD/HV outputs matched in 148 of 150 problem–seed pairs. These findings support a bounded empirical performance profile, with unresolved mechanism attribution, baseline fidelity and uncertainty intervals.
+Combining DE, opposition-based search and restart with NSGA-II introduces interacting design choices whose benefits depend on landscape and objective count. We evaluated the recorded configurations with 30 scheduled paired seeds and configured 20,000-evaluation budgets. The suite-specific accounting and algorithm-block provenance are documented in the experiment registry. The common uniform warm start bypasses standalone Sobol/initial OBL.
+
+ZDT v2 produced 58 favorable, 1 inconclusive and 1 unfavorable pairwise metric comparisons after the stated suite-by-metric Holm adjustment.
+
+DTLZ1–4 produced 91 favorable, 40 inconclusive and 13 unfavorable pairwise metric comparisons after the stated suite-by-metric Holm adjustment.
+
+Bi-objective WFG produced 42 favorable, 0 inconclusive and 6 unfavorable pairwise metric comparisons after the stated suite-by-metric Holm adjustment.
+
+Compact WFG produced 56 favorable, 11 inconclusive and 29 unfavorable pairwise metric comparisons after the stated suite-by-metric Holm adjustment.
+
+These counts describe the selected implementations, conditional on valid matched output, and do not establish universal superiority. Held-out Adaptive and No Restart final metrics matched in 148/150 pairs, leaving adaptive-trigger attribution unresolved. Baseline fidelity and paired-effect uncertainty remain limitations.
 
 ## 1. Research question and scope
 
@@ -65,7 +75,7 @@ while another requested evaluation batch fits within the cap:
 return the last complete solver population; benchmark extracts nondominated output
 ```
 
-The budget proxy rejects a batch before its evaluation if it would exceed the cap. The current ZDT RNSGA2 block includes aspiration-point setup in its evaluation counter and runtime. Archived DTLZ/WFG results use the separate search-budget convention in the [experiment registry](experiment_registry.md#budget-definition). Actual recorded search evaluation use may be lower; this pseudocode does not imply every run consumes exactly 20,000 evaluations or that each partial internal operation is a completed generation.
+The budget proxy rejects a batch before its evaluation if it would exceed the cap. The current RNSGA2 blocks on ZDT, DTLZ and WFG include aspiration-point setup in their evaluation counters and runtimes. Suite-specific RNSGA2 accounting is specified in the [experiment registry](experiment_registry.md#budget-definition). Actual recorded search evaluation use may be lower; this pseudocode does not imply every run consumes exactly 20,000 evaluations or that each partial internal operation is a completed generation.
 
 ## 4. Experimental protocol
 
@@ -73,27 +83,22 @@ The core suites contain five ZDT configurations, twelve DTLZ1–4 configurations
 
 IGD uses the problem-specific Pareto reference sample. DTLZ/WFG references use Das-Dennis directions with H=200, 20 or 6 for M=2, 3 or 5 unless configured. HV uses max(reference front)+0.1. Indicators across different objective scales are not pooled as absolute performance quantities.
 
-The analysis uses two-sided paired Wilcoxon signed-rank tests and Holm adjustment separately within each suite and metric: 30 comparisons for ZDT, 72 for DTLZ, 24 for bi-objective seven-algorithm WFG and 48 for compact WFG. Effect sizes are matched-pairs rank-biserial correlations oriented toward the reference. Thirty runs are scheduled, but some DTLZ tests contain only 26–29 valid matched pairs after 18 invalid collapsed-front records. The complete-case quality estimand is conditional on valid output; failure rates remain a separate part of the evidence. Exact values, descriptive mean/SD and median/IQR are in the detailed tables. No confidence intervals for the paired effects are currently available.
+The analysis uses two-sided paired Wilcoxon signed-rank tests and Holm adjustment separately within each suite and metric: 30 comparisons for ZDT, 72 for DTLZ, 24 for bi-objective seven-algorithm WFG and 48 for compact WFG. Effect sizes are matched-pairs rank-biserial correlations oriented toward the reference. Thirty runs are scheduled; the current DTLZ tests use 26–30 valid matched pairs after 18 invalid output records. The complete-case quality estimand is conditional on valid output; failure rates remain a separate part of the evidence. Exact values, descriptive mean/SD and median/IQR are in the detailed tables. No confidence intervals for the paired effects are currently available.
 
 ## 5. Results
 
-### Quality improvements are landscape-dependent
+| Dataset | Records | Invalid | Comparisons | OADE W / ND / L |
+|---|---:|---:|---:|---|
+| algorithm_benchmark_v2 | 1050 | 0 | 60 | 58 / 1 / 1 |
+| dtlz_benchmark | 2520 | 18 | 144 | 91 / 40 / 13 |
+| wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
+| wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
-The [ZDT v2 report](benchmark_v2_results_report.md) records 58 favorable, one inconclusive and one unfavorable comparisons. OADE had the best descriptive means on eight of ten endpoints. CGDE had better HV on ZDT6; the IGD comparison on that problem did not establish a corrected difference.
+These are separately corrected suite results; counts across suites are descriptive. The detailed [DTLZ](dtlz_results_report.md) and [WFG](wfg_compact_report.md) reports include all implementation–problem summaries and exact paired tests, including failures and conditional sample sizes. [Integrated ZDT/DTLZ evidence](dtlz1_4_integrated_report.md) provides the 17-configuration synthesis.
 
-The [DTLZ report](dtlz1_4_integrated_report.md) records 91 favorable, 40 inconclusive and 13 unfavorable comparisons. Results were favorable on selected multimodal cases, but NSGA-II and other comparators remained competitive or better on smooth three-objective DTLZ2/4. OADE's HV was zero in 17/30 DTLZ1-M5 runs and all DTLZ3-M5 runs despite favorable IGD comparisons. This limits a claim of reliable convergence under the tested cap. Crowding saturation is one hypothesis, not an experimentally isolated explanation.
+The component evidence remains bounded: the classic ablation supports periodic OBL on the tested ZDT4 configuration, while Adaptive and No Restart matched final metrics in 148/150 held-out pairs. Full-algorithm suite comparisons do not isolate adaptive-restart causality or standalone Sobol initialization.
 
-### WFG scaling exposes a boundary
-
-The [WFG report](wfg_compact_report.md) records 42 favorable and six unfavorable comparisons at M=2 with seven implementations. In the compact five-algorithm study, outcomes were 56 favorable, 11 inconclusive and 29 unfavorable. The favorable fraction declined from 87.5% at M=2 to 53.1% at M=3 and 34.4% at M=5. These are observations for four WFG functions, one decision dimension and the selected comparator pool, not a general scaling law.
-
-### Component evidence does not establish adaptive-restart causality
-
-The [classic ablation](ablation_results_report.md) supports a periodic-OBL contribution on the tested ZDT4 configuration. It does not establish an isolated corrected benefit for every adaptive component. In [held-out restart confirmation](restart_confirmation_report.md), both Adaptive and No Restart improved on classic Full OADE on several endpoints, but matched each other's final IGD/HV in 148/150 problem–seed pairs. The evidence therefore supports avoiding the harmful classic configuration in these cases more directly than it supports a new adaptive-trigger mechanism.
-
-### Computational cost is implementation-dependent
-
-Recorded wall-clock measurements compare specific Python implementations, package environments, worker contention and thread settings. The integrated quality-rank figure uses DTLZ4 runtime as a proxy while aggregating quality ranks across 34 endpoints; it is not a full-suite cost frontier. Hardware-independent complexity or general speed superiority is not inferred from these measurements.
+Runtime comparisons concern the recorded implementations and environment. The integrated rank figure uses DTLZ4 runtime as a proxy for aggregate quality rank, rather than a full-suite speed frontier.
 
 ## 6. Discussion and limitations
 

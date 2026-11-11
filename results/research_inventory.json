@@ -1,7 +1,7 @@
 {
   "kind": "artifact_inventory",
   "schema": 1,
-  "observed_utc": "2026-11-11T19:44:23.438454+00:00",
+  "observed_utc": "2026-11-11T20:29:11.497230+00:00",
   "boundary": "Observed file hashes are not execution-time provenance or independent replications",
   "studies": {
     "ablation": {
@@ -176,14 +176,14 @@
       }
     },
     "dtlz_benchmark": {
-      "execution_environment_provenance": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "results/provenance/multiobjective_composition.json: RNSGA2 execution captured; other blocks archived",
       "observed_artifact_sha256": {
-        "algorithm_benchmark_convergence.csv": "c6226df97272308a16d0805d30e467ecbd473d7127fbc059da33d70ec466d0ed",
-        "algorithm_benchmark_cost_summary.csv": "8c00fb17afebfbc451b0f2bc5045bfd6e2578e8e491da60b3cad0b7deb31dc5e",
-        "algorithm_benchmark_igd_hv_summary.csv": "1b4e74bab5d8a2a67fc8d809d2af2bac1e1fcbdbad32a6d34011c122bfd023c5",
-        "algorithm_benchmark_paired_statistics.csv": "4a87e05c97258de3e8842ccefd319e9fe2ce1b6e7b33b95816e3f82450d41360",
-        "algorithm_benchmark_raw_runs.csv": "e243462b82ecebf8dde5ba632574fdc0e23fe328a8538b0ca0b6a6268577c486",
-        "algorithm_benchmark_validation.csv": "7d36efdeba881a3597302578a558029bf23c7707958628bfe388d1f9cae6de9f"
+        "algorithm_benchmark_convergence.csv": "2577c5b9f3d8d26aa8a6a26940f5d6f766344338a10b85e96ae73ca7adb80ac4",
+        "algorithm_benchmark_cost_summary.csv": "8e9d6adbcec7b84ba9f3f8d6e6353fa7e50ed6f899a4fb7049651764bf1eb522",
+        "algorithm_benchmark_igd_hv_summary.csv": "4755261d8575520c1db865b1ab0e3c03af8b2d249431af7944c0f54f0c7d70d2",
+        "algorithm_benchmark_paired_statistics.csv": "a5030a36bdf0a0ee2b4a1240bea6b95b6ddd1f00afc4d352ae121839e078493f",
+        "algorithm_benchmark_raw_runs.csv": "9e8196bc7f11c891cd8e0203f66212d2fb7471e9ce60b2567b488184fe8fe99f",
+        "algorithm_benchmark_validation.csv": "4d7e0820f48abeff21d54937e1097e609e630c0cfac21da093feebb0d9318dea"
       },
       "records": 2520,
       "duplicate_keys": 0,
@@ -298,14 +298,14 @@
       }
     },
     "wfg_compact_benchmark": {
-      "execution_environment_provenance": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "results/provenance/multiobjective_composition.json: RNSGA2 execution captured; other blocks archived",
       "observed_artifact_sha256": {
-        "algorithm_benchmark_convergence.csv": "80420a7be617fd3c53a4994ad7b4efa4b740826ef6e47f3fd259364726342e2e",
-        "algorithm_benchmark_cost_summary.csv": "2d345ba1ba046593e1d3e411878b0933f99c76aaed6cf1045c89529e76f976bb",
-        "algorithm_benchmark_igd_hv_summary.csv": "58bb39fdc92393df16aadc2c78596af113e09d28a41570e55e5f496eb2376b43",
-        "algorithm_benchmark_paired_statistics.csv": "751c0e8252783b18d55719f3abea7957003b8de74d2f5635e9dd5e106dc7e9ae",
-        "algorithm_benchmark_raw_runs.csv": "bd1e132525e2c4dd55ca4f5f97551eb9a798e668f3f6ae72218014bd49560984",
-        "algorithm_benchmark_validation.csv": "d6dab3719ae5bd062fe7cbb5c112a3cc828c4463a4e295046fe87467324b3683"
+        "algorithm_benchmark_convergence.csv": "43b18ada3a29069ab605ca4a510921ecf05dbfceb23387593326056876b55d05",
+        "algorithm_benchmark_cost_summary.csv": "bca6dbc544b89a39ebf8d02a1cb1bfb8b44b9e52f4aa8f79a7c0f033392c7186",
+        "algorithm_benchmark_igd_hv_summary.csv": "c9567d21491646f81e2c7b54bce91e701618b5bccb6ab3a859903defcffa4823",
+        "algorithm_benchmark_paired_statistics.csv": "ccfd5db0ac0d2375d0272ba56d87baf5b578032dec8c6f1754e74f2a60843739",
+        "algorithm_benchmark_raw_runs.csv": "b75ff5836efd09607451e717bb3a83cc1c0c697c2212cff39c141aca5e0df8c1",
+        "algorithm_benchmark_validation.csv": "9a7148bd04c65e99b0bc46751f4ab4a80a5ead77ceadfbc1504c121b79fbada6"
       },
       "records": 1800,
       "duplicate_keys": 0,
@@ -355,14 +355,14 @@
       }
     },
     "wfg_m2_7algo_benchmark": {
-      "execution_environment_provenance": "unknown; not inferred from current environment",
+      "execution_environment_provenance": "results/provenance/multiobjective_composition.json: RNSGA2 execution captured; other blocks archived",
       "observed_artifact_sha256": {
-        "algorithm_benchmark_convergence.csv": "31b447cc2c92e631f5d4467c0441f6eacdc4ab077091f60d03db2fba53403de7",
-        "algorithm_benchmark_cost_summary.csv": "4a6d38f0b9d083a4853e197939150efa1766fae799f814448b4f3d87d76faac6",
-        "algorithm_benchmark_igd_hv_summary.csv": "972c5f5fa2f577cb73552c2ebee514725ee29c4534a6d010923106880ee4ba38",
-        "algorithm_benchmark_paired_statistics.csv": "d69047398bf0179cf3bafdd10bc1ab9ffdca3a486cbd1f2f333aa45422ee655f",
-        "algorithm_benchmark_raw_runs.csv": "261d830e613af13008705663b7ede2f8b40f5892a3081ffb5a35eddaaf2d34ed",
-        "algorithm_benchmark_validation.csv": "401b504d5ddd3126ccbc4206b7e82ac5326e6fa2c5dfa87692bf3272f08f0e87"
+        "algorithm_benchmark_convergence.csv": "d3e4fe794313ec891bc1c044caf0ff76f3f89d418d28d6012068d292159ec509",
+        "algorithm_benchmark_cost_summary.csv": "8d858e13c24a17011fcb2835e81fada848900436ff0cd28de7b353c8b1cf7dfd",
+        "algorithm_benchmark_igd_hv_summary.csv": "d407c0b8b9ef0e6a0795351b7a06022f4742bee86f366d8cdd5b25989c74e290",
+        "algorithm_benchmark_paired_statistics.csv": "fe385ad7db03809f370495d07d38fc34dcb766d4d60dcbc22b4594b773326013",
+        "algorithm_benchmark_raw_runs.csv": "fbc895f37c1c10ba357c2273e5b6159b5a06c9427287d14df89ed6185ae5f7c9",
+        "algorithm_benchmark_validation.csv": "823defda647b8555519103b395b7d8178bc2960fe401316c5728e6130cae7344"
       },
       "records": 840,
       "duplicate_keys": 0,

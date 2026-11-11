@@ -1,0 +1,476 @@
+{
+  "kind": "dataset_lineage",
+  "schema": 1,
+  "recorded_utc": "2026-11-11T20:28:20.237027+00:00",
+  "suites": {
+    "dtlz": {
+      "schema": 1,
+      "kind": "algorithm_block_publication",
+      "suite": "dtlz",
+      "published_utc": "2026-11-11T20:22:45.349467+00:00",
+      "execution_manifest_sha256": "125a003989045ea6a74cf05a174932afa2179f569a59640fb5db8a10900fc268",
+      "execution_directory": "results/rnsga2_dtlz",
+      "execution_manifest": {
+        "schema": 1,
+        "kind": "captured_before_execution",
+        "created_utc": "2026-11-11T20:06:01.389874+00:00",
+        "protocol": {
+          "global": {
+            "runs": 30,
+            "pop_size": 100,
+            "evaluation_budget": 20000,
+            "seed_base": 42
+          },
+          "problems": [
+            {
+              "name": "dtlz1",
+              "n_obj": 2,
+              "n_var": 6
+            },
+            {
+              "name": "dtlz1",
+              "n_obj": 3,
+              "n_var": 7
+            },
+            {
+              "name": "dtlz1",
+              "n_obj": 5,
+              "n_var": 9
+            },
+            {
+              "name": "dtlz2",
+              "n_obj": 2,
+              "n_var": 11
+            },
+            {
+              "name": "dtlz2",
+              "n_obj": 3,
+              "n_var": 12
+            },
+            {
+              "name": "dtlz2",
+              "n_obj": 5,
+              "n_var": 14
+            },
+            {
+              "name": "dtlz3",
+              "n_obj": 2,
+              "n_var": 11
+            },
+            {
+              "name": "dtlz3",
+              "n_obj": 3,
+              "n_var": 12
+            },
+            {
+              "name": "dtlz3",
+              "n_obj": 5,
+              "n_var": 14
+            },
+            {
+              "name": "dtlz4",
+              "n_obj": 2,
+              "n_var": 11
+            },
+            {
+              "name": "dtlz4",
+              "n_obj": 3,
+              "n_var": 12
+            },
+            {
+              "name": "dtlz4",
+              "n_obj": 5,
+              "n_var": 14
+            }
+          ],
+          "algorithms": [
+            {
+              "name": "RNSGA2",
+              "runner": "pymoo",
+              "params": {},
+              "class_path": "pymoo.algorithms.moo.rnsga2.RNSGA2",
+              "sampling": "initial_population",
+              "auto_ref_points": true
+            }
+          ],
+          "statistics": {
+            "alpha": 0.05,
+            "reference_algorithm": "RNSGA2"
+          },
+          "initialization": "common numpy.default_rng(seed).uniform warm start",
+          "reference_front": "problem.pareto_front; Das-Dennis H=200/20/6 for M=2/3/5 unless configured",
+          "hypervolume_reference": "max(reference_front, axis=0) + 0.1",
+          "budget_accounting": "v2: includes RNSGA2 aspiration-point objective evaluations"
+        },
+        "source_hashes": {
+          "algorithms/__init__.py": "917a1b4852fdcad9004c0460fc340389399099faace679b929799200ed4af2a3",
+          "algorithms/ce_moea/__init__.py": "e14bf9a8bab2c70ce2ef0651f78c118615ad8b5ccbf58f3e25e6e670af3daf19",
+          "algorithms/ce_moea/algorithm.py": "3754c41a815a04384e13627ff67de2f7f2a2b681514350c37db388e632aac625",
+          "algorithms/ce_moea/core.py": "bf99f6ef6e3df9af7f2d859049f8a7602c00fc6f527dc822c18270d11b7a7d6f",
+          "algorithms/ce_moea/encoding.py": "24e23a1faa14828eae73d95722ee3b009e6dc56c4eec51c48edc548d8b16d56d",
+          "algorithms/ce_moea/nsga2.py": "c64a434a0495a3fdd5cae8386887a8e46cc05c2caeb60610b3047022bf059f02",
+          "algorithms/ce_moea/objectives.py": "09aea293bd8a482ccb84b536a1b7b34f33c11670d62a311831c8c33789d158fe",
+          "algorithms/ce_moea/operators.py": "8b884949df8c937e7e3d819631b1613304ec4abe0e02561a5f294a91969069a3",
+          "algorithms/cgde_nsga2/__init__.py": "067b67f5741644a6766473a27164b261db4610332b3f59e3c12fdfc45d179a2e",
+          "algorithms/cgde_nsga2/algorithm.py": "3c8cb09ee75330a9967d6ca68778be0ba86851e80865ad2bd366f03bbea698fb",
+          "algorithms/cgde_nsga2/core.py": "50c0ca58a45f9e1faa35bfc56f41a8064c13cc8b261632a86622152aaaddecf1",
+          "algorithms/cgde_nsga2/nsga2.py": "c886dbf65b7f99e0a53df5b1d1e7587fa5cdde50d2898e4c701d45fad03a8016",
+          "algorithms/cgde_nsga2/operators.py": "ed0dab6051dce2872ee240f98a8322e1d5fa6f963a3a6086bfa0ee31392fda1f",
+          "algorithms/nsga2_sdr_ols/__init__.py": "2d321a3be0dbd51429ab38774eb421802e482cd5f9826739c1d863a8f8332548",
+          "algorithms/nsga2_sdr_ols/algorithm.py": "3ef3652b078451942efeda2aec543b0ea5a7e0d47bae00883c6857b4b64c5b8a",
+          "algorithms/nsga2_sdr_ols/core.py": "2cd1a8e18182bc89fda80a735944b7227dda96b5cce9ece2223865609e96ecf5",
+          "algorithms/nsga2_sdr_ols/operators.py": "398e97077c5a824eb650262832376285b5989f52ccaf783375d1dfe84b3e1f18",
+          "algorithms/nsga2_sdr_ols/sdr.py": "0ee26f3f9971348831b1251226f9b69507cadace9ca085355672266f157a7849",
+          "requirements.txt": "82dab81f421f3ebe98ebcd09e04fd687d8e495771b19b482de6a5b2f67820e7d",
+          "scripts/run_benchmark_v2.py": "63438565fed4b4ed810052b8431e58cbfb82f9a562cc12ce21348c0c601fc83f",
+          "src/__init__.py": "8f66c031b900461bad8b9183ec9fe1252a9d1b8c00000426d90574b32991a8af",
+          "src/benchmarking/__init__.py": "4f2c2bf8dd059971c4397ccde02150cf8a7651a10f6afec0dd98dcc47bb0c082",
+          "src/benchmarking/ablation.py": "6c771914a64d7d5c4d232d5abe67d398561282e27a4a1e6470dc02046a985bce",
+          "src/benchmarking/algorithm_benchmark.py": "9db3e768e5c408462c72a59fbf2e46b07c6a0a9d16889bb181f10820bc957d8a",
+          "src/benchmarking/dtlz_benchmark.py": "e99e094374d792ef85e1320cfb1dec1f2b3e432ab2920a0940c5621eb8cd93a5",
+          "src/benchmarking/evaluation.py": "98f9cb26e64b330acfe276048d861c42a07b8b472c7817f76c337e2102e744e1",
+          "src/benchmarking/provenance.py": "3e11b92e702b1ae76fe14f4acf42e1fe166ca5543c8166638a77963e0c0bdc87",
+          "src/benchmarking/pymoo_compare.py": "69e231743579c106ac84efbaeff9514c7a301113166f914529b51dd01332606e",
+          "src/benchmarking/statistics.py": "b0aa9561e7a1a768598340d054c8781e0b5198d944ea2078f6d5d17d13369375",
+          "src/benchmarking/wfg_benchmark.py": "51146537dc257deb3538797f9f672a04119eb03461f0ecf380a846ab90645a59",
+          "src/oade_nsga2/__init__.py": "3a2a7e6f0b2be53cb95bf6344b955f6b9156a935c14af320d5add89d58cad4ce",
+          "src/oade_nsga2/algorithm.py": "ccd95b3917b62c6ff9f4ed1875d283b1e591564508d6e216d31376f46c36cacc",
+          "src/oade_nsga2/core.py": "7a3af86abc19ac6e9b5fdb67c1f09625002dc24b524ee987cb400e6fd7f7acd2",
+          "src/oade_nsga2/operators.py": "c33b33bba5b8ffd3f43417ba599f5c93d1c1ee8270b92f2cec22eef83ba37995",
+          "src/oade_nsga2/selection.py": "bbf9e1eeb4d9e6ee4c4755c26b7bb64fa2b852ce2ce6acf458b5203536d41129",
+          "src/plotting/__init__.py": "8ba7d181da368c7497342a9b6698f6ff1dff7fb72302504ed9a7b44b99fcfe61",
+          "src/plotting/algorithm_benchmark.py": "6c14dd62e6bdc46a5a2be16af5fd35572ea72c13408f4fa052289e4fe3680b9f",
+          "src/plotting/all_problems.py": "0961bd736fa4067cbb7730e051b840707eb3c0d387c187681519dbb6d5cc9ec5",
+          "src/plotting/common.py": "26505c50851a96cdf6f980a1617d17e9e844c51d4a03808526d9d62654288bf4",
+          "src/plotting/convergence.py": "ab8fddc9e256327f7c807bedc01d3feb1c0ecaea2f65c71c4730e53630ff2e6d",
+          "src/plotting/parameter_sensitivity.py": "85b48ca252303f46b9f87916a0260d488d7099880d2b62018985eea010a839dc",
+          "src/plotting/wilcoxon_results.py": "dbdbbd46e246ec6735acd78a08ff89cfeee49000dd1d298aab608004a3039f01",
+          "src/sensitivity/__init__.py": "a6ab5f117e13ec06e452201d5209bfea6825e05246a0ca611aa801cbfc2be668",
+          "src/sensitivity/parameter_analysis.py": "4b4e756e8ec256ba4a17797bc99cf7c2d5b1a9b53f024afa41b39ed0adf75670",
+          "src/utils/__init__.py": "d472c4eb866a20cd5f4295e06313fc030c4658058a0bd47c072099d8c8224ccd",
+          "src/utils/config.py": "f897c4062c20e8e9165cd789d473d4278819e16a89c06bbe90ec43c33afcfed8",
+          "src/utils/csv_io.py": "740a718b9aba4be4775b7d8c6b321ae32b0fd1acd45c9d72aa58dc443bb79a92"
+        },
+        "environment": {
+          "python": "3.14.7",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "packages": {
+            "numpy": "2.5.4",
+            "scipy": "1.18.1",
+            "pymoo": "0.6.2",
+            "PyYAML": "6.0.3"
+          },
+          "threads": {
+            "OMP_NUM_THREADS": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1"
+          }
+        },
+        "git_commit": "d90b70a2fa0774155cf3817f99598f9eceda9ee0",
+        "git_dirty": true,
+        "artifacts": {
+          "algorithm_benchmark_raw_runs.csv": "1a132e12616a13ed77986216ecd5bfa65cce7443753f1988c389d8e292578159",
+          "algorithm_benchmark_validation.csv": "9eaae319792cc19ec1efd78a2cc708479879e552f6a92dcb8af139b072c703b1",
+          "algorithm_benchmark_convergence.csv": "6f8f5f277bfe6ace3cf34ee4d384fcf04e60d017f9cf2c98cc0379dde3d1a365"
+        }
+      },
+      "pipeline_sha256": "18af865d77250a579ede0ef1656f874d55163111c0021258f95b130f7e55bf22",
+      "provenance_boundary": "New RNSGA2 execution is captured; retained algorithms keep their archived provenance. Matching recorded problem/seed protocol does not certify historical package/source versions.",
+      "datasets": {
+        "dtlz_benchmark": {
+          "records": 2520,
+          "rnsga2_records": 360,
+          "retained_records": 2160,
+          "invalid_records": 18,
+          "invalid_rnsga2_records": 0,
+          "before_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "e243462b82ecebf8dde5ba632574fdc0e23fe328a8538b0ca0b6a6268577c486",
+            "algorithm_benchmark_validation.csv": "7d36efdeba881a3597302578a558029bf23c7707958628bfe388d1f9cae6de9f",
+            "algorithm_benchmark_convergence.csv": "c6226df97272308a16d0805d30e467ecbd473d7127fbc059da33d70ec466d0ed",
+            "algorithm_benchmark_igd_hv_summary.csv": "1b4e74bab5d8a2a67fc8d809d2af2bac1e1fcbdbad32a6d34011c122bfd023c5",
+            "algorithm_benchmark_paired_statistics.csv": "4a87e05c97258de3e8842ccefd319e9fe2ce1b6e7b33b95816e3f82450d41360",
+            "algorithm_benchmark_cost_summary.csv": "8c00fb17afebfbc451b0f2bc5045bfd6e2578e8e491da60b3cad0b7deb31dc5e"
+          },
+          "after_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "9e8196bc7f11c891cd8e0203f66212d2fb7471e9ce60b2567b488184fe8fe99f",
+            "algorithm_benchmark_validation.csv": "4d7e0820f48abeff21d54937e1097e609e630c0cfac21da093feebb0d9318dea",
+            "algorithm_benchmark_convergence.csv": "2577c5b9f3d8d26aa8a6a26940f5d6f766344338a10b85e96ae73ca7adb80ac4",
+            "algorithm_benchmark_igd_hv_summary.csv": "4755261d8575520c1db865b1ab0e3c03af8b2d249431af7944c0f54f0c7d70d2",
+            "algorithm_benchmark_paired_statistics.csv": "a5030a36bdf0a0ee2b4a1240bea6b95b6ddd1f00afc4d352ae121839e078493f",
+            "algorithm_benchmark_cost_summary.csv": "8e9d6adbcec7b84ba9f3f8d6e6353fa7e50ed6f899a4fb7049651764bf1eb522"
+          },
+          "statistics_rows": 144,
+          "valid_pair_range": [
+            26,
+            30
+          ],
+          "outcomes": {
+            "reference_better": 91,
+            "no_significant_difference": 40,
+            "comparison_better": 13
+          },
+          "rnsga2_budget": "includes aspiration-point setup within the 20000-evaluation cap and runtime"
+        }
+      },
+      "status": "data_and_reports_published_automated_figure_qa_passed",
+      "visual_review": "Final-size figure review remains required; automated QA is not scientific validation"
+    },
+    "wfg": {
+      "schema": 1,
+      "kind": "algorithm_block_publication",
+      "suite": "wfg",
+      "published_utc": "2026-11-11T20:22:46.863282+00:00",
+      "execution_manifest_sha256": "7567d145ea20ed0ebeaad7e853b43aadc7d2441f19d2bf0ec138a25505168a21",
+      "execution_directory": "results/rnsga2_wfg",
+      "execution_manifest": {
+        "schema": 1,
+        "kind": "captured_before_execution",
+        "created_utc": "2026-11-11T20:12:24.440326+00:00",
+        "protocol": {
+          "global": {
+            "runs": 30,
+            "pop_size": 100,
+            "evaluation_budget": 20000,
+            "seed_base": 42
+          },
+          "problems": [
+            {
+              "name": "wfg1",
+              "n_obj": 2,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg1",
+              "n_obj": 3,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg1",
+              "n_obj": 5,
+              "n_var": 24,
+              "k": 8
+            },
+            {
+              "name": "wfg4",
+              "n_obj": 2,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg4",
+              "n_obj": 3,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg4",
+              "n_obj": 5,
+              "n_var": 24,
+              "k": 8
+            },
+            {
+              "name": "wfg6",
+              "n_obj": 2,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg6",
+              "n_obj": 3,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg6",
+              "n_obj": 5,
+              "n_var": 24,
+              "k": 8
+            },
+            {
+              "name": "wfg9",
+              "n_obj": 2,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg9",
+              "n_obj": 3,
+              "n_var": 24,
+              "k": 4
+            },
+            {
+              "name": "wfg9",
+              "n_obj": 5,
+              "n_var": 24,
+              "k": 8
+            }
+          ],
+          "algorithms": [
+            {
+              "name": "RNSGA2",
+              "runner": "pymoo",
+              "params": {},
+              "class_path": "pymoo.algorithms.moo.rnsga2.RNSGA2",
+              "sampling": "initial_population",
+              "auto_ref_points": true
+            }
+          ],
+          "statistics": {
+            "alpha": 0.05,
+            "reference_algorithm": "RNSGA2"
+          },
+          "initialization": "common numpy.default_rng(seed).uniform warm start",
+          "reference_front": "problem.pareto_front; Das-Dennis H=200/20/6 for M=2/3/5 unless configured",
+          "hypervolume_reference": "max(reference_front, axis=0) + 0.1",
+          "budget_accounting": "v2: includes RNSGA2 aspiration-point objective evaluations"
+        },
+        "source_hashes": {
+          "algorithms/__init__.py": "917a1b4852fdcad9004c0460fc340389399099faace679b929799200ed4af2a3",
+          "algorithms/ce_moea/__init__.py": "e14bf9a8bab2c70ce2ef0651f78c118615ad8b5ccbf58f3e25e6e670af3daf19",
+          "algorithms/ce_moea/algorithm.py": "3754c41a815a04384e13627ff67de2f7f2a2b681514350c37db388e632aac625",
+          "algorithms/ce_moea/core.py": "bf99f6ef6e3df9af7f2d859049f8a7602c00fc6f527dc822c18270d11b7a7d6f",
+          "algorithms/ce_moea/encoding.py": "24e23a1faa14828eae73d95722ee3b009e6dc56c4eec51c48edc548d8b16d56d",
+          "algorithms/ce_moea/nsga2.py": "c64a434a0495a3fdd5cae8386887a8e46cc05c2caeb60610b3047022bf059f02",
+          "algorithms/ce_moea/objectives.py": "09aea293bd8a482ccb84b536a1b7b34f33c11670d62a311831c8c33789d158fe",
+          "algorithms/ce_moea/operators.py": "8b884949df8c937e7e3d819631b1613304ec4abe0e02561a5f294a91969069a3",
+          "algorithms/cgde_nsga2/__init__.py": "067b67f5741644a6766473a27164b261db4610332b3f59e3c12fdfc45d179a2e",
+          "algorithms/cgde_nsga2/algorithm.py": "3c8cb09ee75330a9967d6ca68778be0ba86851e80865ad2bd366f03bbea698fb",
+          "algorithms/cgde_nsga2/core.py": "50c0ca58a45f9e1faa35bfc56f41a8064c13cc8b261632a86622152aaaddecf1",
+          "algorithms/cgde_nsga2/nsga2.py": "c886dbf65b7f99e0a53df5b1d1e7587fa5cdde50d2898e4c701d45fad03a8016",
+          "algorithms/cgde_nsga2/operators.py": "ed0dab6051dce2872ee240f98a8322e1d5fa6f963a3a6086bfa0ee31392fda1f",
+          "algorithms/nsga2_sdr_ols/__init__.py": "2d321a3be0dbd51429ab38774eb421802e482cd5f9826739c1d863a8f8332548",
+          "algorithms/nsga2_sdr_ols/algorithm.py": "3ef3652b078451942efeda2aec543b0ea5a7e0d47bae00883c6857b4b64c5b8a",
+          "algorithms/nsga2_sdr_ols/core.py": "2cd1a8e18182bc89fda80a735944b7227dda96b5cce9ece2223865609e96ecf5",
+          "algorithms/nsga2_sdr_ols/operators.py": "398e97077c5a824eb650262832376285b5989f52ccaf783375d1dfe84b3e1f18",
+          "algorithms/nsga2_sdr_ols/sdr.py": "0ee26f3f9971348831b1251226f9b69507cadace9ca085355672266f157a7849",
+          "requirements.txt": "82dab81f421f3ebe98ebcd09e04fd687d8e495771b19b482de6a5b2f67820e7d",
+          "scripts/run_benchmark_v2.py": "63438565fed4b4ed810052b8431e58cbfb82f9a562cc12ce21348c0c601fc83f",
+          "src/__init__.py": "8f66c031b900461bad8b9183ec9fe1252a9d1b8c00000426d90574b32991a8af",
+          "src/benchmarking/__init__.py": "4f2c2bf8dd059971c4397ccde02150cf8a7651a10f6afec0dd98dcc47bb0c082",
+          "src/benchmarking/ablation.py": "6c771914a64d7d5c4d232d5abe67d398561282e27a4a1e6470dc02046a985bce",
+          "src/benchmarking/algorithm_benchmark.py": "9db3e768e5c408462c72a59fbf2e46b07c6a0a9d16889bb181f10820bc957d8a",
+          "src/benchmarking/dtlz_benchmark.py": "e99e094374d792ef85e1320cfb1dec1f2b3e432ab2920a0940c5621eb8cd93a5",
+          "src/benchmarking/evaluation.py": "98f9cb26e64b330acfe276048d861c42a07b8b472c7817f76c337e2102e744e1",
+          "src/benchmarking/provenance.py": "3e11b92e702b1ae76fe14f4acf42e1fe166ca5543c8166638a77963e0c0bdc87",
+          "src/benchmarking/pymoo_compare.py": "69e231743579c106ac84efbaeff9514c7a301113166f914529b51dd01332606e",
+          "src/benchmarking/statistics.py": "b0aa9561e7a1a768598340d054c8781e0b5198d944ea2078f6d5d17d13369375",
+          "src/benchmarking/wfg_benchmark.py": "51146537dc257deb3538797f9f672a04119eb03461f0ecf380a846ab90645a59",
+          "src/oade_nsga2/__init__.py": "3a2a7e6f0b2be53cb95bf6344b955f6b9156a935c14af320d5add89d58cad4ce",
+          "src/oade_nsga2/algorithm.py": "ccd95b3917b62c6ff9f4ed1875d283b1e591564508d6e216d31376f46c36cacc",
+          "src/oade_nsga2/core.py": "7a3af86abc19ac6e9b5fdb67c1f09625002dc24b524ee987cb400e6fd7f7acd2",
+          "src/oade_nsga2/operators.py": "c33b33bba5b8ffd3f43417ba599f5c93d1c1ee8270b92f2cec22eef83ba37995",
+          "src/oade_nsga2/selection.py": "bbf9e1eeb4d9e6ee4c4755c26b7bb64fa2b852ce2ce6acf458b5203536d41129",
+          "src/plotting/__init__.py": "8ba7d181da368c7497342a9b6698f6ff1dff7fb72302504ed9a7b44b99fcfe61",
+          "src/plotting/algorithm_benchmark.py": "6c14dd62e6bdc46a5a2be16af5fd35572ea72c13408f4fa052289e4fe3680b9f",
+          "src/plotting/all_problems.py": "0961bd736fa4067cbb7730e051b840707eb3c0d387c187681519dbb6d5cc9ec5",
+          "src/plotting/common.py": "26505c50851a96cdf6f980a1617d17e9e844c51d4a03808526d9d62654288bf4",
+          "src/plotting/convergence.py": "ab8fddc9e256327f7c807bedc01d3feb1c0ecaea2f65c71c4730e53630ff2e6d",
+          "src/plotting/parameter_sensitivity.py": "85b48ca252303f46b9f87916a0260d488d7099880d2b62018985eea010a839dc",
+          "src/plotting/wilcoxon_results.py": "dbdbbd46e246ec6735acd78a08ff89cfeee49000dd1d298aab608004a3039f01",
+          "src/sensitivity/__init__.py": "a6ab5f117e13ec06e452201d5209bfea6825e05246a0ca611aa801cbfc2be668",
+          "src/sensitivity/parameter_analysis.py": "4b4e756e8ec256ba4a17797bc99cf7c2d5b1a9b53f024afa41b39ed0adf75670",
+          "src/utils/__init__.py": "d472c4eb866a20cd5f4295e06313fc030c4658058a0bd47c072099d8c8224ccd",
+          "src/utils/config.py": "f897c4062c20e8e9165cd789d473d4278819e16a89c06bbe90ec43c33afcfed8",
+          "src/utils/csv_io.py": "740a718b9aba4be4775b7d8c6b321ae32b0fd1acd45c9d72aa58dc443bb79a92"
+        },
+        "environment": {
+          "python": "3.14.7",
+          "platform": "Windows-11-10.0.26300-SP0",
+          "packages": {
+            "numpy": "2.5.4",
+            "scipy": "1.18.1",
+            "pymoo": "0.6.2",
+            "PyYAML": "6.0.3"
+          },
+          "threads": {
+            "OMP_NUM_THREADS": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1"
+          }
+        },
+        "git_commit": "d90b70a2fa0774155cf3817f99598f9eceda9ee0",
+        "git_dirty": true,
+        "artifacts": {
+          "algorithm_benchmark_raw_runs.csv": "e521cbb0b815bfe632bc00503bc1252107f9b6bda7bcaaf63b8b7336718e1e2f",
+          "algorithm_benchmark_validation.csv": "08e8f487e5abd98e8bf26255d644b8f38c320c433cab3ae426c700e8bd483024",
+          "algorithm_benchmark_convergence.csv": "335dcd67a3f29966801b045e7207222bafd1be7afbc5df7de369edc0f517df17"
+        }
+      },
+      "pipeline_sha256": "18af865d77250a579ede0ef1656f874d55163111c0021258f95b130f7e55bf22",
+      "provenance_boundary": "New RNSGA2 execution is captured; retained algorithms keep their archived provenance. Matching recorded problem/seed protocol does not certify historical package/source versions.",
+      "datasets": {
+        "wfg_m2_7algo_benchmark": {
+          "records": 840,
+          "rnsga2_records": 120,
+          "retained_records": 720,
+          "invalid_records": 0,
+          "invalid_rnsga2_records": 0,
+          "before_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "261d830e613af13008705663b7ede2f8b40f5892a3081ffb5a35eddaaf2d34ed",
+            "algorithm_benchmark_validation.csv": "401b504d5ddd3126ccbc4206b7e82ac5326e6fa2c5dfa87692bf3272f08f0e87",
+            "algorithm_benchmark_convergence.csv": "31b447cc2c92e631f5d4467c0441f6eacdc4ab077091f60d03db2fba53403de7",
+            "algorithm_benchmark_igd_hv_summary.csv": "972c5f5fa2f577cb73552c2ebee514725ee29c4534a6d010923106880ee4ba38",
+            "algorithm_benchmark_paired_statistics.csv": "d69047398bf0179cf3bafdd10bc1ab9ffdca3a486cbd1f2f333aa45422ee655f",
+            "algorithm_benchmark_cost_summary.csv": "4a6d38f0b9d083a4853e197939150efa1766fae799f814448b4f3d87d76faac6"
+          },
+          "after_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "fbc895f37c1c10ba357c2273e5b6159b5a06c9427287d14df89ed6185ae5f7c9",
+            "algorithm_benchmark_validation.csv": "823defda647b8555519103b395b7d8178bc2960fe401316c5728e6130cae7344",
+            "algorithm_benchmark_convergence.csv": "d3e4fe794313ec891bc1c044caf0ff76f3f89d418d28d6012068d292159ec509",
+            "algorithm_benchmark_igd_hv_summary.csv": "d407c0b8b9ef0e6a0795351b7a06022f4742bee86f366d8cdd5b25989c74e290",
+            "algorithm_benchmark_paired_statistics.csv": "fe385ad7db03809f370495d07d38fc34dcb766d4d60dcbc22b4594b773326013",
+            "algorithm_benchmark_cost_summary.csv": "8d858e13c24a17011fcb2835e81fada848900436ff0cd28de7b353c8b1cf7dfd"
+          },
+          "statistics_rows": 48,
+          "valid_pair_range": [
+            30,
+            30
+          ],
+          "outcomes": {
+            "reference_better": 42,
+            "comparison_better": 6
+          },
+          "rnsga2_budget": "includes aspiration-point setup within the 20000-evaluation cap and runtime"
+        },
+        "wfg_compact_benchmark": {
+          "records": 1800,
+          "rnsga2_records": 360,
+          "retained_records": 1440,
+          "invalid_records": 0,
+          "invalid_rnsga2_records": 0,
+          "before_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "bd1e132525e2c4dd55ca4f5f97551eb9a798e668f3f6ae72218014bd49560984",
+            "algorithm_benchmark_validation.csv": "d6dab3719ae5bd062fe7cbb5c112a3cc828c4463a4e295046fe87467324b3683",
+            "algorithm_benchmark_convergence.csv": "80420a7be617fd3c53a4994ad7b4efa4b740826ef6e47f3fd259364726342e2e",
+            "algorithm_benchmark_igd_hv_summary.csv": "58bb39fdc92393df16aadc2c78596af113e09d28a41570e55e5f496eb2376b43",
+            "algorithm_benchmark_paired_statistics.csv": "751c0e8252783b18d55719f3abea7957003b8de74d2f5635e9dd5e106dc7e9ae",
+            "algorithm_benchmark_cost_summary.csv": "2d345ba1ba046593e1d3e411878b0933f99c76aaed6cf1045c89529e76f976bb"
+          },
+          "after_sha256": {
+            "algorithm_benchmark_raw_runs.csv": "b75ff5836efd09607451e717bb3a83cc1c0c697c2212cff39c141aca5e0df8c1",
+            "algorithm_benchmark_validation.csv": "9a7148bd04c65e99b0bc46751f4ab4a80a5ead77ceadfbc1504c121b79fbada6",
+            "algorithm_benchmark_convergence.csv": "43b18ada3a29069ab605ca4a510921ecf05dbfceb23387593326056876b55d05",
+            "algorithm_benchmark_igd_hv_summary.csv": "c9567d21491646f81e2c7b54bce91e701618b5bccb6ab3a859903defcffa4823",
+            "algorithm_benchmark_paired_statistics.csv": "ccfd5db0ac0d2375d0272ba56d87baf5b578032dec8c6f1754e74f2a60843739",
+            "algorithm_benchmark_cost_summary.csv": "bca6dbc544b89a39ebf8d02a1cb1bfb8b44b9e52f4aa8f79a7c0f033392c7186"
+          },
+          "statistics_rows": 96,
+          "valid_pair_range": [
+            30,
+            30
+          ],
+          "outcomes": {
+            "reference_better": 56,
+            "comparison_better": 29,
+            "no_significant_difference": 11
+          },
+          "rnsga2_budget": "includes aspiration-point setup within the 20000-evaluation cap and runtime"
+        }
+      },
+      "status": "data_and_reports_published_automated_figure_qa_passed",
+      "visual_review": "Final-size figure review remains required; automated QA is not scientific validation"
+    }
+  }
+}

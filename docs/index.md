@@ -9,6 +9,7 @@ Start with [the integrated research manuscript](manuscript.md) for the central q
 | [Experiment registry](experiment_registry.md) | Historical batches and provenance boundaries |
 | [Follow-up experiment plan](followup_experiments.md) | Decisions on additional evidence needed for each claim |
 | [ZDT v2 report](benchmark_v2_results_report.md) | Detailed v2 ZDT statistics |
+| [DTLZ detailed results](dtlz_results_report.md) | Full current summaries and paired tests |
 | [ZDT + DTLZ report](dtlz1_4_integrated_report.md) | Detailed multiobjective results, valid-pair counts and exclusions |
 | [WFG report](wfg_compact_report.md) | Bi-objective comparison and compact scaling |
 | [Ablation](ablation_results_report.md) | Classic-configuration component removals |
@@ -16,4 +17,4 @@ Start with [the integrated research manuscript](manuscript.md) for the central q
 | [Sensitivity](sensitivity_analysis.md) | Classic-restart parameter sweeps; exploratory multiplicity |
 | [Historical v1 report](research_results_report.md) | Archived classic-restart findings, not the current overview |
 
-Current numeric source data are in results/. ZDT algorithm-block provenance, checksums and validation are in [results/provenance](../results/provenance/). Figure QA is documented in [figure_qa.md](../results/figures/figure_qa.md).
+Current numeric source data are in results/. ZDT/DTLZ/WFG algorithm-block provenance, checksums and validation are in [results/provenance](../results/provenance/). Figure QA is documented in [figure_qa.md](../results/figures/figure_qa.md).

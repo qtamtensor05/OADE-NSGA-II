@@ -1,142 +1,291 @@
-# OADE-NSGA-II v2: Compact WFG Benchmark & Scaling Report (Non-Separability, Deception, and Objective Scaling)
+# WFG benchmark and objective-count scaling results
 
-## 1. Executive Summary
+wfg_m2_7algo_benchmark: RNSGA2 has 120/120 valid records, 30 paired seeds per configuration and 20,000 recorded evaluations per run including setup. Against RNSGA2, OADE outcomes are 8 wins, 0 comparisons with no detected difference and 0 losses, within the stated suite-by-metric Holm families.
 
-To evaluate **OADE-NSGA-II v2** on four selected **WFG (Walking Fish Group)** problems ($D = 24$ decision variables; evaluation cap 20,000; $n = 30$ paired runs per configuration), we executed two benchmark experiments:
+wfg_compact_benchmark: RNSGA2 has 360/360 valid records, 30 paired seeds per configuration and 20,000 recorded evaluations per run including setup. Against RNSGA2, OADE outcomes are 24 wins, 0 comparisons with no detected difference and 0 losses, within the stated suite-by-metric Holm families.
 
-* **Experiment A — 7-algorithm bi-objective WFG study (`results/wfg_m2_7algo_benchmark/`, 840 runs)**: Compares OADE-NSGA-II v2 with six baselines on four WFG problems at $M=2$. Holm correction is applied separately per metric family ($m=24$).
-* **Experiment B — 5-algorithm study across $M \in \{2, 3, 5\}$ (`results/wfg_compact_benchmark/`, 1,800 runs)**: Compares OADE-NSGA-II v2 with four baselines on the same four WFG functions across objective counts. Holm correction is applied separately per metric family ($m=48$); convergence summaries cover recorded checkpoints and the final result.
+Four functions (WFG1/4/6/9), D=24. M=2/3 use k=4; M=5 uses k=8. The seven-algorithm table tests M=2; compact WFG tests five algorithms at M=2/3/5. Matching M=2 RNSGA2 records are shared across these tables, not independent replication.
 
-### Core Findings:
-1. **Outcome profile at $M = 2$ (`42W / 0ND / 6L`, `87.5%` wins, mean rank `1.75`)**:
-   * **OADE-NSGA-II v2** achieves zero losses against **`CE-MOEA`** (8–0–0), **`NSGA-II-SDR-OLS`** (8–0–0), and **`R-NSGA-II`** (8–0–0), and beats **`CGDE-NSGA-II`**, **`NSGA-II`**, and **`D-NSGA-II`** 6–0–2 each.
-   * **Observed `wfg9_m2` result**: In these runs, comparator median IGD values ranged from `0.1283` to `0.6396`, while OADE-NSGA-II v2 reached **`IGD_med = 0.0347 [IQR 0.0023]`** and **`HV_med = 2.1556 [IQR 0.0066]`** in **`5.2s/run`**. The result supports a large difference on this selected case; it does not establish that all comparators generally converge to this trap.
-   * **Observed quality–runtime trade-off on `wfg6_m2`**: Among the six tested comparators, `CGDE-NSGA-II` had better corrected IGD than OADE ($\text{IGD}_{\text{med}} = 0.0302$ vs $0.0526$, $p_{\text{adj}} = 1.56 \times 10^{-7}$). Its measured runtime was `448.1s/run`, about 101 times OADE's `4.4s/run` in this execution environment. OADE had better corrected outcomes than the other five comparators in the reported comparisons.
-2. **Outcome counts across objective settings in this selected WFG sample (`56W / 11ND / 29L`)**:
-   * OADE-NSGA-II v2's corrected win fraction declined across these four functions: **`28W / 0ND / 4L` (87.5%)** at $M=2$ $\to$ **`17W / 4ND / 11L` (53.1%)** at $M=3$ $\to$ **`11W / 7ND / 14L` (34.4%)** at $M=5$. This is a pattern in the selected suite and comparator pool, not a general scaling law.
-   * On biased/flat mixed **`WFG1`**, OADE's reported median HV exceeded `NSGA-II` at all three tested dimensions (`+89.6%` at $M=2$, `+20.9%` at $M=3$, `+26.6%` at $M=5$). `NSGA-II-SDR-OLS` had the best reported $M=5$ medians in this comparison ($\text{IGD}_{\text{med}} = 1.8954$, $\text{HV}_{\text{med}} = 1334.68$).
-3. **Observed late-budget behavior and candidate explanations**:
-   * The recorded trajectories show an early HV lead in some cases and a later deficit on `wfg9_m5` (`1019.73` near 16k evaluations, `947.63` at the final checkpoint). These are descriptive trajectories; checkpoints do not establish why the change occurred.
-   * Source inspection suggests three hypotheses for targeted tests: the configured `n_neighbors: 5` may limit neighborhood size at higher $M$; the DE ratio update measures the generated share rather than the survival success of DE offspring; and crowding-distance boundary assignment may affect selection on differently scaled objectives. The current experiments do not establish these as causes or confirm that the probability update is a bug.
+| Dataset | Records | Invalid | Comparisons | OADE W / ND / L |
+|---|---:|---:|---:|---|
+| wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
+| wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
----
+## wfg_m2_7algo_benchmark
 
-## 2. Experimental Protocol & Validation Integrity
+Thirty paired seeds (42–71), population 100, requested cap 20,000 objective evaluations. RNSGA2 aspiration-point setup is included in its evaluation cap and runtime. Two-sided paired Wilcoxon signed-rank tests; Holm correction over m=24 comparisons separately per metric, alpha=0.05. Valid matched pairs range from 30 to 30. Invalid outputs remain in run-level evidence; quality summaries/tests use valid matched observations. Positive rank-biserial effect favors OADE. No detected difference is not equivalence. Mean ± sample SD and median/IQR describe run dispersion, not confidence intervals for paired effects.
 
-| Design Parameter | Experiment A: `WFG M=2 (7 Algos)` (`results/wfg_m2_7algo_benchmark`) | Experiment B: `Compact WFG M=2,3,5 (5 Algos)` (`results/wfg_compact_benchmark`) |
-|---|---|---|
-| **Benchmark Problems** | `wfg1_m2`, `wfg4_m2`, `wfg6_m2`, `wfg9_m2` ($D=24$, $k=4$) | `wfg1`, `wfg4`, `wfg6`, `wfg9` × $M \in \{2,3,5\}$ ($D=24$; $k=4$ for $M \le 3$, $k=8$ for $M=5$) |
-| **Algorithm Pool** | All 7: `OADE_NSGAII`, `NSGA2`, `DNSGA2`, `CGDE_NSGAII`, `CE_MOEA`, `NSGAII_SDR_OLS`, `RNSGA2` | 5 fast solvers: `OADE_NSGAII`, `NSGA2`, `DNSGA2`, `NSGAII_SDR_OLS`, `RNSGA2` |
-| **Sample Size & Pairing** | $n = 30$ paired seeds (`42–71`), matched initial populations (total **840 runs**) | $n = 30$ paired seeds (`42–71`), matched initial populations (total **1,800 runs**) |
-| **Validation Status** | **840 / 840 `ok`** (0 collapsed or invalid runs) | **1,800 / 1,800 `ok`** (0 collapsed or invalid runs) |
-| **Reference Front & HV** | Das-Dennis directions ($H = 200$); $\mathbf{r} = \max(\text{PF}) + 0.1$ | Das-Dennis directions ($H \in \{200, 20, 6\}$ for $M \in \{2,3,5\}$); $\mathbf{r} = \max(\text{PF}) + 0.1$ |
-| **Budget Cap** | 20,000 evaluations (`OADE` utilization: `99.72%–99.83%`) | 20,000 evaluations (`OADE` utilization: `99.72%–99.83%`) |
-| **Inference & Multiplicity** | Two-sided paired Wilcoxon; Holm step-down separately per metric ($m = 24$ / family, $\alpha = 0.05$) | Two-sided paired Wilcoxon; Holm step-down separately per metric ($m = 48$ / family, $\alpha = 0.05$) |
+### Quality and cost by implementation
 
-*(Balanced statistical design note: Keeping Experiment A and Experiment B in separate directories prevents unbalanced multiplicity family sizes when comparing 7 solvers at $M=2$ vs 5 solvers across $M \in \{2,3,5\}$.)*
+| Problem | ID | Valid / scheduled | IGD median [Q25, Q75] ↓ | IGD mean ± SD | HV median [Q25, Q75] ↑ | HV mean ± SD | Mean seconds | Mean n_eval |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| wfg1_m2 | OADE_NSGAII | 30 / 30 | 1.02635 [1.01933, 1.03275] | 1.02608 ± 0.0107426 | 1.77305 [1.75152, 1.78989] | 1.77197 ± 0.0304387 | 12.530 | 19943.7 |
+| wfg1_m2 | NSGA2 | 30 / 30 | 1.18944 [1.14675, 1.2328] | 1.20215 ± 0.0747406 | 0.934918 [0.828528, 1.02012] | 0.903008 ± 0.190228 | 6.975 | 20000.0 |
+| wfg1_m2 | RNSGA2 | 30 / 30 | 1.68809 [1.63309, 1.7513] | 1.69532 ± 0.0703903 | 0 [0, 0] | 0 ± 0 | 6.399 | 20000.0 |
+| wfg1_m2 | DNSGA2 | 30 / 30 | 1.57529 [1.534, 1.6033] | 1.56666 ± 0.0426862 | 0 [0, 0] | 0.00981927 ± 0.0296991 | 5.788 | 19967.7 |
+| wfg1_m2 | CGDE_NSGAII | 30 / 30 | 1.13747 [1.13382, 1.14414] | 1.13856 ± 0.00725811 | 1.4531 [1.44003, 1.4642] | 1.45262 ± 0.0179108 | 214.860 | 20000.0 |
+| wfg1_m2 | NSGAII_SDR_OLS | 30 / 30 | 1.14583 [1.13428, 1.15975] | 1.14603 ± 0.0181704 | 1.42057 [1.39036, 1.45076] | 1.42008 ± 0.0422428 | 8.262 | 20000.0 |
+| wfg1_m2 | CE_MOEA | 30 / 30 | 1.12973 [1.12462, 1.13714] | 1.1299 ± 0.00854937 | 1.48276 [1.46311, 1.49853] | 1.48311 ± 0.0233624 | 253.891 | 20000.0 |
+| wfg4_m2 | OADE_NSGAII | 30 / 30 | 0.0332865 [0.0310635, 0.0343525] | 0.0332224 ± 0.00350899 | 2.14882 [2.13729, 2.15496] | 2.146 ± 0.0168258 | 10.241 | 19958.3 |
+| wfg4_m2 | NSGA2 | 30 / 30 | 0.0258485 [0.0235649, 0.0291162] | 0.0263514 ± 0.00398152 | 2.20102 [2.19261, 2.2085] | 2.20066 ± 0.0133641 | 5.468 | 20000.0 |
+| wfg4_m2 | RNSGA2 | 30 / 30 | 0.776462 [0.738015, 0.840897] | 0.776159 ± 0.0876585 | 1.32372 [1.29558, 1.33952] | 1.31845 ± 0.0363488 | 5.639 | 20000.0 |
+| wfg4_m2 | DNSGA2 | 30 / 30 | 0.0269287 [0.023409, 0.0289716] | 0.027004 ± 0.00451905 | 2.19138 [2.1811, 2.20723] | 2.19368 ± 0.0160338 | 5.361 | 19910.0 |
+| wfg4_m2 | CGDE_NSGAII | 30 / 30 | 0.0790686 [0.0771785, 0.0808669] | 0.0792816 ± 0.0026062 | 1.91569 [1.913, 1.92605] | 1.91727 ± 0.011875 | 238.423 | 20000.0 |
+| wfg4_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.248685 [0.215539, 0.276329] | 0.253584 ± 0.0489736 | 1.23034 [1.17346, 1.3587] | 1.25448 ± 0.151017 | 6.296 | 20000.0 |
+| wfg4_m2 | CE_MOEA | 30 / 30 | 0.0718304 [0.0671272, 0.0761215] | 0.0715537 ± 0.00532457 | 1.94842 [1.9338, 1.9728] | 1.95327 ± 0.0275459 | 360.878 | 20000.0 |
+| wfg6_m2 | OADE_NSGAII | 30 / 30 | 0.0525525 [0.0438797, 0.0600739] | 0.0547901 ± 0.0164568 | 2.05116 [2.0157, 2.09126] | 2.04237 ± 0.0833676 | 4.423 | 19966.0 |
+| wfg6_m2 | NSGA2 | 30 / 30 | 0.0688914 [0.0638133, 0.0806325] | 0.0716943 ± 0.0107337 | 1.96776 [1.91432, 1.99487] | 1.95804 ± 0.0496875 | 2.735 | 20000.0 |
+| wfg6_m2 | RNSGA2 | 30 / 30 | 0.75249 [0.705685, 0.844365] | 0.772488 ± 0.0918258 | 1.16152 [1.07898, 1.20495] | 1.15881 ± 0.0880385 | 3.581 | 20000.0 |
+| wfg6_m2 | DNSGA2 | 30 / 30 | 0.0714855 [0.0638605, 0.0765533] | 0.0737715 ± 0.0151702 | 1.96232 [1.93502, 1.99229] | 1.9581 ± 0.0501883 | 2.964 | 19910.0 |
+| wfg6_m2 | CGDE_NSGAII | 30 / 30 | 0.0301546 [0.0266076, 0.0386911] | 0.0338352 ± 0.0104752 | 2.1894 [2.16641, 2.19882] | 2.182 ± 0.0261591 | 448.085 | 20000.0 |
+| wfg6_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.28231 [0.251998, 0.335797] | 0.291287 ± 0.0538188 | 1.23109 [1.13448, 1.35793] | 1.23937 ± 0.147094 | 2.850 | 20000.0 |
+| wfg6_m2 | CE_MOEA | 30 / 30 | 0.121544 [0.121126, 0.121936] | 0.116135 ± 0.0162203 | 1.70052 [1.69838, 1.70316] | 1.73085 ± 0.0880383 | 283.463 | 20000.0 |
+| wfg9_m2 | OADE_NSGAII | 30 / 30 | 0.0347094 [0.0339824, 0.0362958] | 0.0363613 ± 0.00780928 | 2.15563 [2.1521, 2.15866] | 2.15299 ± 0.0171184 | 5.157 | 19956.9 |
+| wfg9_m2 | NSGA2 | 30 / 30 | 0.128344 [0.12794, 0.12871] | 0.110123 ± 0.0376733 | 1.70047 [1.6993, 1.70269] | 1.79242 ± 0.188414 | 3.444 | 20000.0 |
+| wfg9_m2 | RNSGA2 | 30 / 30 | 0.634442 [0.590452, 0.665333] | 0.621958 ± 0.0709063 | 1.2917 [1.03792, 1.33324] | 1.20363 ± 0.174846 | 4.080 | 20000.0 |
+| wfg9_m2 | DNSGA2 | 30 / 30 | 0.128372 [0.127753, 0.129214] | 0.112191 ± 0.0341716 | 1.70106 [1.69898, 1.7024] | 1.7865 ± 0.177633 | 4.119 | 19910.0 |
+| wfg9_m2 | CGDE_NSGAII | 30 / 30 | 0.129454 [0.128162, 0.130665] | 0.118058 ± 0.0268055 | 1.70118 [1.69922, 1.70351] | 1.76547 ± 0.140067 | 453.108 | 20000.0 |
+| wfg9_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.295047 [0.262329, 0.333391] | 0.29966 ± 0.0596967 | 1.16924 [1.07477, 1.22918] | 1.14655 ± 0.152618 | 3.461 | 20000.0 |
+| wfg9_m2 | CE_MOEA | 30 / 30 | 0.129265 [0.128396, 0.129935] | 0.129474 ± 0.00135727 | 1.70197 [1.70009, 1.70341] | 1.70156 ± 0.00277576 | 434.252 | 20000.0 |
 
----
+### All configured paired comparisons
 
-## 3. Experiment A: Full 7-Algorithm `M = 2` WFG Results (840 Runs)
+| Problem | Metric | Comparator | n | Holm p | Rank-biserial r | Result for OADE |
+|---|---|---|---:|---:|---:|---|
+| wfg1_m2 | IGD | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | DNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | NSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | DNSGA2 | 30 | 3.3304095e-06 | -0.909677 | comparison_better |
+| wfg4_m2 | IGD | NSGA2 | 30 | 8.8438392e-06 | -0.866667 | comparison_better |
+| wfg4_m2 | IGD | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | IGD | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | IGD | CGDE_NSGAII | 30 | 1.5646219e-07 | -0.974194 | comparison_better |
+| wfg6_m2 | IGD | DNSGA2 | 30 | 7.0463866e-06 | +0.883871 | reference_better |
+| wfg6_m2 | IGD | NSGA2 | 30 | 4.9684197e-05 | +0.789247 | reference_better |
+| wfg6_m2 | IGD | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | IGD | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | DNSGA2 | 30 | 6.519258e-08 | +0.987097 | reference_better |
+| wfg9_m2 | IGD | NSGA2 | 30 | 4.0046871e-07 | +0.956989 | reference_better |
+| wfg9_m2 | IGD | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | DNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | NSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | DNSGA2 | 30 | 4.4703484e-08 | -1.000000 | comparison_better |
+| wfg4_m2 | HV | NSGA2 | 30 | 4.4703484e-08 | -0.991398 | comparison_better |
+| wfg4_m2 | HV | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | HV | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | HV | CGDE_NSGAII | 30 | 4.4703484e-08 | -1.000000 | comparison_better |
+| wfg6_m2 | HV | DNSGA2 | 30 | 3.195554e-05 | +0.827957 | reference_better |
+| wfg6_m2 | HV | NSGA2 | 30 | 4.9684197e-05 | +0.789247 | reference_better |
+| wfg6_m2 | HV | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg6_m2 | HV | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | CE_MOEA | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | CGDE_NSGAII | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | DNSGA2 | 30 | 1.8626451e-07 | +0.965591 | reference_better |
+| wfg9_m2 | HV | NSGA2 | 30 | 9.4436109e-07 | +0.931183 | reference_better |
+| wfg9_m2 | HV | NSGAII_SDR_OLS | 30 | 4.4703484e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | RNSGA2 | 30 | 4.4703484e-08 | +1.000000 | reference_better |
 
-### 3.1 Holm-Adjusted Scorecard & Mean Ranks (48 Comparisons, 8 Endpoints)
+Sources: results/wfg_m2_7algo_benchmark/algorithm_benchmark_*.csv. Runtime compares recorded implementations/environments, not algorithm-independent complexity.
 
-| Algorithm | Combined Mean Rank (8 Endpoints) | IGD W / ND / L | HV W / ND / L | Total vs OADE (`OADE` W / ND / L) | Mean Runtime at $M=2$ (`OMP_NUM_THREADS=1`) |
-|---|---:|---:|---:|---:|---:|
-| **`OADE_NSGAII` (v2)** | **1.75 (#1)** | REF | REF | **42 / 0 / 6 (87.5%)** | **8.09 s** (`4.42–12.53 s`) |
-| **`NSGA2`** | 3.12 (#2) | 1L / 0ND / 3W (OADE) | 1L / 0ND / 3W (OADE) | 6 / 0 / 2 | 4.66 s (`2.73–6.98 s`) |
-| **`CGDE_NSGAII`** | 3.25 (#3) | 1L / 0ND / 3W (OADE) | 1L / 0ND / 3W (OADE) | 6 / 0 / 2 | 338.62 s (`214.86–453.11 s`) |
-| **`CE_MOEA`** | 3.50 (#4) | 0L / 0ND / 4W (OADE) | 0L / 0ND / 4W (OADE) | **8 / 0 / 0** | 333.12 s (`253.89–434.25 s`) |
-| **`DNSGA2`** | 3.88 (#5) | 1L / 0ND / 3W (OADE) | 1L / 0ND / 3W (OADE) | 6 / 0 / 2 | 4.56 s (`2.96–5.79 s`) |
-| **`NSGAII_SDR_OLS`** | 5.75 (#6) | 0L / 0ND / 4W (OADE) | 0L / 0ND / 4W (OADE) | **8 / 0 / 0** | 5.22 s (`2.85–8.26 s`) |
-| **`RNSGA2`** | 6.75 (#7) | 0L / 0ND / 4W (OADE) | 0L / 0ND / 4W (OADE) | **8 / 0 / 0** | 6.72 s (`4.09–9.21 s`) |
 
-### 3.2 Problem-Level 7-Algorithm Table (`n = 30`, Median [IQR width] and Mean ± SD)
+## wfg_compact_benchmark
 
-| Problem | Algorithm | IGD ↓ Median [IQR] | IGD Mean ± SD | HV ↑ Median [IQR] | HV Mean ± SD | $p_{\text{adj}}$ vs OADE (IGD / HV) | Effect $r$ (IGD / HV) |
-|---|---|---|---|---|---|---|---|
-| **`wfg1_m2`**<br>*(biased, flat)* | **`OADE_NSGAII`** | **1.0264** `[0.0134]` | **1.0261 ± 0.0107** | **1.7730** `[0.0384]` | **1.7720 ± 0.0304** | REF (#1) | REF |
-| | `CE_MOEA` | 1.1297 `[0.0125]` | 1.1299 ± 0.0085 | 1.4828 `[0.0354]` | 1.4831 ± 0.0234 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ | +1.000 / +1.000 |
-| | `CGDE_NSGAII` | 1.1375 `[0.0103]` | 1.1386 ± 0.0073 | 1.4531 `[0.0242]` | 1.4526 ± 0.0179 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ | +1.000 / +1.000 |
-| | `NSGAII_SDR_OLS` | 1.1458 `[0.0255]` | 1.1460 ± 0.0182 | 1.4206 `[0.0604]` | 1.4201 ± 0.0422 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ | +1.000 / +1.000 |
-| | `NSGA2` | 1.1894 `[0.0861]` | 1.2021 ± 0.0747 | 0.9349 `[0.1916]` | 0.9030 ± 0.1902 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ | +1.000 / +1.000 |
-| | `DNSGA2` / `RNSGA2` | 1.5753 / 1.6880 | 1.5667 / 1.6969 | 0.0000 / 0.0000 | 0.0098 / 0.0000 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ | +1.000 / +1.000 |
-| **`wfg4_m2`**<br>*(sep., concave)* | **`NSGA2`** | **0.0258** `[0.0056]` | **0.0264 ± 0.0040** | **2.2010** `[0.0159]` | **2.2007 ± 0.0134** | $8.84\times 10^{-6}$ (Loss) / $4.47\times 10^{-8}$ (Loss) | -0.867 / -0.991 |
-| | `DNSGA2` | 0.0269 `[0.0056]` | 0.0270 ± 0.0045 | 2.1914 `[0.0261]` | 2.1937 ± 0.0160 | $3.33\times 10^{-6}$ (Loss) / $4.47\times 10^{-8}$ (Loss) | -0.910 / -1.000 |
-| | `OADE_NSGAII` | 0.0333 `[0.0033]` | 0.0332 ± 0.0035 | 2.1488 `[0.0177]` | 2.1460 ± 0.0168 | REF (#3) | REF |
-| | `CE_MOEA` | 0.0718 `[0.0090]` | 0.0716 ± 0.0053 | 1.9484 `[0.0390]` | 1.9533 ± 0.0275 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ (Win) | +1.000 / +1.000 |
-| | `CGDE_NSGAII` | 0.0791 `[0.0037]` | 0.0793 ± 0.0026 | 1.9157 `[0.0131]` | 1.9173 ± 0.0119 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ (Win) | +1.000 / +1.000 |
-| **`wfg6_m2`**<br>*(non-separable)* | **`CGDE_NSGAII`** | **0.0302** `[0.0121]` | **0.0338 ± 0.0105** | **2.1894** `[0.0324]` | **2.1820 ± 0.0262** | $1.56\times 10^{-7}$ (Loss) / $4.47\times 10^{-8}$ (Loss) | -0.974 / -1.000 |
-| | `OADE_NSGAII` | 0.0526 `[0.0162]` | 0.0548 ± 0.0165 | 2.0512 `[0.0756]` | 2.0424 ± 0.0834 | REF (#2, 101× faster than CGDE) | REF |
-| | `NSGA2` | 0.0689 `[0.0168]` | 0.0717 ± 0.0107 | 1.9678 `[0.0805]` | 1.9580 ± 0.0497 | $4.97\times 10^{-5}$ / $4.97\times 10^{-5}$ (Win) | +0.789 / +0.789 |
-| | `DNSGA2` | 0.0715 `[0.0127]` | 0.0738 ± 0.0152 | 1.9623 `[0.0573]` | 1.9581 ± 0.0502 | $7.05\times 10^{-6}$ / $3.20\times 10^{-5}$ (Win) | +0.884 / +0.828 |
-| | `CE_MOEA` | 0.1215 `[0.0008]` | 0.1161 ± 0.0162 | 1.7005 `[0.0048]` | 1.7308 ± 0.0880 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ (Win) | +1.000 / +1.000 |
-| **`wfg9_m2`**<br>*(non-sep., deceptive)* | **`OADE_NSGAII`** | **0.0347** `[0.0023]` | **0.0364 ± 0.0078** | **2.1556** `[0.0066]` | **2.1530 ± 0.0171** | REF (lowest median IGD among tested algorithms) | REF |
-| | `NSGA2` | 0.1283 `[0.0008]` | 0.1101 ± 0.0377 | 1.7005 `[0.0034]` | 1.7924 ± 0.1884 | $4.00\times 10^{-7}$ / $9.44\times 10^{-7}$ (Win) | +0.957 / +0.931 |
-| | `DNSGA2` | 0.1284 `[0.0015]` | 0.1122 ± 0.0342 | 1.7011 `[0.0034]` | 1.7865 ± 0.1776 | $6.52\times 10^{-8}$ / $1.86\times 10^{-7}$ (Win) | +0.987 / +0.966 |
-| | `CE_MOEA` | 0.1293 `[0.0015]` | 0.1295 ± 0.0014 | 1.7020 `[0.0033]` | 1.7016 ± 0.0028 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ (Win) | +1.000 / +1.000 |
-| | `CGDE_NSGAII` | 0.1295 `[0.0025]` | 0.1181 ± 0.0268 | 1.7012 `[0.0043]` | 1.7655 ± 0.1401 | $4.47\times 10^{-8}$ / $4.47\times 10^{-8}$ (Win) | +1.000 / +1.000 |
+Thirty paired seeds (42–71), population 100, requested cap 20,000 objective evaluations. RNSGA2 aspiration-point setup is included in its evaluation cap and runtime. Two-sided paired Wilcoxon signed-rank tests; Holm correction over m=48 comparisons separately per metric, alpha=0.05. Valid matched pairs range from 30 to 30. Invalid outputs remain in run-level evidence; quality summaries/tests use valid matched observations. Positive rank-biserial effect favors OADE. No detected difference is not equivalence. Mean ± sample SD and median/IQR describe run dispersion, not confidence intervals for paired effects.
 
-![7-Algorithm Bi-Objective WFG Profile](../results/figures/wfg_m2_7algo_profile.png)
+### Quality and cost by implementation
 
-*Figure 1: Full 7-algorithm bi-objective WFG comparison ($M=2, D=24, n=30$ paired runs per group; 20,000-evaluation cap). **a**, Holm-corrected matched-pairs rank-biserial effects ($r \in [-1, +1]$; separate $m=24$ families for IGD and HV at $\alpha=0.05$; all 48 comparisons were significant after the stated correction). **b**, Run-level IGD distributions for non-separable deceptive `WFG9` (log x-axis; minimum observed IGD `0.0189`): comparator medians ranged from `0.1283` to `0.6396`, while OADE's median was `0.0347`. This is a descriptive result on the selected problem and does not establish a general escape mechanism. **c**, Mean rank across eight endpoints and measured BLAS-pinned runtime (`OMP_NUM_THREADS=1`; horizontal bars show min–max problem means). Runtime ratios describe these implementations and this environment. Source data: `results/figures/wfg_m2_7algo_source_data.csv` and `results/figures/wfg_m2_7algo_cost_rank_source.csv`.*
+| Problem | ID | Valid / scheduled | IGD median [Q25, Q75] ↓ | IGD mean ± SD | HV median [Q25, Q75] ↑ | HV mean ± SD | Mean seconds | Mean n_eval |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| wfg1_m2 | OADE_NSGAII | 30 / 30 | 1.02635 [1.01933, 1.03275] | 1.02608 ± 0.0107426 | 1.77305 [1.75152, 1.78989] | 1.77197 ± 0.0304387 | 12.530 | 19943.7 |
+| wfg1_m2 | NSGA2 | 30 / 30 | 1.18944 [1.14675, 1.2328] | 1.20215 ± 0.0747406 | 0.934918 [0.828528, 1.02012] | 0.903008 ± 0.190228 | 6.975 | 20000.0 |
+| wfg1_m2 | RNSGA2 | 30 / 30 | 1.68809 [1.63309, 1.7513] | 1.69532 ± 0.0703903 | 0 [0, 0] | 0 ± 0 | 6.399 | 20000.0 |
+| wfg1_m2 | DNSGA2 | 30 / 30 | 1.57529 [1.534, 1.6033] | 1.56666 ± 0.0426862 | 0 [0, 0] | 0.00981927 ± 0.0296991 | 5.788 | 19967.7 |
+| wfg1_m2 | NSGAII_SDR_OLS | 30 / 30 | 1.14583 [1.13428, 1.15975] | 1.14603 ± 0.0181704 | 1.42057 [1.39036, 1.45076] | 1.42008 ± 0.0422428 | 8.262 | 20000.0 |
+| wfg1_m3 | OADE_NSGAII | 30 / 30 | 1.4191 [1.41106, 1.42427] | 1.41795 ± 0.0103613 | 16.3951 [16.336, 16.4535] | 16.4028 ± 0.170669 | 13.870 | 19951.1 |
+| wfg1_m3 | NSGA2 | 30 / 30 | 1.39078 [1.36911, 1.40857] | 1.39246 ± 0.0309844 | 13.566 [12.925, 14.235] | 13.6941 ± 1.24201 | 8.264 | 20000.0 |
+| wfg1_m3 | RNSGA2 | 30 / 30 | 2.11576 [2.08439, 2.14922] | 2.11616 ± 0.0543092 | 0 [0, 0] | 0.105352 ± 0.270438 | 5.416 | 20000.0 |
+| wfg1_m3 | DNSGA2 | 30 / 30 | 1.70376 [1.66221, 1.74272] | 1.70689 ± 0.0453545 | 6.10429 [5.27712, 6.98755] | 6.16076 ± 0.994495 | 6.224 | 19966.3 |
+| wfg1_m3 | NSGAII_SDR_OLS | 30 / 30 | 1.39082 [1.37868, 1.3963] | 1.38814 ± 0.0207584 | 16.5793 [16.4014, 16.8309] | 16.5964 ± 0.284125 | 8.773 | 20000.0 |
+| wfg1_m5 | OADE_NSGAII | 30 / 30 | 1.99127 [1.97053, 2.02305] | 1.99485 ± 0.0365724 | 1303.33 [1293.21, 1311.21] | 1303.85 ± 14.2149 | 13.382 | 19954.9 |
+| wfg1_m5 | NSGA2 | 30 / 30 | 1.99843 [1.9701, 2.01659] | 1.99336 ± 0.0272137 | 1029.37 [1008.76, 1054.2] | 1029.87 ± 32.7344 | 7.047 | 20000.0 |
+| wfg1_m5 | RNSGA2 | 30 / 30 | 2.76392 [2.71961, 2.79968] | 2.75436 ± 0.0478591 | 0 [0, 0] | 0.121491 ± 0.665436 | 6.984 | 20000.0 |
+| wfg1_m5 | DNSGA2 | 30 / 30 | 2.21804 [2.19728, 2.25061] | 2.2249 ± 0.0368315 | 603.446 [547.755, 625.439] | 594.263 ± 71.995 | 5.760 | 19959.7 |
+| wfg1_m5 | NSGAII_SDR_OLS | 30 / 30 | 1.89544 [1.87105, 1.91095] | 1.8912 ± 0.0316236 | 1334.68 [1316.13, 1356.41] | 1338.46 ± 35.3508 | 8.950 | 20000.0 |
+| wfg4_m2 | OADE_NSGAII | 30 / 30 | 0.0332865 [0.0310635, 0.0343525] | 0.0332224 ± 0.00350899 | 2.14882 [2.13729, 2.15496] | 2.146 ± 0.0168258 | 10.241 | 19958.3 |
+| wfg4_m2 | NSGA2 | 30 / 30 | 0.0258485 [0.0235649, 0.0291162] | 0.0263514 ± 0.00398152 | 2.20102 [2.19261, 2.2085] | 2.20066 ± 0.0133641 | 5.468 | 20000.0 |
+| wfg4_m2 | RNSGA2 | 30 / 30 | 0.776462 [0.738015, 0.840897] | 0.776159 ± 0.0876585 | 1.32372 [1.29558, 1.33952] | 1.31845 ± 0.0363488 | 5.639 | 20000.0 |
+| wfg4_m2 | DNSGA2 | 30 / 30 | 0.0269287 [0.023409, 0.0289716] | 0.027004 ± 0.00451905 | 2.19138 [2.1811, 2.20723] | 2.19368 ± 0.0160338 | 5.361 | 19910.0 |
+| wfg4_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.248685 [0.215539, 0.276329] | 0.253584 ± 0.0489736 | 1.23034 [1.17346, 1.3587] | 1.25448 ± 0.151017 | 6.296 | 20000.0 |
+| wfg4_m3 | OADE_NSGAII | 30 / 30 | 0.351366 [0.345465, 0.36506] | 0.353783 ± 0.0142237 | 16.314 [15.9524, 16.6151] | 16.2589 ± 0.536186 | 12.656 | 19963.9 |
+| wfg4_m3 | NSGA2 | 30 / 30 | 0.278412 [0.272579, 0.286839] | 0.280393 ± 0.0123951 | 19.1261 [18.8957, 19.3145] | 19.0866 ± 0.372234 | 6.917 | 20000.0 |
+| wfg4_m3 | RNSGA2 | 30 / 30 | 1.69996 [1.58874, 1.80827] | 1.70429 ± 0.116917 | 6.94428 [6.87512, 7.30739] | 7.09383 ± 0.372797 | 7.483 | 20000.0 |
+| wfg4_m3 | DNSGA2 | 30 / 30 | 0.28448 [0.277661, 0.292716] | 0.284702 ± 0.0142707 | 18.9819 [18.6899, 19.2803] | 18.9504 ± 0.385676 | 6.715 | 19910.0 |
+| wfg4_m3 | NSGAII_SDR_OLS | 30 / 30 | 0.579879 [0.563822, 0.637332] | 0.59811 ± 0.0588556 | 12.7381 [11.4855, 13.4757] | 12.5101 ± 1.36507 | 8.245 | 20000.0 |
+| wfg4_m5 | OADE_NSGAII | 30 / 30 | 1.37932 [1.34309, 1.40634] | 1.38378 ± 0.0581451 | 664.432 [606.334, 731.747] | 663.471 ± 80.3449 | 9.684 | 19950.4 |
+| wfg4_m5 | NSGA2 | 30 / 30 | 1.22877 [1.19415, 1.26588] | 1.23067 ± 0.0527609 | 883.275 [844.698, 982.793] | 915.694 ± 89.9789 | 5.307 | 20000.0 |
+| wfg4_m5 | RNSGA2 | 30 / 30 | 3.67863 [3.44758, 3.89613] | 3.68988 ± 0.285738 | 281.856 [262.786, 301.277] | 280.65 ± 31.1723 | 6.383 | 20000.0 |
+| wfg4_m5 | DNSGA2 | 30 / 30 | 1.23555 [1.18889, 1.26831] | 1.23434 ± 0.0563479 | 865.472 [817.736, 963.544] | 894.704 ± 107.37 | 4.999 | 19910.0 |
+| wfg4_m5 | NSGAII_SDR_OLS | 30 / 30 | 1.42349 [1.38209, 1.46357] | 1.42312 ± 0.0629387 | 683.908 [601.295, 765.821] | 693.096 ± 118.865 | 4.834 | 20000.0 |
+| wfg6_m2 | OADE_NSGAII | 30 / 30 | 0.0525525 [0.0438797, 0.0600739] | 0.0547901 ± 0.0164568 | 2.05116 [2.0157, 2.09126] | 2.04237 ± 0.0833676 | 4.423 | 19966.0 |
+| wfg6_m2 | NSGA2 | 30 / 30 | 0.0688914 [0.0638133, 0.0806325] | 0.0716943 ± 0.0107337 | 1.96776 [1.91432, 1.99487] | 1.95804 ± 0.0496875 | 2.735 | 20000.0 |
+| wfg6_m2 | RNSGA2 | 30 / 30 | 0.75249 [0.705685, 0.844365] | 0.772488 ± 0.0918258 | 1.16152 [1.07898, 1.20495] | 1.15881 ± 0.0880385 | 3.581 | 20000.0 |
+| wfg6_m2 | DNSGA2 | 30 / 30 | 0.0714855 [0.0638605, 0.0765533] | 0.0737715 ± 0.0151702 | 1.96232 [1.93502, 1.99229] | 1.9581 ± 0.0501883 | 2.964 | 19910.0 |
+| wfg6_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.28231 [0.251998, 0.335797] | 0.291287 ± 0.0538188 | 1.23109 [1.13448, 1.35793] | 1.23937 ± 0.147094 | 2.850 | 20000.0 |
+| wfg6_m3 | OADE_NSGAII | 30 / 30 | 0.401819 [0.36314, 0.419072] | 0.396159 ± 0.0395792 | 15.5101 [14.7845, 16.7277] | 15.7194 ± 1.36416 | 4.937 | 19957.4 |
+| wfg6_m3 | NSGA2 | 30 / 30 | 0.323275 [0.315854, 0.328595] | 0.322633 ± 0.0119867 | 18.1238 [17.8702, 18.4074] | 18.1317 ± 0.432744 | 3.116 | 20000.0 |
+| wfg6_m3 | RNSGA2 | 30 / 30 | 1.65105 [1.63807, 1.66279] | 1.65184 ± 0.0252221 | 6.31663 [6.14988, 6.40942] | 6.28094 ± 0.204883 | 5.976 | 20000.0 |
+| wfg6_m3 | DNSGA2 | 30 / 30 | 0.327896 [0.317921, 0.336856] | 0.32965 ± 0.0166855 | 17.7868 [17.373, 18.1444] | 17.7908 ± 0.594223 | 3.182 | 19910.0 |
+| wfg6_m3 | NSGAII_SDR_OLS | 30 / 30 | 0.495373 [0.471663, 0.523657] | 0.502548 ± 0.0596052 | 14.6454 [13.7277, 15.3655] | 14.4577 ± 1.14767 | 3.194 | 20000.0 |
+| wfg6_m5 | OADE_NSGAII | 30 / 30 | 1.45361 [1.42512, 1.48516] | 1.45639 ± 0.0429658 | 1364.36 [1307.12, 1412.06] | 1359.38 ± 84.53 | 4.823 | 19950.5 |
+| wfg6_m5 | NSGA2 | 30 / 30 | 1.36541 [1.33351, 1.37721] | 1.35347 ± 0.0437795 | 1500.76 [1446.44, 1541.2] | 1512.44 ± 87.558 | 3.115 | 20000.0 |
+| wfg6_m5 | RNSGA2 | 30 / 30 | 3.56792 [3.50841, 3.60111] | 3.56444 ± 0.0646737 | 371.959 [363.122, 376.815] | 370.133 ± 10.0855 | 9.101 | 20000.0 |
+| wfg6_m5 | DNSGA2 | 30 / 30 | 1.37555 [1.34758, 1.3939] | 1.3656 ± 0.047183 | 1441.76 [1399.97, 1501.59] | 1457.94 ± 89.5601 | 2.909 | 19910.0 |
+| wfg6_m5 | NSGAII_SDR_OLS | 30 / 30 | 1.49245 [1.44265, 1.54525] | 1.49269 ± 0.0796845 | 1413.85 [1306.55, 1520.03] | 1411.23 ± 151.32 | 3.342 | 20000.0 |
+| wfg9_m2 | OADE_NSGAII | 30 / 30 | 0.0347094 [0.0339824, 0.0362958] | 0.0363613 ± 0.00780928 | 2.15563 [2.1521, 2.15866] | 2.15299 ± 0.0171184 | 5.157 | 19956.9 |
+| wfg9_m2 | NSGA2 | 30 / 30 | 0.128344 [0.12794, 0.12871] | 0.110123 ± 0.0376733 | 1.70047 [1.6993, 1.70269] | 1.79242 ± 0.188414 | 3.444 | 20000.0 |
+| wfg9_m2 | RNSGA2 | 30 / 30 | 0.634442 [0.590452, 0.665333] | 0.621958 ± 0.0709063 | 1.2917 [1.03792, 1.33324] | 1.20363 ± 0.174846 | 4.080 | 20000.0 |
+| wfg9_m2 | DNSGA2 | 30 / 30 | 0.128372 [0.127753, 0.129214] | 0.112191 ± 0.0341716 | 1.70106 [1.69898, 1.7024] | 1.7865 ± 0.177633 | 4.119 | 19910.0 |
+| wfg9_m2 | NSGAII_SDR_OLS | 30 / 30 | 0.295047 [0.262329, 0.333391] | 0.29966 ± 0.0596967 | 1.16924 [1.07477, 1.22918] | 1.14655 ± 0.152618 | 3.461 | 20000.0 |
+| wfg9_m3 | OADE_NSGAII | 30 / 30 | 0.337207 [0.326572, 0.350282] | 0.340685 ± 0.0200114 | 17.9026 [17.3362, 18.3732] | 17.6942 ± 0.778976 | 19.913 | 19956.5 |
+| wfg9_m3 | NSGA2 | 30 / 30 | 0.338354 [0.333992, 0.344611] | 0.341724 ± 0.013519 | 17.6333 [17.399, 17.9059] | 17.6302 ± 0.395869 | 11.151 | 20000.0 |
+| wfg9_m3 | RNSGA2 | 30 / 30 | 1.65878 [1.64677, 1.67417] | 1.66538 ± 0.0457162 | 6.86366 [6.72652, 6.92563] | 6.73738 ± 0.448091 | 3.905 | 20000.0 |
+| wfg9_m3 | DNSGA2 | 30 / 30 | 0.338661 [0.330428, 0.346419] | 0.340275 ± 0.0133605 | 17.6163 [17.3554, 17.8938] | 17.6484 ± 0.430828 | 12.887 | 19910.0 |
+| wfg9_m3 | NSGAII_SDR_OLS | 30 / 30 | 0.602355 [0.565236, 0.657626] | 0.609205 ± 0.0958726 | 11.7227 [10.2428, 12.7287] | 11.7861 ± 2.16216 | 12.443 | 20000.0 |
+| wfg9_m5 | OADE_NSGAII | 30 / 30 | 1.98087 [1.91415, 2.01739] | 1.96313 ± 0.0993474 | 947.629 [912.852, 1039.24] | 983.527 ± 133.117 | 17.528 | 19955.9 |
+| wfg9_m5 | NSGA2 | 30 / 30 | 1.72032 [1.68094, 1.77136] | 1.73254 ± 0.0684688 | 1313.48 [1265.58, 1375.99] | 1304.33 ± 96.1508 | 10.316 | 20000.0 |
+| wfg9_m5 | RNSGA2 | 30 / 30 | 3.89109 [3.85376, 3.97535] | 3.92028 ± 0.110289 | 408.145 [403.901, 414.841] | 410.321 ± 11.679 | 9.991 | 20000.0 |
+| wfg9_m5 | DNSGA2 | 30 / 30 | 1.69265 [1.66471, 1.77373] | 1.71491 ± 0.0714295 | 1337.2 [1287.52, 1378.76] | 1318.3 ± 107.579 | 10.356 | 19910.0 |
+| wfg9_m5 | NSGAII_SDR_OLS | 30 / 30 | 1.98926 [1.88728, 2.03706] | 1.97127 ± 0.109114 | 1034.66 [949.104, 1104.41] | 1031.39 ± 130.366 | 10.441 | 20000.0 |
 
----
+### All configured paired comparisons
 
-## 4. Experiment B: Objective-Scaling Trajectory Across `M = 2 -> 3 -> 5` (5 Fast Solvers, 1,800 Runs)
+| Problem | Metric | Comparator | n | Holm p | Rank-biserial r | Result for OADE |
+|---|---|---|---:|---:|---:|---|
+| wfg1_m2 | IGD | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | NSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m3 | IGD | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m3 | IGD | NSGA2 | 30 | 0.0026606526 | -0.707527 | comparison_better |
+| wfg1_m3 | IGD | NSGAII_SDR_OLS | 30 | 1.5646219e-06 | -0.948387 | comparison_better |
+| wfg1_m3 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m5 | IGD | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m5 | IGD | NSGA2 | 30 | 1 | -0.036559 | no_significant_difference |
+| wfg1_m5 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | -0.995699 | comparison_better |
+| wfg1_m5 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | DNSGA2 | 30 | 9.1586262e-06 | -0.909677 | comparison_better |
+| wfg4_m2 | IGD | NSGA2 | 30 | 3.9797276e-05 | -0.866667 | comparison_better |
+| wfg4_m2 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m2 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m3 | IGD | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m3 | IGD | NSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m3 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m3 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m5 | IGD | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m5 | IGD | NSGA2 | 30 | 8.9406967e-08 | -0.995699 | comparison_better |
+| wfg4_m5 | IGD | NSGAII_SDR_OLS | 30 | 0.06781837 | +0.522581 | no_significant_difference |
+| wfg4_m5 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m2 | IGD | DNSGA2 | 30 | 2.3487955e-05 | +0.883871 | reference_better |
+| wfg6_m2 | IGD | NSGA2 | 30 | 0.00039747357 | +0.789247 | reference_better |
+| wfg6_m2 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m2 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m3 | IGD | DNSGA2 | 30 | 8.6054206e-07 | -0.961290 | comparison_better |
+| wfg6_m3 | IGD | NSGA2 | 30 | 1.5832484e-07 | -0.987097 | comparison_better |
+| wfg6_m3 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +0.995699 | reference_better |
+| wfg6_m3 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m5 | IGD | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg6_m5 | IGD | NSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg6_m5 | IGD | NSGAII_SDR_OLS | 30 | 0.15492405 | +0.449462 | no_significant_difference |
+| wfg6_m5 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | DNSGA2 | 30 | 1.5832484e-07 | +0.987097 | reference_better |
+| wfg9_m2 | IGD | NSGA2 | 30 | 1.0412186e-06 | +0.956989 | reference_better |
+| wfg9_m2 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m2 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m3 | IGD | DNSGA2 | 30 | 1 | -0.027957 | no_significant_difference |
+| wfg9_m3 | IGD | NSGA2 | 30 | 1 | +0.135484 | no_significant_difference |
+| wfg9_m3 | IGD | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m3 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m5 | IGD | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg9_m5 | IGD | NSGA2 | 30 | 6.9849193e-07 | -0.965591 | comparison_better |
+| wfg9_m5 | IGD | NSGAII_SDR_OLS | 30 | 1 | +0.070968 | no_significant_difference |
+| wfg9_m5 | IGD | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | NSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m2 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m3 | HV | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m3 | HV | NSGA2 | 30 | 1.0058284e-07 | +0.991398 | reference_better |
+| wfg1_m3 | HV | NSGAII_SDR_OLS | 30 | 0.012121093 | -0.625806 | comparison_better |
+| wfg1_m3 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m5 | HV | DNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m5 | HV | NSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg1_m5 | HV | NSGAII_SDR_OLS | 30 | 0.0013758391 | -0.746237 | comparison_better |
+| wfg1_m5 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m2 | HV | NSGA2 | 30 | 1.0058284e-07 | -0.991398 | comparison_better |
+| wfg4_m2 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m2 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m3 | HV | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m3 | HV | NSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m3 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m3 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg4_m5 | HV | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m5 | HV | NSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg4_m5 | HV | NSGAII_SDR_OLS | 30 | 0.48050786 | -0.329032 | no_significant_difference |
+| wfg4_m5 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m2 | HV | DNSGA2 | 30 | 0.00017575547 | +0.827957 | reference_better |
+| wfg6_m2 | HV | NSGA2 | 30 | 0.00049684197 | +0.789247 | reference_better |
+| wfg6_m2 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m2 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m3 | HV | DNSGA2 | 30 | 4.4070184e-06 | -0.931183 | comparison_better |
+| wfg6_m3 | HV | NSGA2 | 30 | 8.9406967e-08 | -0.995699 | comparison_better |
+| wfg6_m3 | HV | NSGAII_SDR_OLS | 30 | 0.0051072128 | +0.677419 | reference_better |
+| wfg6_m3 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg6_m5 | HV | DNSGA2 | 30 | 0.0015088022 | -0.737634 | comparison_better |
+| wfg6_m5 | HV | NSGA2 | 30 | 4.4070184e-06 | -0.931183 | comparison_better |
+| wfg6_m5 | HV | NSGAII_SDR_OLS | 30 | 0.48050786 | -0.337634 | no_significant_difference |
+| wfg6_m5 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | DNSGA2 | 30 | 7.4505806e-07 | +0.965591 | reference_better |
+| wfg9_m2 | HV | NSGA2 | 30 | 4.4070184e-06 | +0.931183 | reference_better |
+| wfg9_m2 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m2 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m3 | HV | DNSGA2 | 30 | 0.80783042 | +0.053763 | no_significant_difference |
+| wfg9_m3 | HV | NSGA2 | 30 | 0.61704154 | +0.217204 | no_significant_difference |
+| wfg9_m3 | HV | NSGAII_SDR_OLS | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m3 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
+| wfg9_m5 | HV | DNSGA2 | 30 | 8.9406967e-08 | -1.000000 | comparison_better |
+| wfg9_m5 | HV | NSGA2 | 30 | 1.9557774e-06 | -0.948387 | comparison_better |
+| wfg9_m5 | HV | NSGAII_SDR_OLS | 30 | 0.48050786 | -0.350538 | no_significant_difference |
+| wfg9_m5 | HV | RNSGA2 | 30 | 8.9406967e-08 | +1.000000 | reference_better |
 
-### 4.1 Corrected Outcome Counts by Objective Dimension
+Sources: results/wfg_compact_benchmark/algorithm_benchmark_*.csv. Runtime compares recorded implementations/environments, not algorithm-independent complexity.
 
-| Dimension $M$ | Comparisons ($m=32$/level) | `OADE` Total (W / ND / L) | IGD (W / ND / L) | HV (W / ND / L) | Combined Mean Rank Trajectory (`OADE` / `NSGA2` / `DNSGA2` / `SDR-OLS` / `RNSGA2`) |
-|---|---:|---:|---:|---:|---|
-| **$M = 2$** | 32 | **28 / 0 / 4 (87.5%)** | 14 / 0 / 2 | 14 / 0 / 2 | **1.50 (#1)** / 2.12 / 2.88 / 3.75 / 4.75 |
-| **$M = 3$** | 32 | **17 / 4 / 11 (53.1%)** | 8 / 2 / 6 | 9 / 2 / 5 | 2.38 (#2) / **1.50 (#1)** / 2.75 / 3.38 / 5.00 |
-| **$M = 5$** | 32 | **11 / 7 / 14 (34.4%)** | 5 / 4 / 7 | 6 / 3 / 7 | 3.12 (#4) / **1.75 (#1)** / 2.25 (#2) / 2.88 (#3) / 5.00 |
-| **Combined (12 configs)** | **96** | **56 / 11 / 29 (58.3%)** | **27 / 6 / 15** | **29 / 5 / 14** | 2.33 (#2) / **1.79 (#1)** / 2.63 (#3) / 3.33 (#4) / 4.92 (#5) |
+## Figures
 
-### 4.2 High-Dimensional (`M = 3` and `M = 5`) Quantitative Comparison (`Median [IQR]`, `n = 30`)
+![WFG M=2 profile](../results/figures/wfg_m2_7algo_profile.png)
 
-| Problem | `OADE_NSGAII` IGD / HV | `NSGA2` IGD / HV | `DNSGA2` IGD / HV | `NSGAII_SDR_OLS` IGD / HV | Holm Verdict (`OADE` vs `NSGA2` / Top Solver) |
-|---|---|---|---|---|---|
-| **`wfg1_m3`** | 1.4191 `[0.0132]` / 16.3951 `[0.1175]` | 1.3908 `[0.0395]` / 13.5660 `[1.3100]` | 1.7038 `[0.0805]` / 6.1043 `[1.7104]` | **1.3908** `[0.0176]` / **16.5793** `[0.4294]` | Wins HV vs NSGA-II (`+20.9%`); trails `SDR-OLS` (`HV`, $p_{\text{adj}}=0.0121$) |
-| **`wfg1_m5`** | 1.9913 `[0.0525]` / 1303.3270 `[18.0044]` | 1.9984 `[0.0465]` / 1029.3707 `[45.4364]` | 2.2180 `[0.0533]` / 603.4462 `[77.6840]` | **1.8954** `[0.0399]` / **1334.6816** `[40.2742]` | No detected IGD difference (`p=1.000`); HV higher by `+26.6%` vs NSGA-II; #2 behind `SDR-OLS` |
-| **`wfg4_m3`** | 0.3514 `[0.0196]` / 16.3140 `[0.6628]` | **0.2784** `[0.0143]` / **19.1261** `[0.4187]` | 0.2845 `[0.0151]` / 18.9819 `[0.5904]` | 0.5799 `[0.0735]` / 12.7381 `[1.9902]` | Trails `NSGA2` & `DNSGA2` ($r = -1.000$) |
-| **`wfg4_m5`** | 1.3793 `[0.0632]` / 664.4325 `[125.4125]` | **1.2288** `[0.0717]` / **883.2753** `[138.0950]` | 1.2356 `[0.0794]` / 865.4722 `[145.8077]` | 1.4235 `[0.0815]` / 683.9079 `[164.5258]` | Trails `NSGA2` (`-24.8%` HV, $r=-1.000$); no detected difference vs `SDR-OLS` |
-| **`wfg6_m3`** | 0.4018 `[0.0559]` / 15.5101 `[1.9432]` | **0.3233** `[0.0127]` / **18.1238** `[0.5372]` | 0.3279 `[0.0189]` / 17.7868 `[0.7713]` | 0.4954 `[0.0520]` / 14.6454 `[1.6378]` | Trails `NSGA2` ($r = -0.987 / -0.996$) & `DNSGA2` |
-| **`wfg6_m5`** | 1.4536 `[0.0600]` / 1364.3584 `[104.9400]` | **1.3654** `[0.0437]` / **1500.7626** `[94.7660]` | 1.3755 `[0.0463]` / 1441.7648 `[101.6237]` | 1.4924 `[0.1026]` / 1413.8526 `[213.4812]` | Trails `NSGA2` ($r = -1.000 / -0.931$); no detected difference vs `SDR-OLS` (`p >= 0.155`) |
-| **`wfg9_m3`** | **0.3372** `[0.0237]` / **17.9026** `[1.0370]` | 0.3384 `[0.0106]` / 17.6333 `[0.5069]` | 0.3387 `[0.0160]` / 17.6163 `[0.5384]` | 0.6024 `[0.0924]` / 11.7227 `[2.4859]` | No detected difference vs `NSGA2`/`DNSGA2` (`p_adj >= 0.617`) |
-| **`wfg9_m5`** | 1.9809 `[0.1032]` / 947.6289 `[126.3847]` | 1.7203 `[0.0904]` / 1313.4834 `[110.4070]` | **1.6927** `[0.1090]` / **1337.1957** `[91.2451]` | 1.9893 `[0.1498]` / 1034.6641 `[155.3095]` | Trails `DNSGA2` & `NSGA2` ($r \le -0.948$); no detected difference vs `SDR-OLS` |
+Effects are matched-pairs rank-biserial correlations. WFG9 distributions show run-level IGD; cost rank uses median IGD/HV and measured implementation runtime. It does not isolate an escape mechanism.
 
-![WFG Objective Scaling Diagnosis](../results/figures/wfg_scaling_diagnosis.png)
+![WFG scaling](../results/figures/wfg_scaling_diagnosis.png)
 
-*Figure 2: Results across the tested dimensions ($M = 2 \to 3 \to 5$) and within-budget HV trajectories for five fast algorithms on compact WFG (`n=30` paired runs per problem-algorithm cell; 20,000-evaluation cap). **a**, Holm-adjusted outcome counts at each tested dimension (`32` comparisons per level). **b**, Matched-seed IGD ratio ($\text{IGD}_{\text{OADE}} / \text{IGD}_{\text{NSGA2}}$; values below 1 favor OADE; median with IQR error bars) for the selected WFG problems. **c, d**, Median HV trajectories (shaded bands show 25th–75th percentiles) at checkpoints `2k–18k` and the final recorded evaluations near the cap for `wfg1_m5` (**c**) and `wfg9_m5` (**d**). Source data: `results/figures/wfg_scaling_source_data.csv`.*
+Panel a counts outcomes by objective count within the compact per-metric Holm families. Panel b shows matched-seed OADE/NSGA-II IGD ratios, median and IQR. Panels c/d show median HV with IQR bands at recorded checkpoints and final evaluations. No general scaling law is inferred.
 
----
+Sources and implementation boundaries: [registry](experiment_registry.md), [baseline identities](baselines.md), [composition](../results/provenance/multiobjective_composition.json). Paired-effect CIs and mechanism attribution remain unresolved.
 
-## 5. Candidate Mechanisms & Engineering Questions
-
-The convergence trajectories (`results/wfg_compact_benchmark/algorithm_benchmark_convergence.csv`) and solver source suggest hypotheses for the observed performance differences across these dimensions. They do not establish causal explanations:
-
-1. **Early-budget observations (`WFG1`, `WFG9`)**:
-   At the recorded 2,000-evaluation checkpoint, `wfg1_m5` HV was `1283.63` for OADE and `272.87` for NSGA-II. On `wfg9_m2`, OADE had lower final IGD than the tested comparators. These observations are consistent with strong early exploration, but the experiment does not isolate DE mutation or periodic OBL injection as the cause; Sobol/initial OBL is bypassed by the common uniform warm start. OADE also retained a mean front size of 100 in the 12 compact configurations; this is descriptive, not a quality guarantee.
-2. **Candidate causes of 3D/5D regression (`WFG4/6/9` at $M = 3, 5$)**:
-   *(Source-level hypotheses only; no component-level WFG ablation has been run to quantify individual contributions.)*
-   * **Hard-coded `n_neighbors: 5` Config Override**: Although [`OADE_NSGAII.__init__`](../src/oade_nsga2/algorithm.py#L53-L54) specifies scaling `n_neighbors` up to `15` for $M \ge 3$, [`config/algorithms/oade_nsga2.yaml`](../config/algorithms/oade_nsga2.yaml#L10) sets `n_neighbors: 5`, restricting [`_neighborhood_mutant`](../src/oade_nsga2/operators.py#L140-L160) to `top_k = 1` neighbor even in 5-objective spaces.
-   * **Operator-probability feedback**: In [`_update_adaptive_parameters`](../src/oade_nsga2/algorithm.py#L261-L276), `de_ratio = len(de_offspring) / total` measures the generated share rather than rank-1 survival success. Whether this is a defect depends on the intended update rule; a targeted ablation is needed to test whether survivor-based feedback improves these WFG cases.
-   * **Crowding-distance scaling hypothesis**: WFG objective ranges differ by objective. Boundary points receive infinite crowding distance in [`calculate_crowding_distance`](../src/oade_nsga2/selection.py#L63-L88), which could affect survival ordering in higher dimensions. The observed `wfg9_m5` trajectories do not test this explanation; an ablation is needed to determine whether crowding-distance handling contributes to the final difference.
-
----
-
-## 6. Claim Boundaries & Scope
-
-1. **Scope Boundary**: Experiment A evaluates all 7 solvers at $M=2$ (`840` runs); Experiment B evaluates the 5 fast solvers across $M \in \{2, 3, 5\}$ (`1,800` runs) without `CE_MOEA` and `CGDE_NSGAII` at $M=3, 5$ (projected ~4–4.5 hours extra runtime due to unvectorized Python DE/CE overhead). Results apply specifically to `WFG1, WFG4, WFG6, WFG9` ($D=24, k \in \{4, 8\}$); `WFG2` (disconnected), `WFG3` (degenerate), `WFG5` (deceptive separable), `WFG7` (biased separable), and `WFG8` (biased non-separable) remain untested here.
-2. **Runtime Qualification**: Mean runtimes (`OADE_NSGAII`: `4.42–19.91s`; `CGDE_NSGAII`: `214.86–453.11s`; `CE_MOEA`: `253.89–434.25s`) reflect single-threaded BLAS execution (`OMP_NUM_THREADS=1`, parallelized with `--jobs 8` / `--jobs 10` on a 12-logical-CPU Windows host) across `pymoo` vs local Python implementations and do not establish asymptotic $\mathcal{O}(\cdot)$ scaling.
-3. **Non-significant comparisons**: Outcomes such as `wfg9_m3` vs `NSGA2` ($p_{\text{adj}} \ge 0.617$) and `wfg1_m5` IGD vs `NSGA2` ($p_{\text{adj}} = 1.0$) mean that a difference was not detected at $n=30$ after the stated Holm correction; they do not establish equivalence.
-
----
-
-## 7. Data & Code Provenance
-
-* **Experiment A Config & Data (7 Algos, $M=2$)**: `config/wfg_m2_7algo_benchmark.yaml`, `results/wfg_m2_7algo_benchmark/*` (`840` valid rows; `48` Holm-adjusted rows)
-* **Experiment B Config & Data (5 Fast Algos, $M \in \{2,3,5\}$)**: `config/wfg_compact_benchmark.yaml`, `results/wfg_compact_benchmark/*` (`1,800` valid rows; `96` Holm-adjusted rows)
-* **Publication Figures & Source CSVs**: `results/figures/wfg_m2_7algo_profile.{pdf,svg,png}`, `results/figures/wfg_scaling_diagnosis.{pdf,svg,png}`, `results/figures/wfg_m2_7algo_source_data.csv`, `results/figures/wfg_m2_7algo_cost_rank_source.csv`, `results/figures/wfg_scaling_source_data.csv`, `results/figures/figure_qa.md`
+Execution and dataset checksums are recorded in [multiobjective composition](../results/provenance/multiobjective_composition.json); independent statistical checks and final PDF QA are in [validation](../results/provenance/multiobjective_validation.json). These checks verify the configured run records and analyses, not universal algorithm correctness or an isolated mechanism.
