@@ -1,0 +1,57 @@
+{
+  "figures": {
+    "diversity_threshold": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "mean_CR": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "mean_F": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "n_neighbors": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "pop_size": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "prob_de": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "prob_de_paired": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "restart_elite_ratio": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "stagnation_patience": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    },
+    "stagnation_tolerance": {
+      "alignment": "PASS",
+      "collision": "PASS",
+      "min_font_pt": 9.0
+    }
+  },
+  "visual_review": "All figures inspected; revised Figure 3 uses per-problem bars, zero reference, IQR and consistent positive-improvement direction. All ten revised panels inspected.",
+  "data_check": "20 paired summary rows independently matched; no seed exclusions",
+  "export": "PNG 300 dpi, PDF, SVG; report figures, no journal submission claim"
+}

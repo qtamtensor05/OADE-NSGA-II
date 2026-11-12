@@ -16,6 +16,15 @@ dist/
 # Reproducible test inputs are tracked; generated smoke outputs are local.
 results/smoke*/
 
+# Local OFAT smoke setup and its dependent validation scripts are not release files.
+/config/smoke/smoke_zdt_sensitivity.yaml
+/tests/integration/test_zdt_sensitivity_pipeline.py
+/tests/unit/test_zdt_sensitivity.py
+
+# Per-task execution checkpoints stay local; commit the verified evidence.zip
+# plus manifest/config, compact tables and report figures instead.
+/results/experiments/**/primary/
+
 # Local report-writing, figure-generation scripts, and heavy/QA artifacts
 .r-bootstrap/
 renv/library/

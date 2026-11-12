@@ -1,0 +1,10 @@
+{
+  "archive": "evidence.zip",
+  "sha256": "26bcd5168c09f50baf26079726ceceb14da80e8d4d83cccdc866db7f041f60cf",
+  "bytes": 4597468,
+  "entries": 2853,
+  "primary_records": 2850,
+  "manifest_sha256": "3b2a47afde07a9d5a60cb9061db464fc792103f6beb63460c2e2374d279950e8",
+  "verification": "CRC and all primary SHA-256 passed",
+  "checkpoints_deleted": false
+}

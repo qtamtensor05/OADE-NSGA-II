@@ -1,0 +1,23 @@
+{
+  "pdf": "C:\\Users\\quangTam\\Documents\\GitHub\\OADE-NSGA-II\\results\\experiments\\zdt_sensitivity_ofat_v1\\figures\\n_neighbors.pdf",
+  "auditable": true,
+  "verdict": "PASS",
+  "page_count": 1,
+  "visible_text_box_count": 115,
+  "text_trace_count": 212,
+  "stroke_path_count": 50,
+  "filled_region_count": 52,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 0,
+    "warn": 0,
+    "contained_fill_overlays": 111,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": []
+}

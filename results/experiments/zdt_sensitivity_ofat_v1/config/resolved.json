@@ -1,0 +1,451 @@
+{
+  "candidates": [
+    {
+      "id": "baseline",
+      "level": null,
+      "parameter": "baseline",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_7114a688897f713f",
+      "level": 50,
+      "parameter": "pop_size",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 50,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_93422ec6cd444bec",
+      "level": 200,
+      "parameter": "pop_size",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 200,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_183c5ce0edbb9883",
+      "level": 10,
+      "parameter": "stagnation_patience",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 10,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_1236a5db83535ae2",
+      "level": 40,
+      "parameter": "stagnation_patience",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 40,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_71b26795e379beb9",
+      "level": 1e-05,
+      "parameter": "stagnation_tolerance",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 1e-05
+      }
+    },
+    {
+      "id": "level_2945413d760fdb21",
+      "level": 0.001,
+      "parameter": "stagnation_tolerance",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.001
+      }
+    },
+    {
+      "id": "level_0c0e9c47cc7486b2",
+      "level": 0.01,
+      "parameter": "diversity_threshold",
+      "settings": {
+        "diversity_threshold": 0.01,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_fe6102623a662b44",
+      "level": 0.05,
+      "parameter": "diversity_threshold",
+      "settings": {
+        "diversity_threshold": 0.05,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_590c4c4b9f076e47",
+      "level": 0.9,
+      "parameter": "restart_elite_ratio",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.9,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_3fc152a076d4c7f8",
+      "level": 0.95,
+      "parameter": "restart_elite_ratio",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.95,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_7ee30d3687633dcf",
+      "level": 0.2,
+      "parameter": "prob_de",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.2,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_b18cc433e3deb3f1",
+      "level": 0.8,
+      "parameter": "prob_de",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.8,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_329f73fa899694ba",
+      "level": 3,
+      "parameter": "n_neighbors",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 3,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_d3d07e819508d61d",
+      "level": 10,
+      "parameter": "n_neighbors",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 10,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_e4c6792f130e39f0",
+      "level": 0.4,
+      "parameter": "mean_F",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.4,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_170b0b301c872a12",
+      "level": 0.9,
+      "parameter": "mean_F",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.5,
+        "mean_F": 0.9,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_5151cf33ef4976d6",
+      "level": 0.1,
+      "parameter": "mean_CR",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.1,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "level_4d5d32646156e24e",
+      "level": 0.9,
+      "parameter": "mean_CR",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "mean_CR": 0.9,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    }
+  ],
+  "protocol": {
+    "algorithm_config": "config/algorithms/oade_nsga2.yaml",
+    "baseline_settings": {
+      "diversity_threshold": 0.02,
+      "mean_CR": 0.5,
+      "mean_F": 0.65,
+      "n_neighbors": 5,
+      "pop_size": 100,
+      "prob_de": 0.5,
+      "restart_elite_ratio": 0.8,
+      "restart_mode": "adaptive",
+      "stagnation_patience": 20,
+      "stagnation_tolerance": 0.0001
+    },
+    "global": {
+      "evaluation_budget": 20000,
+      "jobs": 6,
+      "out_dir": "results/experiments/zdt_sensitivity_ofat_v1",
+      "pop_size": 100,
+      "seeds": [
+        6000,
+        6001,
+        6002,
+        6003,
+        6004,
+        6005,
+        6006,
+        6007,
+        6008,
+        6009,
+        6010,
+        6011,
+        6012,
+        6013,
+        6014,
+        6015,
+        6016,
+        6017,
+        6018,
+        6019,
+        6020,
+        6021,
+        6022,
+        6023,
+        6024,
+        6025,
+        6026,
+        6027,
+        6028,
+        6029
+      ]
+    },
+    "parameters": {
+      "diversity_threshold": [
+        0.01,
+        0.02,
+        0.05
+      ],
+      "mean_CR": [
+        0.1,
+        0.5,
+        0.9
+      ],
+      "mean_F": [
+        0.4,
+        0.65,
+        0.9
+      ],
+      "n_neighbors": [
+        3,
+        5,
+        10
+      ],
+      "pop_size": [
+        50,
+        100,
+        200
+      ],
+      "prob_de": [
+        0.2,
+        0.5,
+        0.8
+      ],
+      "restart_elite_ratio": [
+        0.8,
+        0.9,
+        0.95
+      ],
+      "stagnation_patience": [
+        10,
+        20,
+        40
+      ],
+      "stagnation_tolerance": [
+        1e-05,
+        0.0001,
+        0.001
+      ]
+    },
+    "problems": [
+      {
+        "n_var": 30,
+        "name": "zdt1"
+      },
+      {
+        "n_var": 30,
+        "name": "zdt2"
+      },
+      {
+        "n_var": 30,
+        "name": "zdt3"
+      },
+      {
+        "n_var": 10,
+        "name": "zdt4"
+      },
+      {
+        "n_var": 10,
+        "name": "zdt6"
+      }
+    ],
+    "schema": 1,
+    "study_id": "zdt_sensitivity_ofat_v1"
+  }
+}

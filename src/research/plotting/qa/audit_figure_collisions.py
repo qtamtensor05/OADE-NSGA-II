@@ -289,7 +289,13 @@ def extract_pdf_geometry(path: Path) -> list[PageGeometry]:
                         if trace.index not in used_trace_indexes
                         and rect_overlap_ratio(trace.bbox, loose_bbox) >= 0.3
                     ]
-                    bbox = union_rects(trace.bbox for trace in matched_traces) or loose_bbox
+                    # Cairo may batch distant labels into one font trace. Its
+                    # union box is not the geometry of this extracted line;
+                    # intersect it with the line's own span bounds first.
+                    bbox = union_rects(
+                        intersection for trace in matched_traces
+                        if (intersection := rect_intersection(trace.bbox, loose_bbox)) is not None
+                    ) or loose_bbox
                     used_trace_indexes.update(trace.index for trace in matched_traces)
                     text = "".join(span.get("text", "") for span in spans).strip()
                     geometry.texts.append(TextBox(index=text_index, text=text, bbox=bbox))

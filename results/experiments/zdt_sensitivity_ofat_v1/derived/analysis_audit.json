@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "primary_checksums_verified": 2850,
+  "complete_unique_tasks": 2850,
+  "valid": 2850,
+  "invalid": 0,
+  "configurations": 19,
+  "seeds_per_problem_configuration": 30,
+  "n_eval_min": 19801,
+  "n_eval_max": 20000,
+  "workers": 8,
+  "derived_tables_recomputed_and_matched": true,
+  "paired_rows": 8100,
+  "excluded_primary_rows": 0,
+  "statistics": "descriptive OFAT; no composite scores, tests or automatic selection",
+  "runtime_caveat": "Concurrent observational timings; not an isolated speed benchmark."
+}

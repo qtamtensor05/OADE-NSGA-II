@@ -15,6 +15,8 @@ Start with [the integrated research manuscript](manuscript/manuscript.md) for th
 | [Ablation](reports/ablation_results_report.md) | Classic-configuration component removals |
 | [Restart confirmation](reports/restart_confirmation_report.md) | Held-out ZDT seeds; adaptive mechanism remains unconfirmed |
 | [Sensitivity](reports/sensitivity_analysis.md) | Classic-restart parameter sweeps; exploratory multiplicity |
+| [ZDT parameter sensitivity protocol (Vietnamese)](protocols/zdt_sensitivity.md) | One-parameter-at-a-time level lists, direct IGD/HV responses, variability and curves on ZDT |
+| [ZDT v2 parameter sensitivity results (Vietnamese)](reports/zdt_parameter_sensitivity_report.md) | Completed 2,850-run OFAT study: per-problem effects, restart diagnostics, figures and configuration rationale |
 | [Historical v1 report](reports/research_results_report.md) | Archived classic-restart findings, not the current overview |
 
 Current numeric source data are in results/. ZDT/DTLZ/WFG algorithm-block provenance, checksums and validation are in [results/provenance](../results/provenance). Figure QA is documented in [figure_qa.md](../results/figures/figure_qa.md).

@@ -10,7 +10,7 @@ from research.benchmarking import algorithm_benchmark, dtlz_benchmark, pymoo_com
 from research.plotting import algorithm_benchmark as algorithm_benchmark_plots
 from research.plotting import convergence
 from research.plotting import all_problems, parameter_sensitivity, wilcoxon_results
-from research.studies import ablation, parameter_analysis
+from research.studies import ablation, parameter_analysis, zdt_sensitivity
 from research.maintenance import tmp_sessions, inventory, check_structure
 from research.benchmarking.reuse import run_benchmark_v2
 
@@ -36,6 +36,7 @@ COMMANDS: dict[str, Command] = {
     "plot-convergence": convergence.main,
     "plot-wilcoxon": wilcoxon_results.main,
     "sensitivity": parameter_analysis.main,
+    "sensitivity-zdt": zdt_sensitivity.main,
     "plot-sensitivity": parameter_sensitivity.main,
 }
 

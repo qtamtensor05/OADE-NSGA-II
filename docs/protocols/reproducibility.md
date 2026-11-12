@@ -10,7 +10,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Tests, smoke YAML, analysis scripts, R bootstrap files, renv.lock and JSON figure QA are source artifacts. Caches, generated smoke runs, TIFFs and diagnostic overlays are ignored.
+Maintained regression tests, analysis scripts, R bootstrap files, renv.lock and JSON figure QA are source artifacts. The new OFAT smoke configuration and its dependent local validation scripts are excluded from Git, together with caches, generated smoke runs, TIFFs and diagnostic overlays.
 
 
 ## Smoke checks and temporary outputs
@@ -20,14 +20,51 @@ Tests, smoke YAML, analysis scripts, R bootstrap files, renv.lock and JSON figur
 .\.venv\Scripts\python.exe -m research tmp clean
 ```
 
-Smoke configurations are tracked; generated output, config snapshots and logs
+Historical smoke configurations remain at their recorded paths. The new OFAT
+smoke configuration and its dependent checks remain local and are not part of
+the commit. Generated output, config snapshots and logs
 are stored in isolated `tmp/smoke/<session_id>/` sessions. Cleanup defaults to
 dry-run; `--apply` deletes only expired, closed, disposable sessions. Keep
 research evidence in results, not tmp. Historical datasets stay at their
 recorded paths. Resume requires the original source identity and environment;
 never edit an existing manifest to authorize different code.
 
+### Git scope for checkpointed studies
+
+The ZDT OFAT study uses `results/experiments/<study_id>/` as its execution root.
+Its `primary/` directory contains one immutable JSON checkpoint per task and is
+local, ignored by Git. Keep these files for resume; do not move them into tmp.
+Commit source/configuration, the study manifest, compact derived tables, report
+figures and a verified `evidence.zip` containing primary records, captured
+configuration and the original manifest. `evidence_archive.json` records the
+archive checksum and primary-record count. This retains full research evidence
+without committing thousands of individual checkpoint files.
+
+After a completed study, create or refresh the archive with:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/maintenance/archive_experiment.py results/experiments/zdt_sensitivity_ofat_v1
+```
+
+The packager verifies every primary SHA-256 against the manifest, verifies the
+archive contents and leaves local checkpoints unchanged. After a fresh clone,
+restore this repository's verified archive into the same study directory before
+report regeneration or resume:
+
+```powershell
+.\.venv\Scripts\python.exe -m zipfile -e results/experiments/zdt_sensitivity_ofat_v1/evidence.zip results/experiments/zdt_sensitivity_ofat_v1
+```
+
+Resume still enforces the original source and environment identity. A changed
+study requires a new output directory; packaging does not authorize reuse under
+different settings.
+
 ## New runs and safe resume
+
+For adaptive-v2 parameter sensitivity on ZDT, use the
+[OFAT protocol](zdt_sensitivity.md): explicit increase/decrease lists, no composite
+score or automatic configuration selection. The historical `sensitivity` command
+and classic-restart outputs remain separate historical research evidence.
 
 For new versioned executions, add `--experiment <experiment_id>` to the benchmark
 command instead of `--out-dir`. Outputs go to

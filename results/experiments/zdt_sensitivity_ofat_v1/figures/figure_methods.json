@@ -1,0 +1,8 @@
+{
+  "method": "OFAT",
+  "smoke": false,
+  "input": "derived/summary.csv",
+  "plots": ["pop_size", "stagnation_patience", "stagnation_tolerance", "diversity_threshold", "restart_elite_ratio", "prob_de", "n_neighbors", "mean_F", "mean_CR"],
+  "uncertainty": "Q25-Q75 across stochastic seeds, not CI",
+  "scores": false
+}
