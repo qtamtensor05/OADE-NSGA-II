@@ -127,7 +127,7 @@ Full quality assurance audits and font-size checks are logged in [`results/figur
 
 ## 7. Project Structure & Reproducibility
 
-See [repository structure and naming](docs/governance/project_structure.md), including tmp sessions and experiment lifecycle.
+Each algorithm has its own directory under `src/`. Shared utilities are in `src/shared/`; experiment orchestration, statistics and plotting are in `src/research/`.
 
 
 Tests, smoke configurations, figure sources, environment lockfiles and JSON QA records are included in the research source. Generated smoke outputs, caches, TIFF rasters and diagnostic overlay PDFs remain local. See [reproducibility guide](docs/protocols/reproducibility.md).

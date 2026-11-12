@@ -60,8 +60,6 @@ def check() -> list[str]:
                     errors.append(f"Use installed top-level packages, not src/algorithms wrappers: {name}:{node.lineno}")
     documents = [ROOT / "README.md", ROOT / "README.vi.md", *(ROOT / "docs").rglob("*.md")]
     for document in documents:
-        if document.name == "project_structure_proposal.md":
-            continue # dated audit intentionally describes pre-migration paths
         for target in re.findall(r"\]\(([^)]+)\)", document.read_text(encoding="utf-8")):
             if target.startswith(("http:", "https:", "mailto:", "#")):
                 continue

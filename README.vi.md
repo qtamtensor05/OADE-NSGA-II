@@ -132,7 +132,7 @@ Các bản PDF, SVG, PNG và CSV nguồn nằm trong [results/figures/](results/
 
 ## 7. Cấu trúc dự án và khả năng tái lập
 
-Xem [cấu trúc và quy định đặt tên](docs/governance/project_structure.md), gồm session tmp, cách dọn dữ liệu thử và vòng đời execution nghiên cứu.
+Mỗi thuật toán có một thư mục riêng trong `src/`. Hàm dùng chung ở `src/shared/`; điều phối thí nghiệm, thống kê và vẽ ở `src/research/`.
 
 
 Run mới ghi manifest gồm cấu hình đã giải quyết, hash mã nguồn, môi trường và checksum CSV. Resume/reuse kiểm tra dữ liệu trước khi tiếp tục; fresh run từ chối ghi đè kết quả đã có. Dữ liệu lịch sử chỉ được lập inventory, không được chứng nhận ngược bằng môi trường hiện tại.

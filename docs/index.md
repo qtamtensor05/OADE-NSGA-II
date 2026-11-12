@@ -4,9 +4,6 @@ Start with [the integrated research manuscript](manuscript/manuscript.md) for th
 
 | Document | Role |
 |---|---|
-| [Current project structure (Vietnamese)](governance/project_structure.md) | Implemented namespace, naming rules, tmp cleanup and experiment execution workflow |
-| [Flat algorithm ownership migration](governance/flat_algorithm_migration_20261112.md) | One directory per algorithm, shared functions and research tooling boundaries |
-| [Project structure proposal (Vietnamese)](project_structure_proposal.md) | Repository audit, naming rules, tmp lifecycle and staged restructuring plan |
 | [Baseline registry](protocols/baselines.md) | Canonical names, code ownership, adaptations and citations |
 | [Reproducibility](protocols/reproducibility.md) | Fresh execution, safe resume, environment and figure sources |
 | [Experiment registry](protocols/experiment_registry.md) | Historical batches and provenance boundaries |

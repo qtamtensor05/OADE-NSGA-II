@@ -13,15 +13,27 @@ python -m venv .venv
 Tests, smoke YAML, analysis scripts, R bootstrap files, renv.lock and JSON figure QA are source artifacts. Caches, generated smoke runs, TIFFs and diagnostic overlays are ignored.
 
 
-## Current repository layout
+## Smoke checks and temporary outputs
 
-See [structure, naming and artifact lifecycle](../governance/project_structure.md)
-for session-based smoke commands and `--experiment` executions. Historical flat
-datasets remain at their recorded paths. Source identities changed during the
-package migration: resume an older execution only with its original checkout
-and environment; never edit its manifest to authorize the refactored code.
+```powershell
+.\.venv\Scripts\python.exe -m research benchmark --config config/smoke/smoke_benchmark.yaml --jobs 2
+.\.venv\Scripts\python.exe -m research tmp clean
+```
+
+Smoke configurations are tracked; generated output, config snapshots and logs
+are stored in isolated `tmp/smoke/<session_id>/` sessions. Cleanup defaults to
+dry-run; `--apply` deletes only expired, closed, disposable sessions. Keep
+research evidence in results, not tmp. Historical datasets stay at their
+recorded paths. Resume requires the original source identity and environment;
+never edit an existing manifest to authorize different code.
 
 ## New runs and safe resume
+
+For new versioned executions, add `--experiment <experiment_id>` to the benchmark
+command instead of `--out-dir`. Outputs go to
+`results/experiments/<experiment_id>/<execution_id>/`, with primary evidence,
+derived tables, resolved configuration, environment snapshots and logs separated.
+Resume that execution with `--out-dir <execution_root> --resume`.
 
 Always use a new output directory to preserve archived research evidence:
 
