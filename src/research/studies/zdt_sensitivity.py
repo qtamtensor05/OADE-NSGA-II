@@ -138,6 +138,7 @@ def validate_records(cfg, candidates, rows, complete=False):
         candidate, problem, seed = expected[key]
         if (row["settings"] != candidate["settings"] or row["parameter"] != candidate["parameter"]
                 or row["level"] != candidate["level"] or row["n_var"] != problem["n_var"]
+                or ("n_obj" in problem and row.get("n_obj") != problem["n_obj"])
                 or row["evaluation_budget"] != cfg["global"]["evaluation_budget"]
                 or not 0 < row["n_eval"] <= row["evaluation_budget"]):
             raise ValueError("Settings, dimensions or evaluation accounting changed")
@@ -151,7 +152,8 @@ def validate_records(cfg, candidates, rows, complete=False):
         raise ValueError(f"Incomplete OFAT study: {len(seen)}/{len(expected)} tasks")
 
 
-def execute(directory, manifest, cfg, candidates, jobs):
+def execute(directory, manifest, cfg, candidates, jobs, *, task_runner=None):
+    worker = task_runner or run_task
     expected = tasks(cfg, candidates)
     validate_records(cfg, candidates, load_records(directory, manifest))
     pending = {key: value for key, value in expected.items() if f"primary/{key}.json" not in manifest["artifacts"]}
@@ -169,15 +171,15 @@ def execute(directory, manifest, cfg, candidates, jobs):
 
     if jobs == 1:
         for key, (candidate, problem, seed) in pending.items():
-            checkpoint(key, run_task(cfg, candidate, problem, seed))
+            checkpoint(key, worker(cfg, candidate, problem, seed))
     else:
         with ProcessPoolExecutor(max_workers=jobs) as pool:
-            futures = {pool.submit(run_task, cfg, c, p, seed): key for key, (c, p, seed) in pending.items()}
+            futures = {pool.submit(worker, cfg, c, p, seed): key for key, (c, p, seed) in pending.items()}
             for future in as_completed(futures):
                 checkpoint(futures[future], future.result())
 
 
-def write_outputs(directory, manifest, cfg, candidates):
+def write_outputs(directory, manifest, cfg, candidates, *, report_writer=None):
     rows = load_records(directory, manifest)
     validate_records(cfg, candidates, rows, complete=True)
     summaries, comparisons = analyze(cfg, candidates, rows)
@@ -185,7 +187,7 @@ def write_outputs(directory, manifest, cfg, candidates):
               | {"settings_json": json.dumps(row["settings"], sort_keys=True)} | row["telemetry"] for row in rows]
     for filename, data in (("raw_runs.csv", scalar), ("summary.csv", summaries), ("comparisons.csv", comparisons)):
         write_csv(directory / "derived" / filename, data, list(data[0]))
-    (directory / "derived/report.md").write_text(report(cfg, candidates, rows, summaries, comparisons), encoding="utf-8")
+    (directory / "derived/report.md").write_text((report_writer or report)(cfg, candidates, rows, summaries, comparisons), encoding="utf-8")
     return rows
 
 

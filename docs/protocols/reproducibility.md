@@ -66,6 +66,9 @@ For adaptive-v2 parameter sensitivity on ZDT, use the
 score or automatic configuration selection. The historical `sensitivity` command
 and classic-restart outputs remain separate historical research evidence.
 
+The corresponding [DTLZ1–4 OFAT protocol](dtlz_sensitivity.md) uses
+`sensitivity-dtlz`, with separate cases and reference fronts for 2/3/5 objectives.
+
 For new versioned executions, add `--experiment <experiment_id>` to the benchmark
 command instead of `--out-dir`. Outputs go to
 `results/experiments/<experiment_id>/<execution_id>/`, with primary evidence,

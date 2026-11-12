@@ -16,6 +16,7 @@ Start with [the integrated research manuscript](manuscript/manuscript.md) for th
 | [Restart confirmation](reports/restart_confirmation_report.md) | Held-out ZDT seeds; adaptive mechanism remains unconfirmed |
 | [Sensitivity](reports/sensitivity_analysis.md) | Classic-restart parameter sweeps; exploratory multiplicity |
 | [ZDT parameter sensitivity protocol (Vietnamese)](protocols/zdt_sensitivity.md) | One-parameter-at-a-time level lists, direct IGD/HV responses, variability and curves on ZDT |
+| [DTLZ parameter sensitivity protocol (Vietnamese)](protocols/dtlz_sensitivity.md) | DTLZ1–4 at 2/3/5 objectives, explicit parameter lists, safe resume and per-objective figures |
 | [ZDT v2 parameter sensitivity results (Vietnamese)](reports/zdt_parameter_sensitivity_report.md) | Completed 2,850-run OFAT study: per-problem effects, restart diagnostics, figures and configuration rationale |
 | [Historical v1 report](reports/research_results_report.md) | Archived classic-restart findings, not the current overview |
 

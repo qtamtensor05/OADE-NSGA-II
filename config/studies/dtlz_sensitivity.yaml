@@ -1,0 +1,113 @@
+schema: 1
+study_id: dtlz_sensitivity_ofat_v1
+algorithm_config: config/algorithms/oade_nsga2.yaml
+global:
+  pop_size: 100
+  evaluation_budget: 20000
+  jobs: 6
+  out_dir: results/experiments/dtlz_sensitivity_ofat_v1
+  seeds:
+  - 7000
+  - 7001
+  - 7002
+  - 7003
+  - 7004
+  - 7005
+  - 7006
+  - 7007
+  - 7008
+  - 7009
+  - 7010
+  - 7011
+  - 7012
+  - 7013
+  - 7014
+  - 7015
+  - 7016
+  - 7017
+  - 7018
+  - 7019
+  - 7020
+  - 7021
+  - 7022
+  - 7023
+  - 7024
+  - 7025
+  - 7026
+  - 7027
+  - 7028
+  - 7029
+problems:
+- name: dtlz1
+  n_obj: 2
+  n_var: 6
+- name: dtlz1
+  n_obj: 3
+  n_var: 7
+- name: dtlz1
+  n_obj: 5
+  n_var: 9
+- name: dtlz2
+  n_obj: 2
+  n_var: 11
+- name: dtlz2
+  n_obj: 3
+  n_var: 12
+- name: dtlz2
+  n_obj: 5
+  n_var: 14
+- name: dtlz3
+  n_obj: 2
+  n_var: 11
+- name: dtlz3
+  n_obj: 3
+  n_var: 12
+- name: dtlz3
+  n_obj: 5
+  n_var: 14
+- name: dtlz4
+  n_obj: 2
+  n_var: 11
+- name: dtlz4
+  n_obj: 3
+  n_var: 12
+- name: dtlz4
+  n_obj: 5
+  n_var: 14
+parameters:
+  pop_size:
+  - 50
+  - 100
+  - 200
+  stagnation_patience:
+  - 10
+  - 20
+  - 40
+  stagnation_tolerance:
+  - 1.0e-05
+  - 0.0001
+  - 0.001
+  diversity_threshold:
+  - 0.01
+  - 0.02
+  - 0.05
+  restart_elite_ratio:
+  - 0.8
+  - 0.9
+  - 0.95
+  prob_de:
+  - 0.2
+  - 0.5
+  - 0.8
+  n_neighbors:
+  - 3
+  - 5
+  - 10
+  mean_F:
+  - 0.4
+  - 0.65
+  - 0.9
+  mean_CR:
+  - 0.1
+  - 0.5
+  - 0.9
