@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oade-nsga2-research"
+version = "0.1.0"
+description = "Budget-controlled OADE-NSGA-II research experiments"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "matplotlib>=3.8,<4",
+  "numpy>=1.26,<3",
+  "pymoo>=0.6.1,<0.7",
+  "PyYAML>=6.0,<7",
+  "scipy>=1.12,<2",
+]
+
+[project.scripts]
+oade = "research.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["oade_nsga2*", "nsga2*", "rnsga2*", "dnsga2*", "cgde_nsga2*", "ce_moea*", "research*", "shared*"]
+

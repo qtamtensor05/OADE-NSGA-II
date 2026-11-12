@@ -8,6 +8,10 @@ __pycache__/
 htmlcov/
 *.tmp
 scratch/
+/tmp/
+*.egg-info/
+build/
+dist/
 
 # Reproducible test inputs are tracked; generated smoke outputs are local.
 results/smoke*/

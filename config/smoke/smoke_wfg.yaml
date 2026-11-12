@@ -1,0 +1,23 @@
+temporary_session: true
+global:
+  runs: 2
+  pop_size: 20
+  evaluation_budget: 400
+  seed_base: 42
+  out_dir: tmp/smoke/explicit_session_required
+
+problems:
+  - {name: wfg4, n_var: 24, n_obj: 3, k: 4}
+
+algorithm_configs:
+  - config/algorithms/oade_nsga2.yaml
+  - config/algorithms/nsga2.yaml
+  - config/algorithms/rnsga2.yaml
+  - config/algorithms/dnsga2.yaml
+  - config/algorithms/cgde_nsga2.yaml
+  - config/algorithms/nsga2_sdr_ols.yaml
+  - config/algorithms/ce_moea.yaml
+
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII

@@ -1,0 +1,17 @@
+{
+  "config/ablation.yaml": "config/studies/ablation.yaml",
+  "config/algorithm_benchmark.yaml": "config/suites/algorithm_benchmark.yaml",
+  "config/algorithm_benchmark_classic.yaml": "config/suites/algorithm_benchmark_classic.yaml",
+  "config/algorithm_benchmark_v2.yaml": "config/suites/algorithm_benchmark_v2.yaml",
+  "config/benchmark.yaml": "config/suites/benchmark.yaml",
+  "config/dtlz1_4_benchmark.yaml": "config/suites/dtlz1_4_benchmark.yaml",
+  "config/dtlz_benchmark.yaml": "config/suites/dtlz_benchmark.yaml",
+  "config/plotting.yaml": "config/plotting/plotting.yaml",
+  "config/restart_confirmation.yaml": "config/studies/restart_confirmation.yaml",
+  "config/sensitivity.yaml": "config/studies/sensitivity.yaml",
+  "config/smoke_benchmark.yaml": "config/smoke/smoke_benchmark.yaml",
+  "config/smoke_sensitivity.yaml": "config/smoke/smoke_sensitivity.yaml",
+  "config/wfg_benchmark.yaml": "config/suites/wfg_benchmark.yaml",
+  "config/wfg_compact_benchmark.yaml": "config/suites/wfg_compact_benchmark.yaml",
+  "config/wfg_m2_7algo_benchmark.yaml": "config/suites/wfg_m2_7algo_benchmark.yaml"
+}

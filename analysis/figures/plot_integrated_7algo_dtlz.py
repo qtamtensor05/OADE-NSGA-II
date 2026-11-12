@@ -25,9 +25,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.transforms import ScaledTranslation
 import numpy as np
 
-QA_SCRIPTS = Path(__file__).resolve().parents[2] / "scripts" / "figure_qa"
-sys.path.insert(0, str(QA_SCRIPTS))
-from audit_panel_alignment import require_matplotlib_panel_alignment  # noqa: E402
+from research.plotting.qa.audit_panel_alignment import require_matplotlib_panel_alignment  # noqa: E402
 
 
 # ── Mandatory Nature font & SVG/PDF configurators ─────────────────────────────

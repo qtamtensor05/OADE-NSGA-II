@@ -7,7 +7,7 @@
 
 Dự án nghiên cứu kết hợp **học đối lập (OBL)**, **tiến hóa vi phân (DE) định hướng theo lân cận**, **cập nhật F/CR trực tuyến** và **khởi động lại có xét độ đa dạng** vào khung NSGA-II. Các kết quả dưới đây áp dụng cho những bộ bài toán và bản triển khai đã thử nghiệm; chưa chứng minh cải thiện phổ quát so với NSGA-II.
 
-Đọc [mục lục nghiên cứu](docs/index.md), [bản thảo tổng hợp](docs/manuscript.md), [bảng định danh thuật toán đối chứng](docs/baselines.md) và [hướng dẫn tái lập](docs/reproducibility.md). Tài liệu chuyên sâu và chữ trong hình hiện chủ yếu bằng tiếng Anh; mã lệnh và định danh kết quả giữ nguyên giữa hai bản README.
+Đọc [mục lục nghiên cứu](docs/index.md), [bản thảo tổng hợp](docs/manuscript/manuscript.md), [bảng định danh thuật toán đối chứng](docs/protocols/baselines.md) và [hướng dẫn tái lập](docs/protocols/reproducibility.md). Tài liệu chuyên sâu và chữ trong hình hiện chủ yếu bằng tiếng Anh; mã lệnh và định danh kết quả giữ nguyên giữa hai bản README.
 
 ## Mục lục
 
@@ -41,7 +41,7 @@ Báo cáo ghi rõ thiết kế benchmark, dữ liệu từng lần chạy, kiể
 | Thành phần | Thiết lập và cách diễn giải |
 |---|---|
 | Đơn vị phân tích | Một lần chạy ngẫu nhiên; 30 lần/cấu hình. Số cặp hợp lệ hiện tại: algorithm_benchmark_v2: 30–30; dtlz_benchmark: 26–30; wfg_m2_7algo_benchmark: 30–30; wfg_compact_benchmark: 30–30. |
-| Ngân sách | Các khối RNSGA2 trên ZDT, DTLZ, WFG tính cả aspiration-point setup trong trần 20.000 đánh giá và runtime; xem [quy ước theo suite](docs/experiment_registry.md#budget-definition). |
+| Ngân sách | Các khối RNSGA2 trên ZDT, DTLZ, WFG tính cả aspiration-point setup trong trần 20.000 đánh giá và runtime; xem [quy ước theo suite](docs/protocols/experiment_registry.md#budget-definition). |
 | Sử dụng ngân sách | Có thể dừng dưới trần nếu lô đánh giá tiếp theo vượt ngân sách; OADE thường dùng khoảng 99,7–99,9%. |
 | Ghép cặp | Các thuật toán được cấp cùng quần thể ban đầu và cùng seed cho mỗi lần chạy. |
 | Chỉ số chất lượng | IGD càng thấp càng tốt; HV càng cao càng tốt. |
@@ -69,7 +69,7 @@ Sáu thuật toán đối chứng thực tế:
 - **NSGA-II/SDR-OLS:** quan hệ trội tăng cường, học đối lập và tìm kiếm cục bộ; bản cục bộ có giới hạn số láng giềng tìm kiếm.
 - **CE-MOEA:** bản điều chỉnh thành phần tìm kiếm liên tục của Continuous Encoding MOEA; không phải Cross-Entropy MOEA và không đánh giá đầy đủ graph encoding của bài gốc.
 
-Xem [bảng baseline](docs/baselines.md) để biết nguồn mã, cấu hình và khác biệt so với phương pháp gốc.
+Xem [bảng baseline](docs/protocols/baselines.md) để biết nguồn mã, cấu hình và khác biệt so với phương pháp gốc.
 
 <a id="ket-qua"></a>
 
@@ -82,7 +82,7 @@ Xem [bảng baseline](docs/baselines.md) để biết nguồn mã, cấu hình v
 | wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
 | wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
-Bảng đầy đủ: [ZDT](docs/benchmark_v2_results_report.md), [DTLZ](docs/dtlz_results_report.md), [ZDT/DTLZ tích hợp](docs/dtlz1_4_integrated_report.md), [WFG](docs/wfg_compact_report.md). W/ND/L là thắng/không phát hiện khác biệt/thua của OADE. Holm áp dụng riêng theo suite/chỉ số; tổng qua nhiều suite chỉ mang tính mô tả. Hai bảng WFG dùng chung 120 bản ghi RNSGA2 tại M=2, không phải hai lần xác nhận độc lập.
+Bảng đầy đủ: [ZDT](docs/reports/benchmark_v2_results_report.md), [DTLZ](docs/reports/dtlz_results_report.md), [ZDT/DTLZ tích hợp](docs/reports/dtlz1_4_integrated_report.md), [WFG](docs/reports/wfg_compact_report.md). W/ND/L là thắng/không phát hiện khác biệt/thua của OADE. Holm áp dụng riêng theo suite/chỉ số; tổng qua nhiều suite chỉ mang tính mô tả. Hai bảng WFG dùng chung 120 bản ghi RNSGA2 tại M=2, không phải hai lần xác nhận độc lập.
 
 <a id="diem-manh"></a>
 
@@ -106,13 +106,13 @@ Bảng đầy đủ: [ZDT](docs/benchmark_v2_results_report.md), [DTLZ](docs/dtl
 - **Bất định và thất bại:** chưa có khoảng tin cậy cho paired effects; cần bổ sung phân tích có xét thất bại, đồng thời giữ rõ định nghĩa structural invalid và quality collapse.
 - **Provenance lịch sử chưa đầy đủ:** không thể dùng snapshot môi trường audit để chứng nhận phiên bản tạo dữ liệu cũ. Các khối RNSGA2 trên ZDT/DTLZ/WFG có manifest thực thi; các khối thuật toán khác giữ nguồn gốc theo từng đợt, được ghi trong danh mục thí nghiệm.
 
-Xem [kế hoạch thí nghiệm tiếp theo](docs/followup_experiments.md).
+Xem [kế hoạch thí nghiệm tiếp theo](docs/protocols/followup_experiments.md).
 
 <a id="hinh-minh-hoa"></a>
 
 ## 6. Hình minh họa và dữ liệu nguồn
 
-Các bản PDF, SVG, PNG và CSV nguồn nằm trong [results/figures/](results/figures/). TIFF dung lượng lớn và PDF overlay chẩn đoán được giữ cục bộ; mã tạo hình và JSON QA có trong nguồn dự án.
+Các bản PDF, SVG, PNG và CSV nguồn nằm trong [results/figures/](results/figures). TIFF dung lượng lớn và PDF overlay chẩn đoán được giữ cục bộ; mã tạo hình và JSON QA có trong nguồn dự án.
 
 | Hình | Nội dung và giới hạn |
 |---|---|
@@ -132,27 +132,12 @@ Các bản PDF, SVG, PNG và CSV nguồn nằm trong [results/figures/](results/
 
 ## 7. Cấu trúc dự án và khả năng tái lập
 
-```text
-OADE-NSGA-II/
-├── algorithms/          # Các bản triển khai đối chứng cục bộ
-├── analysis/figures/    # Mã tạo hình R và Python
-├── config/              # Giao thức benchmark, tham số và ablation
-├── docs/                # Bản thảo, báo cáo, nguồn tham khảo và hướng dẫn
-├── results/             # Dữ liệu từng lần chạy, bảng thống kê và hình
-├── scripts/             # Runner, inventory và công cụ QA hình
-├── src/
-│   ├── oade_nsga2/      # Solver OADE và toán tử
-│   ├── benchmarking/    # Ngân sách, validation, thống kê và provenance
-│   ├── plotting/        # Các lệnh vẽ tích hợp
-│   ├── sensitivity/     # Nghiên cứu độ nhạy
-│   └── utils/           # Đọc cấu hình và CSV
-├── tests/               # Kiểm thử thuật toán/giao thức/provenance
-└── renv.lock            # Snapshot thư viện R hiện có
-```
+Xem [cấu trúc và quy định đặt tên](docs/governance/project_structure.md), gồm session tmp, cách dọn dữ liệu thử và vòng đời execution nghiên cứu.
+
 
 Run mới ghi manifest gồm cấu hình đã giải quyết, hash mã nguồn, môi trường và checksum CSV. Resume/reuse kiểm tra dữ liệu trước khi tiếp tục; fresh run từ chối ghi đè kết quả đã có. Dữ liệu lịch sử chỉ được lập inventory, không được chứng nhận ngược bằng môi trường hiện tại.
 
-Test, YAML smoke, mã hình, lockfile và JSON QA được đưa vào hồ sơ nguồn. Cache, đầu ra smoke, TIFF và overlay PDF là artifact cục bộ. Xem [hướng dẫn tái lập](docs/reproducibility.md) và [danh mục thí nghiệm](docs/experiment_registry.md).
+Test, YAML smoke, mã hình, lockfile và JSON QA được đưa vào hồ sơ nguồn. Cache, đầu ra smoke, TIFF và overlay PDF là artifact cục bộ. Xem [hướng dẫn tái lập](docs/protocols/reproducibility.md) và [danh mục thí nghiệm](docs/protocols/experiment_registry.md).
 
 <a id="huong-dan"></a>
 
@@ -165,7 +150,7 @@ Cần Python 3.10 trở lên. Chạy từ thư mục gốc dự án:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -e .
 python -m unittest discover -s tests -v
 ```
 
@@ -174,7 +159,7 @@ python -m unittest discover -s tests -v
 Lệnh này lên lịch 1.050 lần chạy. Dùng thư mục đầu ra mới để giữ nguyên bằng chứng lịch sử:
 
 ```powershell
-.venv\Scripts\python.exe main.py benchmark --config config/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2
+.venv\Scripts\python.exe main.py benchmark --config config/suites/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2
 ```
 
 ### Chạy DTLZ1–4 với 2, 3 và 5 mục tiêu
@@ -183,7 +168,7 @@ Lệnh này lên lịch 1.050 lần chạy. Dùng thư mục đầu ra mới đ�
 $env:OMP_NUM_THREADS=1
 $env:OPENBLAS_NUM_THREADS=1
 $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-dtlz --config config/dtlz1_4_benchmark.yaml --out-dir results/reproduction_dtlz --jobs 8
+.venv\Scripts\python.exe main.py benchmark-dtlz --config config/suites/dtlz1_4_benchmark.yaml --out-dir results/reproduction_dtlz --jobs 8
 ```
 
 ### Chạy compact WFG và WFG hai mục tiêu đủ 7 thuật toán
@@ -192,14 +177,14 @@ $env:MKL_NUM_THREADS=1
 $env:OMP_NUM_THREADS=1
 $env:OPENBLAS_NUM_THREADS=1
 $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_compact_benchmark.yaml --out-dir results/reproduction_wfg_compact --jobs 8
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_m2_7algo_benchmark.yaml --out-dir results/reproduction_wfg_m2 --jobs 10
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_compact_benchmark.yaml --out-dir results/reproduction_wfg_compact --jobs 8
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_m2_7algo_benchmark.yaml --out-dir results/reproduction_wfg_m2 --jobs 10
 ```
 
 ### Tiếp tục một lần chạy có manifest phù hợp
 
 ```powershell
-.venv\Scripts\python.exe main.py benchmark --config config/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2 --resume
+.venv\Scripts\python.exe main.py benchmark --config config/suites/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2 --resume
 ```
 
 Resume theo đơn vị bài toán đã hoàn tất và từ chối dữ liệu không khớp cấu hình/môi trường/checksum. Không tự gán manifest mới cho CSV lịch sử để vượt kiểm tra.
@@ -217,13 +202,13 @@ Các lệnh vẽ tích hợp dùng cấu hình/đường dẫn đầu vào của
 
 ## Tài liệu nghiên cứu và trích dẫn
 
-- [Bản thảo tổng hợp](docs/manuscript.md) và [mục lục tài liệu](docs/index.md).
-- [Nguồn tham khảo BibTeX](docs/references.bib) và [định danh baseline](docs/baselines.md).
-- [Báo cáo ZDT v2](docs/benchmark_v2_results_report.md).
-- [Báo cáo tích hợp ZDT + DTLZ1–4](docs/dtlz1_4_integrated_report.md).
-- [Báo cáo compact WFG và WFG hai mục tiêu](docs/wfg_compact_report.md).
-- [Ablation thành phần](docs/ablation_results_report.md).
-- [Xác nhận restart trên seed held-out](docs/restart_confirmation_report.md).
-- [Độ nhạy tham số của cấu hình classic](docs/sensitivity_analysis.md).
+- [Bản thảo tổng hợp](docs/manuscript/manuscript.md) và [mục lục tài liệu](docs/index.md).
+- [Nguồn tham khảo BibTeX](docs/manuscript/references.bib) và [định danh baseline](docs/protocols/baselines.md).
+- [Báo cáo ZDT v2](docs/reports/benchmark_v2_results_report.md).
+- [Báo cáo tích hợp ZDT + DTLZ1–4](docs/reports/dtlz1_4_integrated_report.md).
+- [Báo cáo compact WFG và WFG hai mục tiêu](docs/reports/wfg_compact_report.md).
+- [Ablation thành phần](docs/reports/ablation_results_report.md).
+- [Xác nhận restart trên seed held-out](docs/reports/restart_confirmation_report.md).
+- [Độ nhạy tham số của cấu hình classic](docs/reports/sensitivity_analysis.md).
 
 Khi trích dẫn hoặc sử dụng kết quả, nêu đúng phiên bản cấu hình, implementation đối chứng và giới hạn giao thức. Giấy phép phát hành của dự án chưa được xác định trong hồ sơ hiện tại.

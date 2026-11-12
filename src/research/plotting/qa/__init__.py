@@ -1,0 +1,1 @@
+"""Reusable figure quality checks."""

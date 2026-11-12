@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-12",
+  "historical_files_checked": 651,
+  "changed_or_missing_historical_files": [],
+  "inventory_sha256_before": "499595651d64db0dc40a41e1289c874216d398980c2225249ef873b895024029",
+  "inventory_sha256_after": "499595651d64db0dc40a41e1289c874216d398980c2225249ef873b895024029",
+  "solver_modules_behavioral_ast_equal": 22,
+  "solver_modules_behavioral_ast_differences": [],
+  "solver_comparison_note": "AST ignores imports/docstrings; budget adapter function ASTs compared exactly",
+  "adapter_function_ast_equal": {
+    "_run_pymoo": true,
+    "_run_oade": true,
+    "_run_cgde": true,
+    "_run_sdr": true,
+    "_run_ce": true
+  }
+}

@@ -10,7 +10,7 @@ A research implementation that combines **Opposition-Based Learning (OBL)**, **n
 
 ---
 
-Research entry point: [current manuscript and report index](docs/index.md). Implementation identities: [baseline registry](docs/baselines.md). Execution and historical provenance: [reproducibility](docs/reproducibility.md).
+Research entry point: [current manuscript and report index](docs/index.md). Implementation identities: [baseline registry](docs/protocols/baselines.md). Execution and historical provenance: [reproducibility](docs/protocols/reproducibility.md).
 
 ## 📌 Table of Contents
 - [1. Overview & Algorithm Components](#1-overview--algorithm-components)
@@ -43,7 +43,7 @@ This project studies four mechanisms added to an NSGA-II-based search procedure.
 The reports document the benchmark design, run-level data, statistical tests, and known limitations. This project summary is not a formal compliance claim for a journal; requirements should be checked against the selected venue before submission.
 
 * **Independent Experimental Unit**: One stochastic run; 30 scheduled per configuration. Current valid matched-pair counts: algorithm_benchmark_v2: 30–30; dtlz_benchmark: 26–30; wfg_m2_7algo_benchmark: 30–30; wfg_compact_benchmark: 30–30.
-* **Evaluation Budget**: The RNSGA2 blocks for ZDT, DTLZ, WFG include aspiration-point setup within the 20,000-evaluation cap and runtime. See the [suite-specific accounting](docs/experiment_registry.md#budget-definition). Other algorithms may finish below the cap when another batch would exceed it.
+* **Evaluation Budget**: The RNSGA2 blocks for ZDT, DTLZ, WFG include aspiration-point setup within the 20,000-evaluation cap and runtime. See the [suite-specific accounting](docs/protocols/experiment_registry.md#budget-definition). Other algorithms may finish below the cap when another batch would exceed it.
 * **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
 * **Test Suites (21 core configurations plus 12 compact-WFG scaling configurations; 6,210 stored records; some baselines and settings are reused across batches)**:
   * **Bi-objective ZDT (`1,050` runs, 7 algorithms)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
@@ -71,7 +71,7 @@ The reports document the benchmark design, run-level data, statistical tests, an
 | wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
 | wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
 
-Detailed tables: [ZDT](docs/benchmark_v2_results_report.md), [DTLZ](docs/dtlz_results_report.md), [integrated ZDT/DTLZ](docs/dtlz1_4_integrated_report.md), [WFG](docs/wfg_compact_report.md). W/ND/L means OADE win/no detected difference/loss. Each metric/suite has its own Holm family; cross-suite counts are descriptive. The same 120 RNSGA2 WFG M=2 records are shared by both WFG tables.
+Detailed tables: [ZDT](docs/reports/benchmark_v2_results_report.md), [DTLZ](docs/reports/dtlz_results_report.md), [integrated ZDT/DTLZ](docs/reports/dtlz1_4_integrated_report.md), [WFG](docs/reports/wfg_compact_report.md). W/ND/L means OADE win/no detected difference/loss. Each metric/suite has its own Holm family; cross-suite counts are descriptive. The same 120 RNSGA2 WFG M=2 records are shared by both WFG tables.
 
 ## 4. Observed Strengths in Tested Suites
 
@@ -107,7 +107,7 @@ The reports state the following observed weaknesses and boundaries:
 
 ## 6. Visual Evidence & Figures
 
-All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures/) (oversized `.tiff` print files and diagnostic overlay PDFs are local; figure sources and JSON QA records are included):
+All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures) (oversized `.tiff` print files and diagnostic overlay PDFs are local; figure sources and JSON QA records are included):
 
 | Figure File | Description |
 |---|---|
@@ -127,47 +127,10 @@ Full quality assurance audits and font-size checks are logged in [`results/figur
 
 ## 7. Project Structure & Reproducibility
 
-```text
-OADE-NSGA-II/
-├── algorithms/                 # Baseline competitor implementations
-│   ├── ce_moea/                # Continuous Encoding MOEA (continuous-search adaptation)
-│   ├── cgde_nsga2/             # Cross-Generation DE (local implementation) NSGA-II
-│   └── nsga2_sdr_ols/          # SDR + Opposition and Local Search
-├── config/                     # YAML configuration files
-│   ├── algorithm_benchmark_v2.yaml  # 7-algorithm ZDT benchmark suite v2
-│   ├── dtlz1_4_benchmark.yaml       # DTLZ1-4 suite (M = 2, 3, 5)
-│   ├── wfg_compact_benchmark.yaml   # Compact WFG scaling suite (5 fast algos, M=2,3,5)
-│   ├── wfg_m2_7algo_benchmark.yaml  # Full 7-algorithm WFG M=2 config
-│   ├── restart_confirmation.yaml    # Held-out seed confirmation config
-│   └── ablations/              # Component ablation specifications
-├── docs/                       # Formal scientific research reports
-│   ├── wfg_compact_report.md        # Compact WFG 7-algo M=2 & M=2..5 scaling analysis
-│   ├── dtlz1_4_integrated_report.md # Integrated ZDT + DTLZ1-4 analysis
-│   ├── benchmark_v2_results_report.md
-│   ├── restart_confirmation_report.md
-│   ├── ablation_results_report.md
-│   └── research_results_report.md
-├── results/                    # Transparent benchmark outputs (CSV, Logs)
-│   ├── algorithm_benchmark_v2/ # 1,050 ZDT runs, summaries, paired stats
-│   ├── dtlz_benchmark/         # 2,520 DTLZ1-4 runs, summaries, paired stats
-│   ├── wfg_compact_benchmark/  # 1,800 WFG1/4/6/9 runs (M=2,3,5, 5 fast algos)
-│   ├── wfg_m2_7algo_benchmark/ # 840 WFG1/4/6/9 M=2 runs (all 7 algos)
-│   ├── restart_confirmation/   # 450 held-out runs
-│   └── figures/                # Publication figures (PDF, SVG, PNG, Source CSVs)
-├── scripts/                    # High-level runner utilities
-│   └── run_benchmark_v2.py
-└── src/                        # Core algorithmic & evaluation framework
-    ├── oade_nsga2/             # OADE-NSGA-II implementation
-    │   ├── algorithm.py        # Main solver class & adaptive restart
-    │   ├── operators.py        # DE mutation, SBX, polynomial mutation, OBL
-    │   └── selection.py        # Environmental selection, crowding distance
-    ├── benchmarking/           # Benchmark protocol, budgeting, statistics
-    ├── plotting/               # Built-in benchmark plotters (via main.py)
-    ├── sensitivity/            # Parameter sensitivity pipeline
-    └── utils/                  # YAML config & CSV utilities
-```
+See [repository structure and naming](docs/governance/project_structure.md), including tmp sessions and experiment lifecycle.
 
-Tests, smoke configurations, figure sources, environment lockfiles and JSON QA records are included in the research source. Generated smoke outputs, caches, TIFF rasters and diagnostic overlay PDFs remain local. See [reproducibility guide](docs/reproducibility.md).
+
+Tests, smoke configurations, figure sources, environment lockfiles and JSON QA records are included in the research source. Generated smoke outputs, caches, TIFF rasters and diagnostic overlay PDFs remain local. See [reproducibility guide](docs/protocols/reproducibility.md).
 
 ---
 
@@ -179,25 +142,25 @@ Tests, smoke configurations, figure sources, environment lockfiles and JSON QA r
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### Reproduce Benchmark v2 (ZDT, 7 Algorithms, 1,050 Runs)
 ```powershell
-.venv\Scripts\python.exe main.py benchmark --config config/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2
+.venv\Scripts\python.exe main.py benchmark --config config/suites/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2
 ```
 
 ### Reproduce DTLZ1–DTLZ4 Benchmark (M = 2, 3, 5; 2,520 Runs)
 ```powershell
 $env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-dtlz --config config/dtlz1_4_benchmark.yaml --out-dir results/reproduction_dtlz --jobs 8
+.venv\Scripts\python.exe main.py benchmark-dtlz --config config/suites/dtlz1_4_benchmark.yaml --out-dir results/reproduction_dtlz --jobs 8
 ```
 
 ### Reproduce Compact WFG Benchmarks (M = 2, 3, 5 & Full 7-Algo M = 2)
 ```powershell
 $env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_compact_benchmark.yaml --out-dir results/reproduction_wfg_compact --jobs 8
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/wfg_m2_7algo_benchmark.yaml --out-dir results/reproduction_wfg_m2 --jobs 10
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_compact_benchmark.yaml --out-dir results/reproduction_wfg_compact --jobs 8
+.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_m2_7algo_benchmark.yaml --out-dir results/reproduction_wfg_m2 --jobs 10
 ```
 
 ### Generate Built-in Summary Plots
@@ -211,8 +174,8 @@ $env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
 ## 📜 Citation & Research Reports
 
 If you use OADE-NSGA-II in your research, please refer to the detailed evaluation reports in `docs/`:
-* **WFG Compact & M=2 7-Algorithm Report**: [`docs/wfg_compact_report.md`](docs/wfg_compact_report.md)
-* **Integrated ZDT + DTLZ1–4 Report**: [`docs/dtlz1_4_integrated_report.md`](docs/dtlz1_4_integrated_report.md)
-* **Benchmark v2 Report (ZDT)**: [`docs/benchmark_v2_results_report.md`](docs/benchmark_v2_results_report.md)
-* **Restart Confirmation Report**: [`docs/restart_confirmation_report.md`](docs/restart_confirmation_report.md)
-* **Component Ablation Report**: [`docs/ablation_results_report.md`](docs/ablation_results_report.md)
+* **WFG Compact & M=2 7-Algorithm Report**: [`docs/reports/wfg_compact_report.md`](docs/reports/wfg_compact_report.md)
+* **Integrated ZDT + DTLZ1–4 Report**: [`docs/reports/dtlz1_4_integrated_report.md`](docs/reports/dtlz1_4_integrated_report.md)
+* **Benchmark v2 Report (ZDT)**: [`docs/reports/benchmark_v2_results_report.md`](docs/reports/benchmark_v2_results_report.md)
+* **Restart Confirmation Report**: [`docs/reports/restart_confirmation_report.md`](docs/reports/restart_confirmation_report.md)
+* **Component Ablation Report**: [`docs/reports/ablation_results_report.md`](docs/reports/ablation_results_report.md)
