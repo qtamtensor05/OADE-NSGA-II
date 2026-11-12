@@ -1,29 +1,36 @@
-# DTLZ1_M2 — hồ sơ nghiên cứu
+# DTLZ1_M2: báo cáo riêng
 
-[Báo cáo riêng của bài toán](reports/README.md)
+Bài toán này thuộc phần mở rộng nghiên cứu. Các bảng dưới đây giữ riêng từng đợt chạy; kết quả không được cộng với ZDT hoặc các cấu hình số mục tiêu khác.
 
-Dữ liệu đã lọc riêng theo bài toán; giữ nguyên cột, giá trị và thứ tự dòng từ nguồn.
+IGD (inverted generational distance) thấp hơn và HV (hypervolume) cao hơn là tốt hơn theo reference front/point đã lưu. Dữ liệu được mô tả bằng mean ± độ lệch chuẩn mẫu (SD); runtime là giây/lượt trong môi trường đã đo.
 
-| Nhóm thí nghiệm | Số dòng raw | Số seed |
-|---|---:|---:|
-| [benchmark_dtlz](reports/benchmark_dtlz.md) | 210 | 30 |
+## benchmark_dtlz
 
-## Bảng và dữ liệu
+Đợt này có 7 thuật toán. OADE_NSGAII có 30/30 lượt hợp lệ, mean IGD 0.00228432 và mean HV 0.233218. Mỗi thuật toán được lên lịch 30 seed (42–71), trần 20.000 đánh giá, population 100.
 
-- [benchmark_dtlz/algorithm_benchmark_convergence.csv](csv_results.zip) (2041 dòng)
-- [benchmark_dtlz/algorithm_benchmark_cost_summary.csv](csv_results.zip) (7 dòng)
-- [benchmark_dtlz/algorithm_benchmark_igd_hv_summary.csv](csv_results.zip) (7 dòng)
-- [benchmark_dtlz/algorithm_benchmark_paired_statistics.csv](csv_results.zip) (12 dòng)
-- [benchmark_dtlz/algorithm_benchmark_raw_runs.csv](csv_results.zip) (210 dòng)
-- [benchmark_dtlz/algorithm_benchmark_validation.csv](csv_results.zip) (210 dòng)
+Cấu hình lưu trong bảng: n_var=6, n_obj=2. Số cặp hợp lệ và phép loại lượt không hợp lệ phải đọc theo từng so sánh, không mặc định mọi kiểm định đều có 30 cặp.
 
-## Báo cáo, hình và nguồn dùng chung
+| ID thuật toán | Hợp lệ/tổng | IGD mean ± SD | HV mean ± SD | Giây/lượt |
+| --- | --- | --- | --- | --- |
+| OADE_NSGAII | 30/30 | 0.00228432 ± 0.000234932 | 0.233218 ± 0.000264655 | 5.06604 |
+| NSGA2 | 30/30 | 0.00294605 ± 0.000834274 | 0.232349 ± 0.000851819 | 2.52568 |
+| RNSGA2 | 30/30 | 0.134576 ± 0.107422 | 0.145778 ± 0.0472495 | 5.02317 |
+| DNSGA2 | 30/30 | 0.00375993 ± 0.00229934 | 0.231582 ± 0.00205019 | 2.38585 |
+| CGDE_NSGAII | 30/30 | 1.36969 ± 0.372146 | 0 ± 0 | 178.924 |
+| NSGAII_SDR_OLS | 26/30 | 5.53112 ± 3.60081 | 0.00380253 ± 0.0134597 | 4.05607 |
+| CE_MOEA | 30/30 | 0.922493 ± 0.963149 | 0.022708 ± 0.0527111 | 155.433 |
 
-- [dtlz_results_report.md](../../../../docs/reports/dtlz_results_report.md)
-- [dtlz_sensitivity.md](../../../../docs/protocols/dtlz_sensitivity.md)
+[Báo cáo và toàn bộ kiểm định của đợt này](reports/benchmark_dtlz.md). P-value/Holm giữ nguyên họ hiệu chỉnh gốc; không hiệu chỉnh lại riêng theo thư mục. Runtime phản ánh bản triển khai và môi trường, không phải độ phức tạp độc lập phần cứng.
 
-## Truy vết và bổ sung
+## Giới hạn và bổ sung
 
-`manifest.json` ghi nguồn, SHA-256 và số dòng của từng tệp. P-value/Holm được giữ theo họ kiểm định gốc, không hiệu chỉnh lại theo thư mục.
-Các bảng khác số mục tiêu/kích thước vẫn giữ cột n_obj/n_var; không gộp thành một điều kiện.
-Bổ sung kết quả vào nguồn theo đúng giao thức, rồi chạy `python scripts/organize_by_problem.py`. Không chỉnh trực tiếp bản tách được sinh tự động.
+Không gộp các bảng có tập thuật toán khác nhau thành số lượt độc lập. Không phát hiện khác biệt không đồng nghĩa tương đương; các kết quả dưới đây không xác lập lợi thế tổng quát của OADE.
+
+Chỉ có báo cáo classic/adaptive, ablation hoặc độ nhạy riêng khi dữ liệu của chính bài toán đó đã được bổ sung và kiểm tra. Không thay bằng kết quả ZDT.
+
+## Nguồn của bài toán
+
+- [Tải CSV dạng ZIP](csv_results.zip)
+- [Manifest và SHA-256](manifest.json)
+- [Danh mục báo cáo](reports/README.md)
+- [Trở về DTLZ](../README.md)

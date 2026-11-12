@@ -1,28 +1,34 @@
-# WFG1_M5 — hồ sơ nghiên cứu
+# WFG1_M5: báo cáo riêng
 
-[Báo cáo riêng của bài toán](reports/README.md)
+Bài toán này thuộc phần mở rộng nghiên cứu. Các bảng dưới đây giữ riêng từng đợt chạy; kết quả không được cộng với ZDT hoặc các cấu hình số mục tiêu khác.
 
-Dữ liệu đã lọc riêng theo bài toán; giữ nguyên cột, giá trị và thứ tự dòng từ nguồn.
+IGD (inverted generational distance) thấp hơn và HV (hypervolume) cao hơn là tốt hơn theo reference front/point đã lưu. Dữ liệu được mô tả bằng mean ± độ lệch chuẩn mẫu (SD); runtime là giây/lượt trong môi trường đã đo.
 
-| Nhóm thí nghiệm | Số dòng raw | Số seed |
-|---|---:|---:|
-| [benchmark_wfg_scaling](reports/benchmark_wfg_scaling.md) | 150 | 30 |
+## benchmark_wfg_scaling
 
-## Bảng và dữ liệu
+Đợt này có 5 thuật toán. OADE_NSGAII có 30/30 lượt hợp lệ, mean IGD 1.99485 và mean HV 1303.85. Mỗi thuật toán được lên lịch 30 seed (42–71), trần 20.000 đánh giá, population 100.
 
-- [benchmark_wfg_scaling/algorithm_benchmark_convergence.csv](csv_results.zip) (1445 dòng)
-- [benchmark_wfg_scaling/algorithm_benchmark_cost_summary.csv](csv_results.zip) (5 dòng)
-- [benchmark_wfg_scaling/algorithm_benchmark_igd_hv_summary.csv](csv_results.zip) (5 dòng)
-- [benchmark_wfg_scaling/algorithm_benchmark_paired_statistics.csv](csv_results.zip) (8 dòng)
-- [benchmark_wfg_scaling/algorithm_benchmark_raw_runs.csv](csv_results.zip) (150 dòng)
-- [benchmark_wfg_scaling/algorithm_benchmark_validation.csv](csv_results.zip) (150 dòng)
+Cấu hình lưu trong bảng: n_var=24, n_obj=5. Số cặp hợp lệ và phép loại lượt không hợp lệ phải đọc theo từng so sánh, không mặc định mọi kiểm định đều có 30 cặp.
 
-## Báo cáo, hình và nguồn dùng chung
+| ID thuật toán | Hợp lệ/tổng | IGD mean ± SD | HV mean ± SD | Giây/lượt |
+| --- | --- | --- | --- | --- |
+| OADE_NSGAII | 30/30 | 1.99485 ± 0.0365724 | 1303.85 ± 14.2149 | 13.3824 |
+| NSGA2 | 30/30 | 1.99336 ± 0.0272137 | 1029.87 ± 32.7344 | 7.04661 |
+| RNSGA2 | 30/30 | 2.75436 ± 0.0478591 | 0.121491 ± 0.665436 | 6.98419 |
+| DNSGA2 | 30/30 | 2.2249 ± 0.0368315 | 594.263 ± 71.995 | 5.75951 |
+| NSGAII_SDR_OLS | 30/30 | 1.8912 ± 0.0316236 | 1338.46 ± 35.3508 | 8.94965 |
 
-- [wfg_compact_report.md](../../../../docs/reports/wfg_compact_report.md)
+[Báo cáo và toàn bộ kiểm định của đợt này](reports/benchmark_wfg_scaling.md). P-value/Holm giữ nguyên họ hiệu chỉnh gốc; không hiệu chỉnh lại riêng theo thư mục. Runtime phản ánh bản triển khai và môi trường, không phải độ phức tạp độc lập phần cứng.
 
-## Truy vết và bổ sung
+## Giới hạn và bổ sung
 
-`manifest.json` ghi nguồn, SHA-256 và số dòng của từng tệp. P-value/Holm được giữ theo họ kiểm định gốc, không hiệu chỉnh lại theo thư mục.
-Các bảng khác số mục tiêu/kích thước vẫn giữ cột n_obj/n_var; không gộp thành một điều kiện.
-Bổ sung kết quả vào nguồn theo đúng giao thức, rồi chạy `python scripts/organize_by_problem.py`. Không chỉnh trực tiếp bản tách được sinh tự động.
+Không gộp các bảng có tập thuật toán khác nhau thành số lượt độc lập. Không phát hiện khác biệt không đồng nghĩa tương đương; các kết quả dưới đây không xác lập lợi thế tổng quát của OADE.
+
+Chỉ có báo cáo classic/adaptive, ablation hoặc độ nhạy riêng khi dữ liệu của chính bài toán đó đã được bổ sung và kiểm tra. Không thay bằng kết quả ZDT.
+
+## Nguồn của bài toán
+
+- [Tải CSV dạng ZIP](csv_results.zip)
+- [Manifest và SHA-256](manifest.json)
+- [Danh mục báo cáo](reports/README.md)
+- [Trở về WFG](../README.md)

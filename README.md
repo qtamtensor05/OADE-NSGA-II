@@ -1,187 +1,346 @@
-# OADE-NSGA-II: Adaptive Opposition-Based Differential Evolution NSGA-II
+# OADE-NSGA-II
 
-**Language / Ngôn ngữ:** **English** | [Tiếng Việt](README.vi.md)
+**Language:** **English** | [Tiếng Việt](README.vi.md)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Protocol](https://img.shields.io/badge/Benchmark-Fixed--Budget%2020k-orange.svg)](#2-experimental-protocol--statistical-discipline)
-[![Reproducible Benchmarks](https://img.shields.io/badge/Benchmarks-Reproducible-blue.svg)](#2-experimental-protocol--statistical-discipline)
+This project evaluates adaptive differential evolution and opposition-based learning within NSGA-II. ZDT is the current research priority. Results are reported separately for each problem, including comparator performance, classic/adaptive configurations and inference boundaries.
 
-A research implementation that combines **Opposition-Based Learning (OBL)**, **neighborhood-directed Differential Evolution (DE)**, **online F/CR updates**, and a configurable **diversity-aware restart** policy with the NSGA-II framework. The benchmark reports below evaluate these variants on selected test suites; they do not establish universal improvement over NSGA-II.
+## Study design and reading guide
 
----
+OADE-NSGA-II combines neighborhood-based DE offspring, online F/CR updates, periodic opposition-based candidates and NSGA-II environmental selection. Classic uses the original restart; adaptive adds diversity conditions and local replacement. Algorithm design and evidence for individual component contributions are interpreted separately.
 
-Research entry point: [current manuscript and report index](docs/index.md). Implementation identities: [baseline registry](docs/protocols/baselines.md). Execution and historical provenance: [reproducibility](docs/protocols/reproducibility.md).
+| Item | Specification |
+| --- | --- |
+| Benchmark ZDT | 7 algorithms; 30 paired seeds 42–71; population 100; evaluation cap 20,000 |
+| ZDT1 / ZDT2 / ZDT3 | 30 variables; 2 objectives |
+| ZDT4 / ZDT6 | 10 variables; 2 objectives |
+| Restart confirmation | Classic / no restart / adaptive; 30 paired seeds 1000–1029 |
+| Adaptive OFAT | 9 parameters; 19 unique configurations; 30 seeds 6000–6029 per problem/configuration |
+| Metrics | IGD ↓; HV ↑; mean ± sample SD for benchmarks; median and Q25–Q75 for OFAT |
 
-## 📌 Table of Contents
-- [1. Overview & Algorithm Components](#1-overview--algorithm-components)
-- [2. Experimental Protocol & Statistical Discipline](#2-experimental-protocol--statistical-discipline)
-- [3. Reported Results](#3-reported-results)
-- [4. Observed Strengths in Tested Suites](#4-observed-strengths-in-tested-suites)
-- [5. Weaknesses, Limitations & Claim Boundaries](#5-weaknesses-limitations--claim-boundaries)
-- [6. Visual Evidence & Figures](#6-visual-evidence--figures)
-- [7. Project Structure & Reproducibility](#7-project-structure--reproducibility)
-- [8. Quick Start Guide](#8-quick-start-guide)
+Tables below report individual problems. Holm corrections retain their original families; reused comparator blocks are not new independent runs. Common uniform benchmark initialization bypasses standalone initial Sobol/OBL. Runtime describes the measured implementation, rather than hardware-independent complexity.
 
----
+![Classic versus adaptive mean IGD by ZDT problem](results/figures/benchmark_v2_v1_vs_v2_delta.png)
 
-## 1. Overview & Algorithm Components
+**Figure 1. Classic and adaptive on each ZDT problem.** Each pair shows mean IGD over 30 benchmark seeds. Percentages describe configuration differences and do not isolate a restart mechanism.
 
-This project studies four mechanisms added to an NSGA-II-based search procedure. Their presence in the implementation does not, by itself, establish that each mechanism improves performance:
+## ZDT: primary research focus
 
-1. **OBL + Sobol Quasi-Random Initialization**: The standalone solver can sample candidates and opposite points before selecting its initial population. This standalone initialization is bypassed in the fixed-budget benchmarks, which use a common uniform initial population. The reported OBL ablation concerns periodic injection, including generation zero, rather than Sobol initialization.
-2. **Periodic Opposition Injection**: Injects opposite candidates every 10 generations. The current results do not isolate its causal contribution from the other OADE components.
-3. **Neighborhood-Directed DE Mutation (DE/current-to-pbest/1)**: Uses neighborhood information when constructing differential-evolution mutation candidates. Its isolated contribution has not been established across all tested suites.
-4. **Adaptive Diversity-Aware Restart (v2 configuration)**: Implements a dual-condition trigger:
-   * **Stagnation detection**: Tracks ideal point progress ($\|\Delta \mathbf{z}^*\| < 10^{-4}$).
-   * **Diversity collapse verification**: Checks whether normalized decision-space standard deviation $\max_j \sigma_j < 0.02$ or objective spread $< 10^{-3}$.
-   * **Renewal rule**: Retains 80% of selected individuals and generates replacements using local OBL and Gaussian perturbations, with soft decay of adaptation history ($\mu_F, \mu_{CR}$). Held-out results do not yet verify that this trigger caused the measured outcomes; trigger counts were not recorded.
+Each problem has reports for the seven-algorithm benchmark, classic/adaptive comparison, restart confirmation, ablation and parameter sensitivity. Open the problem README for its full tables and tests.
 
----
+### ZDT1
 
-## 2. Experimental Protocol & Statistical Discipline
+In benchmark seeds 42–71, adaptive OADE had a mean IGD of **0.00447533**, compared with **0.00517466** for NSGA2. These results apply to ZDT1, with 30 runs per algorithm and a 20,000-evaluation cap.
 
-The reports document the benchmark design, run-level data, statistical tests, and known limitations. This project summary is not a formal compliance claim for a journal; requirements should be checked against the selected venue before submission.
+**Comparators: mean ± SD, 30 runs per algorithm.**
 
-* **Independent Experimental Unit**: One stochastic run; 30 scheduled per configuration. Current valid matched-pair counts: algorithm_benchmark_v2: 30–30; dtlz_benchmark: 26–30; wfg_m2_7algo_benchmark: 30–30; wfg_compact_benchmark: 30–30.
-* **Evaluation Budget**: The RNSGA2 blocks for ZDT, DTLZ, WFG include aspiration-point setup within the 20,000-evaluation cap and runtime. See the [suite-specific accounting](docs/protocols/experiment_registry.md#budget-definition). Other algorithms may finish below the cap when another batch would exceed it.
-* **Paired Design**: All competing algorithms start from the exact same initial population and pseudo-random seed on each run.
-* **Test Suites (21 core configurations plus 12 compact-WFG scaling configurations; 6,210 stored records; some baselines and settings are reused across batches)**:
-  * **Bi-objective ZDT (`1,050` runs, 7 algorithms)**: ZDT1 ($D=30$), ZDT2 ($D=30$), ZDT3 ($D=30$), ZDT4 ($D=10$, $21^9$ local fronts), and ZDT6 ($D=10$, non-uniform density).
-  * **Multi-/Many-objective DTLZ1–DTLZ4 (`2,520` runs, 7 algorithms)**: DTLZ1 ($M \in \{2,3,5\}, D \in \{6,7,9\}$) and DTLZ2–DTLZ4 ($M \in \{2,3,5\}, D \in \{11,12,14\}$).
-  * **Bi-objective WFG (`840` runs, 7 algorithms)**: `WFG1, WFG4, WFG6, WFG9` ($M=2, D=24, k=4$) testing bias/flatness, separable concave multimodality, non-separability, and deceptive traps.
-  * **Compact WFG Scaling (`1,800` runs, 5 fast algorithms)**: `WFG1, WFG4, WFG6, WFG9` ($M \in \{2,3,5\}, D=24, k \in \{4,8\}$) across `OADE_NSGAII`, `NSGA2`, `DNSGA2`, `RNSGA2`, and `NSGAII_SDR_OLS`.
-* **Competing Baselines (6 Algorithms)**:
-  * NSGA-II (Deb et al., 2002)
-  * D-NSGA-II (Dynamic NSGA-II)
-  * R-NSGA-II (Reference point-based NSGA-II)
-  * CGDE-NSGA-II (Cross-Generation Differential Evolution (local implementation))
-  * NSGA-II-SDR-OLS (Strengthened Dominance Relation + Opposition and Local Search)
-  * CE-MOEA (Continuous Encoding MOEA (continuous-search adaptation))
-* **Statistical Inference**: Two-sided paired Wilcoxon signed-rank tests with Holm correction within each suite and metric family ($m = 30$ for ZDT; $m = 72$ for DTLZ1–4; $m = 24$ for WFG $M=2$ 7-algorithm; $m = 48$ for compact WFG; $\alpha = 0.05$). Cross-suite win counts are descriptive summaries of these separately corrected results, not one 204-test Holm family. “No significant difference” does not establish equivalence.
-* **Effect Sizes**: Matched-pairs rank-biserial correlation $r \in [-1, 1]$.
+| Algorithm | IGD ↓ | HV ↑ | s/run |
+| --- | --- | --- | --- |
+| OADE_NSGAII | 0.00447533 ± 0.00025124 | 0.870866 ± 0.000232239 | 14.4968 |
+| NSGA2 | 0.00517466 ± 0.000297904 | 0.868053 ± 0.000417268 | 0.92875 |
+| RNSGA2 | 0.632973 ± 0.0876243 | 0.348062 ± 0.0938884 | 2.75757 |
+| DNSGA2 | 0.00563295 ± 0.000423465 | 0.867066 ± 0.00068501 | 0.853377 |
+| CGDE_NSGAII | 0.00743342 ± 0.000527482 | 0.863362 ± 0.000968519 | 39.5621 |
+| NSGAII_SDR_OLS | 0.0156331 ± 0.0197044 | 0.858421 ± 0.0148456 | 1.04961 |
+| CE_MOEA | 0.00690817 ± 0.000873872 | 0.864472 ± 0.00177852 | 38.8171 |
 
----
+**Classic → adaptive, seeds 42–71:** mean IGD 0.00592521 → 0.00447533; mean HV 0.868961 → 0.870866. Adaptive versus NSGA2 paired tests gave Holm p = 5.58794e-08 for IGD and 5.58794e-08 for HV. The classic–adaptive difference here is descriptive.
 
-## 3. Reported Results
+**Restart confirmation, seeds 1000–1029:** means of 30 runs per variant.
 
-| Dataset | Records | Invalid | Comparisons | OADE W / ND / L |
-|---|---:|---:|---:|---|
-| algorithm_benchmark_v2 | 1050 | 0 | 60 | 58 / 1 / 1 |
-| dtlz_benchmark | 2520 | 18 | 144 | 91 / 40 / 13 |
-| wfg_m2_7algo_benchmark | 840 | 0 | 48 | 42 / 0 / 6 |
-| wfg_compact_benchmark | 1800 | 0 | 96 | 56 / 11 / 29 |
+| Variant | IGD mean ↓ | HV mean ↑ |
+| --- | --- | --- |
+| Classic | 0.00792113 | 0.866365 |
+| No restart | 0.00453077 | 0.870819 |
+| Adaptive | 0.00453077 | 0.870819 |
 
-Detailed tables: [ZDT](docs/reports/benchmark_v2_results_report.md), [DTLZ](docs/reports/dtlz_results_report.md), [integrated ZDT/DTLZ](docs/reports/dtlz1_4_integrated_report.md), [WFG](docs/reports/wfg_compact_report.md). W/ND/L means OADE win/no detected difference/loss. Each metric/suite has its own Holm family; cross-suite counts are descriptive. The same 120 RNSGA2 WFG M=2 records are shared by both WFG tables.
+**Adaptive sensitivity.** In OFAT seeds 6000–6029, increasing population from 100 to 200 changed median IGD from 0.00439707 to 0.00222923 and median HV from 0.870962 to 0.87382.
 
-## 4. Observed Strengths in Tested Suites
+Increasing initial DE probability from 0.5 to 0.8 changed median IGD from 0.00439707 to 0.00442112 and median HV from 0.870962 to 0.870941. These are problem-specific OFAT responses, not an optimal configuration or an interaction analysis.
 
-1. **Strong Results on Selected Multimodal Problems**:
-   OADE-NSGA-II v2 had favorable comparisons on the tested ZDT4, DTLZ1/3, and bi-objective WFG9 cases. On `wfg9_m2`, its median IGD was `0.0347` versus `0.128–0.640` for the six tested comparators. These results do not isolate which OBL or DE component caused the gains.
-2. **No Invalid OADE DTLZ4 Outputs Under the Structural Validator**:
-   OADE-NSGA-II v2 had **0 invalid outputs in 90 DTLZ4 runs** under the recorded structural validator. Historical corner-collapse counts for other solvers use a different quality diagnosis with an incompletely recorded rule; they should not be compared as structural failure rates. No guarantee is made for other settings.
-3. **Lower Variability with Restart Candidates on Held-Out ZDT Runs**:
-   On held-out seeds, both No Restart and Adaptive Restart had lower variability than classic restart on several ZDT problems. Their final IGD and HV values were identical in 148/150 paired problem-seed rows, so the data do not establish that the adaptive trigger itself caused the improvement.
-4. **Computational Efficiency**:
-   Measured runtimes averaged **10.8–14.8s/run** on ZDT, **2.74–3.04s/run** on DTLZ4, and **4.42–12.53s/run** on `WFG M=2` (`OMP_NUM_THREADS=1`). Some local `CGDE-NSGA-II` and `CE-MOEA` implementations took 7.7× to 101× longer in these runs. These ratios compare the measured implementations and environment, not algorithm-independent complexity.
-5. **Online Parameter Self-Adaptation**:
-   $F$ uses a smoothed Lehmer mean and $CR$ a smoothed arithmetic mean of DE offspring assigned rank 1. The DE selection probability tracks the generated DE share, rather than relative DE/SBX success. These updates do not establish freedom from configuration sensitivity.
+**Classic ablation (OADE_NO_RESTART versus Full OADE).** IGD: no difference detected, p Holm = 0.171003; HV: favors removal, p Holm = 0.0238779. This is not an ablation of the adaptive configuration.
 
----
+[Problem report](results/by_problem/zdt/zdt1/README.md) · [Classic/adaptive](results/by_problem/zdt/zdt1/reports/classic_vs_adaptive.md) · [Sensitivity](results/by_problem/zdt/zdt1/reports/sensitivity_adaptive.md) · [CSV ZIP](results/by_problem/zdt/zdt1/csv_results.zip)
 
-## 5. Weaknesses, Limitations & Claim Boundaries
+### ZDT2
 
-The reports state the following observed weaknesses and boundaries:
+In benchmark seeds 42–71, adaptive OADE had a mean IGD of **0.00475622**, compared with **0.00540493** for NSGA2. These results apply to ZDT2, with 30 runs per algorithm and a 20,000-evaluation cap.
 
-1. **Confirmed Deficit on Smooth/Concave Multi-Objective Fronts (`dtlz2_m3`, `dtlz4_m3`, `WFG4`, and Scaled `WFG6/9` at $M \ge 3$)**:
-   On the tested configurations, OADE-NSGA-II v2 trails `NSGA-II` / `D-NSGA-II` on `dtlz2_m3`, `dtlz4_m3`, separable concave `WFG4` ($M=2,3,5$), `WFG6` ($M=3,5$), and `WFG9` ($M=5$). `CGDE-NSGA-II` has lower median IGD on `wfg6_m2` (`0.0302` vs `0.0526`) but took about 101× longer in this implementation and environment. The WFG report proposes three source-level explanations for late-budget stagnation; these remain hypotheses pending targeted ablations.
-2. **Crowding-Distance Saturation at $M=5$ Under Extreme Multimodality (`dtlz1_m5`, `dtlz3_m5`)**:
-   Under the tested 20,000-evaluation cap, 17/30 runs on `dtlz1_m5` ($\text{IGD}_{\text{med}} = 0.8972$, maximum `24.71`) and 30/30 runs on `dtlz3_m5` had `HV = 0`. This is consistent with limited convergence pressure in these cases; the proposed explanation has not been isolated experimentally.
-3. **Remaining Test Suite Boundaries**:
-   Current empirical evidence covers **ZDT1–4, ZDT6** ($M=2$), **DTLZ1–4** ($M \in \{2, 3, 5\}$), **WFG1, WFG4, WFG6, WFG9** ($M=2$ with all 7 solvers; $M \in \{2,3,5\}$ with the 5 fast solvers). Performance on **degenerate/disconnected DTLZ5–7**, remaining WFG suites (`WFG2, WFG3, WFG5, WFG7, WFG8`), `CE_MOEA`/`CGDE_NSGAII` at $M=3,5$ WFG, constrained MOPs, and discrete problems remains untested.
-4. **Hardware-Dependent Runtime**:
-   Reported wall-clock runtimes reflect Python execution overhead and BLAS thread settings (`OMP_NUM_THREADS=1` cut DTLZ4 runtimes ~3× vs unpinned DTLZ1–3 batches), and must **not** be interpreted as hardware-independent asymptotic complexities $\mathcal{O}(\cdot)$.
-5. **Isolated Component Attribution & Inconclusive Tests**:
-   The ablation supports an OBL contribution to ZDT4 performance, but evaluates periodic injection under the common uniform warm start; it does not evaluate initial Sobol/OBL. Held-out results show No Restart and Adaptive Restart outperforming Full OADE on ZDT1–ZDT3 and ZDT6; because their outputs are nearly identical and trigger counts are absent, the adaptive mechanism itself is not confirmed. The data suggest, but do not establish, a tail-risk role for some adaptive components. Non-significant comparisons denote no detected difference at $n=30$, not equivalence. Confidence intervals for paired effects are also not yet reported.
+**Comparators: mean ± SD, 30 runs per algorithm.**
 
----
+| Algorithm | IGD ↓ | HV ↑ | s/run |
+| --- | --- | --- | --- |
+| OADE_NSGAII | 0.00475622 ± 0.000292104 | 0.537674 ± 0.000221914 | 14.7846 |
+| NSGA2 | 0.00540493 ± 0.000306249 | 0.534072 ± 0.000611177 | 1.97288 |
+| RNSGA2 | 0.523507 ± 0.0253141 | 0.120884 ± 0.00708899 | 6.41374 |
+| DNSGA2 | 0.00588101 ± 0.00039197 | 0.532697 ± 0.000974228 | 1.84104 |
+| CGDE_NSGAII | 0.00681507 ± 0.00051003 | 0.530572 ± 0.00116976 | 136.061 |
+| NSGAII_SDR_OLS | 0.0503186 ± 0.152326 | 0.499634 ± 0.106117 | 3.47569 |
+| CE_MOEA | 0.00747684 ± 0.000980341 | 0.52967 ± 0.00190535 | 144.511 |
 
-## 6. Visual Evidence & Figures
+**Classic → adaptive, seeds 42–71:** mean IGD 0.00773397 → 0.00475622; mean HV 0.533739 → 0.537674. Adaptive versus NSGA2 paired tests gave Holm p = 7.82311e-08 for IGD and 5.58794e-08 for HV. The classic–adaptive difference here is descriptive.
 
-All figures are archived reproducibly in vector PDF, SVG, and PNG preview under [`results/figures/`](results/figures) (oversized `.tiff` print files and diagnostic overlay PDFs are local; figure sources and JSON QA records are included):
+**Restart confirmation, seeds 1000–1029:** means of 30 runs per variant.
 
-| Figure File | Description |
-|---|---|
-| [`integrated_7algo_landscape.png`](results/figures/integrated_7algo_landscape.png) | **Multi-panel overview**: 17-problem rank-biserial effect-size matrix (`a`), 204-test outcome ledger (`b`), and 34-endpoint mean rank vs DTLZ4 runtime proxy (`c`). |
-| [`dtlz1_4_scaling_diagnosis.png`](results/figures/dtlz1_4_scaling_diagnosis.png) | **2×2 DTLZ scaling grid ($M=2,3,5$)**: IGD summaries on DTLZ1/3 (`a, b`), 3-objective DTLZ2 comparison (`c`), and observed DTLZ4 median HV (`d`). |
-| [`wfg_m2_7algo_profile.png`](results/figures/wfg_m2_7algo_profile.png) | **7-Algorithm WFG $M=2$ validation**: 48-test IGD/HV effect heatmap (`a`), run-level `WFG9` IGD distributions (`b`), and 8-endpoint quality rank vs measured runtime (`c`). |
-| [`wfg_scaling_diagnosis.png`](results/figures/wfg_scaling_diagnosis.png) | **2×2 WFG scaling grid ($M=2 \to 3 \to 5$)**: 5-algo Holm outcome transition (`a`), paired `OADE/NSGA2` IGD ratios (`b`), and `wfg1_m5` / `wfg9_m5` HV convergence (`c, d`). |
-| [`benchmark_v2_outcome_counts.png`](results/figures/benchmark_v2_outcome_counts.png) | Horizontal stacked bar chart displaying 58 significant wins, 1 comparison with no detected difference, and 1 significant loss on ZDT v2 against 6 baselines. |
-| [`benchmark_v2_v1_vs_v2_delta.png`](results/figures/benchmark_v2_v1_vs_v2_delta.png) | Descriptive mean IGD reductions from OADE v1 to v2 across five ZDT problems (2.1%–40.1%); this does not isolate the restart mechanism. |
-| [`restart_direct_comparison.png`](results/figures/restart_direct_comparison.png) | Grouped boxplots comparing Old Restart, No Restart, and New Restart side-by-side with overlaid raw seeds. |
-| [`restart_convergence.png`](results/figures/restart_convergence.png) | Within-budget convergence trajectories (Median IGD + IQR shaded bands) over 20,000 evaluations. |
-| [`restart_confirmation_paired.png`](results/figures/restart_confirmation_paired.png) | Paired percentage improvement distribution on 30 held-out seeds ($1000 \dots 1029$). |
+| Variant | IGD mean ↓ | HV mean ↑ |
+| --- | --- | --- |
+| Classic | 0.00678176 | 0.53447 |
+| No restart | 0.00459058 | 0.537682 |
+| Adaptive | 0.00459058 | 0.537682 |
 
-Full quality assurance audits and font-size checks are logged in [`results/figures/figure_qa.md`](results/figures/figure_qa.md).
+**Adaptive sensitivity.** In OFAT seeds 6000–6029, increasing population from 100 to 200 changed median IGD from 0.0046646 to 0.00236691 and median HV from 0.537652 to 0.540519.
 
----
+Increasing initial DE probability from 0.5 to 0.8 changed median IGD from 0.0046646 to 0.00461182 and median HV from 0.537652 to 0.537702. These are problem-specific OFAT responses, not an optimal configuration or an interaction analysis.
 
-## 7. Project Structure & Reproducibility
+**Classic ablation (OADE_NO_RESTART versus Full OADE).** IGD: favors removal, p Holm = 0.0228426; HV: favors removal, p Holm = 0.000265241. This is not an ablation of the adaptive configuration.
 
-Each algorithm has its own directory under `src/`. Shared utilities are in `src/shared/`; experiment orchestration, statistics and plotting are in `src/research/`.
+[Problem report](results/by_problem/zdt/zdt2/README.md) · [Classic/adaptive](results/by_problem/zdt/zdt2/reports/classic_vs_adaptive.md) · [Sensitivity](results/by_problem/zdt/zdt2/reports/sensitivity_adaptive.md) · [CSV ZIP](results/by_problem/zdt/zdt2/csv_results.zip)
 
+### ZDT3
 
-Tests, smoke configurations, figure sources, environment lockfiles and JSON QA records are included in the research source. Generated smoke outputs, caches, TIFF rasters and diagnostic overlay PDFs remain local. See [reproducibility guide](docs/protocols/reproducibility.md).
+In benchmark seeds 42–71, adaptive OADE had a mean IGD of **0.00498585**, compared with **0.00719117** for NSGA2. These results apply to ZDT3, with 30 runs per algorithm and a 20,000-evaluation cap.
 
----
+**Comparators: mean ± SD, 30 runs per algorithm.**
 
-## 8. Quick Start Guide
+| Algorithm | IGD ↓ | HV ↑ | s/run |
+| --- | --- | --- | --- |
+| OADE_NSGAII | 0.00498585 ± 0.000336107 | 1.05122 ± 0.000152005 | 10.7916 |
+| NSGA2 | 0.00719117 ± 0.0102307 | 1.04718 ± 0.00669921 | 1.68703 |
+| RNSGA2 | 0.740552 ± 0.0573164 | 0.401005 ± 0.0494966 | 2.38314 |
+| DNSGA2 | 0.0055682 ± 0.000290586 | 1.04695 ± 0.000679974 | 1.62852 |
+| CGDE_NSGAII | 0.00826161 ± 0.000984232 | 1.03505 ± 0.0036038 | 108.59 |
+| NSGAII_SDR_OLS | 0.0186481 ± 0.00296968 | 1.03581 ± 0.00435762 | 2.53103 |
+| CE_MOEA | 0.00856088 ± 0.00153316 | 1.0344 ± 0.0051157 | 100.297 |
 
-### Prerequisites
-* Python 3.10+
-* Virtual environment with dependencies from `requirements.txt`:
+**Classic → adaptive, seeds 42–71:** mean IGD 0.0083192 → 0.00498585; mean HV 1.04924 → 1.05122. Adaptive versus NSGA2 paired tests gave Holm p = 0.00114028 for IGD and 5.58794e-08 for HV. The classic–adaptive difference here is descriptive.
+
+**Restart confirmation, seeds 1000–1029:** means of 30 runs per variant.
+
+| Variant | IGD mean ↓ | HV mean ↑ |
+| --- | --- | --- |
+| Classic | 0.011652 | 1.04618 |
+| No restart | 0.0049638 | 1.05126 |
+| Adaptive | 0.0049638 | 1.05126 |
+
+**Adaptive sensitivity.** In OFAT seeds 6000–6029, increasing population from 100 to 200 changed median IGD from 0.00515966 to 0.00249304 and median HV from 1.05118 to 1.0528.
+
+Increasing initial DE probability from 0.5 to 0.8 changed median IGD from 0.00515966 to 0.00512136 and median HV from 1.05118 to 1.05127. These are problem-specific OFAT responses, not an optimal configuration or an interaction analysis.
+
+**Classic ablation (OADE_NO_RESTART versus Full OADE).** IGD: favors removal, p Holm = 0.0033301; HV: favors removal, p Holm = 0.0175104. This is not an ablation of the adaptive configuration.
+
+[Problem report](results/by_problem/zdt/zdt3/README.md) · [Classic/adaptive](results/by_problem/zdt/zdt3/reports/classic_vs_adaptive.md) · [Sensitivity](results/by_problem/zdt/zdt3/reports/sensitivity_adaptive.md) · [CSV ZIP](results/by_problem/zdt/zdt3/csv_results.zip)
+
+### ZDT4
+
+In benchmark seeds 42–71, adaptive OADE had a mean IGD of **0.00683066**, compared with **0.00995272** for NSGA2. These results apply to ZDT4, with 30 runs per algorithm and a 20,000-evaluation cap.
+
+OFAT recorded a loss of solution quality at population 200; this boundary remains visible in the ZDT4 report.
+
+**Comparators: mean ± SD, 30 runs per algorithm.**
+
+| Algorithm | IGD ↓ | HV ↑ | s/run |
+| --- | --- | --- | --- |
+| OADE_NSGAII | 0.00683066 ± 0.00332858 | 0.865051 ± 0.00567877 | 11.9833 |
+| NSGA2 | 0.00995272 ± 0.00508029 | 0.859362 ± 0.0079104 | 2.20807 |
+| RNSGA2 | 0.620575 ± 0.165318 | 0.351077 ± 0.155278 | 2.09675 |
+| DNSGA2 | 0.0199731 ± 0.0273695 | 0.84675 ± 0.0368674 | 2.10489 |
+| CGDE_NSGAII | 12.1716 ± 2.80042 | 0 ± 0 | 138.416 |
+| NSGAII_SDR_OLS | 10.8914 ± 6.7777 | 0 ± 0 | 2.36871 |
+| CE_MOEA | 0.357214 ± 0.234331 | 0.409725 ± 0.22787 | 129.2 |
+
+**Classic → adaptive, seeds 42–71:** mean IGD 0.00697718 → 0.00683066; mean HV 0.864878 → 0.865051. Adaptive versus NSGA2 paired tests gave Holm p = 0.00404036 for IGD and 0.00087182 for HV. The classic–adaptive difference here is descriptive.
+
+**Restart confirmation, seeds 1000–1029:** means of 30 runs per variant.
+
+| Variant | IGD mean ↓ | HV mean ↑ |
+| --- | --- | --- |
+| Classic | 0.0240858 | 0.839208 |
+| No restart | 0.0240433 | 0.839264 |
+| Adaptive | 0.0240433 | 0.839264 |
+
+**Adaptive sensitivity.** In OFAT seeds 6000–6029, increasing population from 100 to 200 changed median IGD from 0.00558256 to 0.598477 and median HV from 0.867216 to 0.092856.
+
+Increasing initial DE probability from 0.5 to 0.8 changed median IGD from 0.00558256 to 0.00466007 and median HV from 0.867216 to 0.869327. These are problem-specific OFAT responses, not an optimal configuration or an interaction analysis.
+
+**Classic ablation (OADE_NO_OBL versus Full OADE).** IGD: favors Full OADE, p Holm = 1.08033e-07; HV: favors Full OADE, p Holm = 1.08033e-07. This is not an ablation of the adaptive configuration.
+
+[Problem report](results/by_problem/zdt/zdt4/README.md) · [Classic/adaptive](results/by_problem/zdt/zdt4/reports/classic_vs_adaptive.md) · [Sensitivity](results/by_problem/zdt/zdt4/reports/sensitivity_adaptive.md) · [CSV ZIP](results/by_problem/zdt/zdt4/csv_results.zip)
+
+### ZDT6
+
+In benchmark seeds 42–71, adaptive OADE had a mean IGD of **0.003844**, compared with **0.0163681** for NSGA2. These results apply to ZDT6, with 30 runs per algorithm and a 20,000-evaluation cap.
+
+The IGD test detected no difference from CGDE_NSGAII, whereas HV favored CGDE_NSGAII. The comparison with NSGA2 does not establish superiority over every algorithm.
+
+**Comparators: mean ± SD, 30 runs per algorithm.**
+
+| Algorithm | IGD ↓ | HV ↑ | s/run |
+| --- | --- | --- | --- |
+| OADE_NSGAII | 0.003844 ± 0.000192923 | 0.438177 ± 0.000252795 | 13.3414 |
+| NSGA2 | 0.0163681 ± 0.00201149 | 0.417891 ± 0.00287211 | 2.05538 |
+| RNSGA2 | 0.185764 ± 0.0927869 | 0.267636 ± 0.06859 | 2.20712 |
+| DNSGA2 | 0.0225884 ± 0.00279408 | 0.408917 ± 0.00399733 | 2.01973 |
+| CGDE_NSGAII | 0.00382305 ± 0.000222667 | 0.439057 ± 0.000199467 | 103.072 |
+| NSGAII_SDR_OLS | 0.139446 ± 0.0827475 | 0.282923 ± 0.0589616 | 2.12093 |
+| CE_MOEA | 0.00495683 ± 0.000335953 | 0.437794 ± 0.000359974 | 101.561 |
+
+**Classic → adaptive, seeds 42–71:** mean IGD 0.00528589 → 0.003844; mean HV 0.436557 → 0.438177. Adaptive versus NSGA2 paired tests gave Holm p = 5.58794e-08 for IGD and 5.58794e-08 for HV. The classic–adaptive difference here is descriptive.
+
+**Restart confirmation, seeds 1000–1029:** means of 30 runs per variant.
+
+| Variant | IGD mean ↓ | HV mean ↑ |
+| --- | --- | --- |
+| Classic | 0.00656552 | 0.435092 |
+| No restart | 0.00386259 | 0.438147 |
+| Adaptive | 0.00387635 | 0.438148 |
+
+**Adaptive sensitivity.** In OFAT seeds 6000–6029, increasing population from 100 to 200 changed median IGD from 0.00382752 to 0.0024559 and median HV from 0.438266 to 0.439487.
+
+Increasing initial DE probability from 0.5 to 0.8 changed median IGD from 0.00382752 to 0.00362852 and median HV from 0.438266 to 0.438773. These are problem-specific OFAT responses, not an optimal configuration or an interaction analysis.
+
+**Classic ablation (OADE_NO_RESTART versus Full OADE).** IGD: no difference detected, p Holm = 0.132859; HV: no difference detected, p Holm = 0.361487. This is not an ablation of the adaptive configuration.
+
+[Problem report](results/by_problem/zdt/zdt6/README.md) · [Classic/adaptive](results/by_problem/zdt/zdt6/reports/classic_vs_adaptive.md) · [Sensitivity](results/by_problem/zdt/zdt6/reports/sensitivity_adaptive.md) · [CSV ZIP](results/by_problem/zdt/zdt6/csv_results.zip)
+
+## Visual evidence: ZDT restart, convergence, ablation and sensitivity
+
+These figures reuse existing research outputs. Each panel or row pair retains its problem identity; pooled win counts do not replace problem-specific conclusions.
+
+![restart_direct_comparison](results/figures/restart_direct_comparison.png)
+
+**Figure 2. Held-out restart distributions.** IGD and HV are shown separately for each problem and variant (30 seeds, 1000–1029). No-restart and adaptive overlap closely; final metrics alone do not establish trigger operation.
+
+![restart_convergence](results/figures/restart_convergence.png)
+
+**Figure 3. Within-budget convergence.** Curves show median IGD and shaded IQR for each problem. Panels have different vertical scales. The trajectories compare outcomes, not observed trigger counts.
+
+![ablation_effect_heatmap](results/figures/ablation_effect_heatmap.png)
+
+**Figure 4. Classic component ablation.** Blue favors removing the named component; orange favors Full OADE. Asterisks mark Holm-adjusted p < 0.05. The ZDT4 OBL result contrasts with restart removals on ZDT1–3; there is no uniform component benefit.
+
+![prob_de_paired](results/experiments/zdt_sensitivity_ofat_v1/figures/prob_de_paired.png)
+
+**Figure 5. Initial DE probability sensitivity.** Bars show median improvement over 0.5 using 30 matched seeds; whiskers show Q25–Q75, not confidence intervals. Positive values mean improvement for both IGD and HV. Each problem has its own scale; median paired improvements differ from ratios of marginal medians quoted above.
+
+OFAT baseline runs are reused between parameter tables. Under a fixed evaluation cap, population changes alter both available generations and solution-set resolution. These responses require confirmation before changing default settings.
+
+## Strengths observed on ZDT
+
+These strengths concern the implemented configurations on ZDT1/2/3/4/6 under the reported conditions. They accompany the problem-specific tables and figures, rather than establish superiority across problem classes.
+
+| Strength | Current evidence | Interpretation boundary |
+| --- | --- | --- |
+| Solution quality versus NSGA2 | Adaptive has lower mean IGD and higher mean HV than NSGA2 in each reported ZDT problem; paired tests remain problem-specific. | 30 seeds 42–71, population 100, 20,000-evaluation cap; not superiority over every comparator. |
+| Lower dispersion than classic on ZDT1–3 | Adaptive benchmark IGD SD is lower than classic separately on ZDT1, ZDT2 and ZDT3; held-out distributions expose poor-quality classic tails. | A configuration-level benefit; near-overlap with no-restart prevents attribution to the adaptive trigger. |
+| Specific component evidence on ZDT4 | Classic ablation favors retaining OBL over removing it for both IGD and HV after Holm correction. | Periodic OBL under common uniform initialization, not standalone initial Sobol/OBL. |
+| Evidence for sensitivity checks and reproduction | Matched-seed benchmarks, separate confirmation seeds, adaptive OFAT, manifests and SHA-256 ZIP records are available. | A strength of the experimental record, not a convergence or optimality guarantee. |
+
+## Limitations and claim boundaries
+
+| Limitation | ZDT evidence or design boundary | Consequence |
+| --- | --- | --- |
+| Not better than every algorithm | ZDT6: no IGD difference detected from CGDE_NSGAII, while HV favors CGDE_NSGAII. | Retain metric- and comparator-specific conclusions. |
+| Runtime overhead | Adaptive OADE is slower than NSGA2/DNSGA2 in the measured ZDT runtime rows. | Assess quality alongside implementation-specific cost; runtime does not establish theoretical complexity. |
+| Configuration and budget sensitivity | ZDT4 deteriorates strongly at population 200 under the 20,000-evaluation cap. | Larger populations are not a universally beneficial default. |
+| Adaptive restart value remains unisolated | Adaptive and no-restart nearly overlap in confirmation; trigger telemetry was not saved. | Fresh seeds and restart checks/activations are needed for a mechanism claim. |
+| OFAT does not establish interactions or optimality | One parameter changes around baseline; F/CR and DE probability can update within a run. | Favorable levels are confirmation candidates, not a general optimum. |
+| Initialization benefit remains untested | Benchmark populations use common uniform initialization, bypassing standalone Sobol/OBL. | Periodic-OBL ablation does not establish an initialization benefit. |
+| Uncertainty and provenance gaps | Current tables lack paired-effect CIs; some historical blocks lack execution manifests. | SD/IQR are not CIs; current environments cannot be assigned retrospectively. |
+| Limited primary scope | The current focus is the reported continuous bi-objective ZDT problems; ZDT5 is not included. | Generalization to more objectives, constraints, discrete variables or applications is not established. |
+
+## Research direction: consolidate ZDT, then extend
+
+**The current priority is to strengthen the ZDT conclusions.** Existing DTLZ/WFG extension results remain below as supplementary evidence. They do not replace the ZDT focus or establish general superiority.
+
+| Stage | Work to prioritize | Evidence to add |
+| --- | --- | --- |
+| 1. Consolidate ZDT | Confirm adaptive versus no-restart, candidate parameter settings and the ZDT4 population boundary. | Fresh seeds, restart telemetry/evaluation cost, paired-effect CIs and quality–cost analysis. |
+| 2. Extend DTLZ/WFG | Add comparisons and ablations per problem and objective count; retain existing batches as supplementary evidence. | Verified comparators, explicit budgets, invalid-output handling and scaling checks. |
+| 3. Other problem classes | Consider constrained, discrete or application problems once their evaluation objective is defined. | Task-appropriate protocols and comparators, without directly transferring ZDT settings or claims. |
+
+This is a research direction, not a list of completed experiments. New evidence will be added to its own problem folder with configuration, seeds, budget, manifest and a separate report. See the [detailed evidence plan](docs/protocols/followup_experiments.md).
+
+## DTLZ: incremental extension by problem
+
+Each objective-count configuration has its own record. Existing results remain separate for incremental extension.
+
+| Problem | Algorithms | IGD OADE ↓ | IGD NSGA2 ↓ | HV OADE ↑ | Detail |
+| --- | --- | --- | --- | --- | --- |
+| DTLZ1_M2 | 7 | 0.00228432 | 0.00294605 | 0.233218 | [Report](results/by_problem/dtlz/dtlz1_m2/README.md) |
+| DTLZ1_M3 | 7 | 0.0292282 | 0.191546 | 0.184658 | [Report](results/by_problem/dtlz/dtlz1_m3/README.md) |
+| DTLZ1_M5 | 7 | 2.55293 | 39.7519 | 0.00919743 | [Report](results/by_problem/dtlz/dtlz1_m5/README.md) |
+| DTLZ2_M2 | 7 | 0.00504106 | 0.0050504 | 0.418953 | [Report](results/by_problem/dtlz/dtlz2_m2/README.md) |
+| DTLZ2_M3 | 7 | 0.0766053 | 0.0719165 | 0.684464 | [Report](results/by_problem/dtlz/dtlz2_m3/README.md) |
+| DTLZ2_M5 | 7 | 0.42009 | 0.457093 | 0.460191 | [Report](results/by_problem/dtlz/dtlz2_m5/README.md) |
+| DTLZ3_M2 | 7 | 1.34808 | 2.64577 | 0.0997882 | [Report](results/by_problem/dtlz/dtlz3_m2/README.md) |
+| DTLZ3_M3 | 7 | 2.52939 | 15.3961 | 0.0407079 | [Report](results/by_problem/dtlz/dtlz3_m3/README.md) |
+| DTLZ3_M5 | 7 | 80.8224 | 251.863 | 0 | [Report](results/by_problem/dtlz/dtlz3_m5/README.md) |
+| DTLZ4_M2 | 7 | 0.00513331 | 0.275331 | 0.418761 | [Report](results/by_problem/dtlz/dtlz4_m2/README.md) |
+| DTLZ4_M3 | 7 | 0.0786625 | 0.0698968 | 0.680528 | [Report](results/by_problem/dtlz/dtlz4_m3/README.md) |
+| DTLZ4_M5 | 7 | 0.372651 | 0.802355 | 0.647577 | [Report](results/by_problem/dtlz/dtlz4_m5/README.md) |
+
+**Visible failure boundary:** OADE had HV = 0 in 17/30 DTLZ1_M5 runs and all 30 DTLZ3_M5 runs. These are reference-point quality outcomes, not necessarily structural output failures. Valid matched-pair counts are reported per comparison.
+
+![DTLZ objective-count scaling](results/figures/dtlz1_4_scaling_diagnosis.png)
+
+**Figure 6. DTLZ objective-count scaling.** Panels separately show DTLZ1, DTLZ3, DTLZ2 comparisons and DTLZ4 HV. Log-scale IGD exposes the difficulty of increasing the objective count; ZDT results are not substituted for DTLZ evidence.
+
+## WFG: incremental extension by problem
+
+Each objective-count configuration has its own record. Existing results remain separate for incremental extension.
+
+| Problem | Algorithms | IGD OADE ↓ | IGD NSGA2 ↓ | HV OADE ↑ | Detail |
+| --- | --- | --- | --- | --- | --- |
+| WFG1_M2 | 7 | 1.02608 | 1.20215 | 1.77197 | [Report](results/by_problem/wfg/wfg1_m2/README.md) |
+| WFG1_M3 | 5 | 1.41795 | 1.39246 | 16.4028 | [Report](results/by_problem/wfg/wfg1_m3/README.md) |
+| WFG1_M5 | 5 | 1.99485 | 1.99336 | 1303.85 | [Report](results/by_problem/wfg/wfg1_m5/README.md) |
+| WFG4_M2 | 7 | 0.0332224 | 0.0263514 | 2.146 | [Report](results/by_problem/wfg/wfg4_m2/README.md) |
+| WFG4_M3 | 5 | 0.353783 | 0.280393 | 16.2589 | [Report](results/by_problem/wfg/wfg4_m3/README.md) |
+| WFG4_M5 | 5 | 1.38378 | 1.23067 | 663.471 | [Report](results/by_problem/wfg/wfg4_m5/README.md) |
+| WFG6_M2 | 7 | 0.0547901 | 0.0716943 | 2.04237 | [Report](results/by_problem/wfg/wfg6_m2/README.md) |
+| WFG6_M3 | 5 | 0.396159 | 0.322633 | 15.7194 | [Report](results/by_problem/wfg/wfg6_m3/README.md) |
+| WFG6_M5 | 5 | 1.45639 | 1.35347 | 1359.38 | [Report](results/by_problem/wfg/wfg6_m5/README.md) |
+| WFG9_M2 | 7 | 0.0363613 | 0.110123 | 2.15299 | [Report](results/by_problem/wfg/wfg9_m2/README.md) |
+| WFG9_M3 | 5 | 0.340685 | 0.341724 | 17.6942 | [Report](results/by_problem/wfg/wfg9_m3/README.md) |
+| WFG9_M5 | 5 | 1.96313 | 1.73254 | 983.527 | [Report](results/by_problem/wfg/wfg9_m5/README.md) |
+
+M=2 rows use the seven-algorithm benchmark; M=3/5 use the five-algorithm compact study. Shared M=2 blocks are not new independent runs. Means in the table are not the medians plotted below.
+
+![WFG bi-objective comparator profiles](results/figures/wfg_m2_7algo_profile.png)
+
+**Figure 7. Bi-objective WFG comparator profiles.** Panel a retains separate IGD/HV effects for WFG1/4/6/9; panel b shows WFG9 run distributions. Panel c is the original figure’s aggregate cost context, not a substitute for the problem rows above or evidence for M=3/5.
+
+## Reading the evidence
+
+Benchmarks report mean ± SD; adaptive sensitivity reports median and IQR (Q25–Q75). Lower IGD and higher HV indicate better quality within a problem. Paired Wilcoxon tests retain their original Holm correction families after reports are split.
+
+Classic and adaptive are two OADE configurations; the six comparator blocks are reused between the ZDT benchmarks. Restart seeds 1000–1029 and OFAT seeds 6000–6029 are interpreted separately. Final quality does not itself establish the restart mechanism, and OFAT does not evaluate parameter interactions.
+
+## Data access and reproduction
+
+CSVs are distributed as ZIP bundles. Markdown reports and figures can be read directly. See the [download index and SHA-256 records](results/CSV_DOWNLOADS.md).
+
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .
+.venv\Scripts\python.exe -m pip install -e .
+.venv\Scripts\python.exe scripts/csv_archives.py restore
 ```
 
-### Reproduce Benchmark v2 (ZDT, 7 Algorithms, 1,050 Runs)
+Reproduce the adaptive ZDT benchmark in a new directory:
+
 ```powershell
 .venv\Scripts\python.exe main.py benchmark --config config/suites/algorithm_benchmark_v2.yaml --out-dir results/reproduction_zdt_v2
 ```
 
-### Reproduce DTLZ1–DTLZ4 Benchmark (M = 2, 3, 5; 2,520 Runs)
+After updating source evidence, regenerate problem reports and bundles:
+
 ```powershell
-$env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-dtlz --config config/suites/dtlz1_4_benchmark.yaml --out-dir results/reproduction_dtlz --jobs 8
+.venv\Scripts\python.exe scripts/organize_by_problem.py
+.venv\Scripts\python.exe scripts/csv_archives.py pack
 ```
 
-### Reproduce Compact WFG Benchmarks (M = 2, 3, 5 & Full 7-Algo M = 2)
-```powershell
-$env:OMP_NUM_THREADS=1; $env:OPENBLAS_NUM_THREADS=1; $env:MKL_NUM_THREADS=1
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_compact_benchmark.yaml --out-dir results/reproduction_wfg_compact --jobs 8
-.venv\Scripts\python.exe main.py benchmark-wfg --config config/suites/wfg_m2_7algo_benchmark.yaml --out-dir results/reproduction_wfg_m2 --jobs 10
-```
+## Methods documentation
 
-### Generate Built-in Summary Plots
-```powershell
-.venv\Scripts\python.exe main.py plot-algorithm-benchmark
-.venv\Scripts\python.exe main.py plot-convergence
-```
-
----
-
-## 📜 Citation & Research Reports
-
-If you use OADE-NSGA-II in your research, please refer to the detailed evaluation reports in `docs/`:
-* **WFG Compact & M=2 7-Algorithm Report**: [`docs/reports/wfg_compact_report.md`](docs/reports/wfg_compact_report.md)
-* **Integrated ZDT + DTLZ1–4 Report**: [`docs/reports/dtlz1_4_integrated_report.md`](docs/reports/dtlz1_4_integrated_report.md)
-* **Benchmark v2 Report (ZDT)**: [`docs/reports/benchmark_v2_results_report.md`](docs/reports/benchmark_v2_results_report.md)
-* **Restart Confirmation Report**: [`docs/reports/restart_confirmation_report.md`](docs/reports/restart_confirmation_report.md)
-* **Component Ablation Report**: [`docs/reports/ablation_results_report.md`](docs/reports/ablation_results_report.md)
-
-## Results organized by problem
-
-Download CSV evidence from the [ZIP index](results/CSV_DOWNLOADS.md). After cloning, run `python scripts/csv_archives.py restore` before data-dependent analyses. Reports and figures remain readable without extraction.
-
-The current research focus is **ZDT**. See [the per-problem research folders](results/by_problem/README.md) for seven-algorithm results, classic/adaptive comparisons, restart confirmation, ablation and sensitivity. Existing DTLZ/WFG evidence is organized alongside ZDT for gradual extension. Rebuild these views with `python scripts/organize_by_problem.py` after adding source results.
+- [Baseline identities and citations](docs/protocols/baselines.md)
+- [Experiment registry](docs/protocols/experiment_registry.md)
+- [Reproducibility](docs/protocols/reproducibility.md)
+- [Documentation index](docs/index.md)

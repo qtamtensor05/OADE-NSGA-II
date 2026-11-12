@@ -26,6 +26,7 @@ def main():
              'results/by_problem', 'results/CSV_DOWNLOADS.md', 'results/csv_archives.json',
              'scripts/csv_archives.py', 'scripts/commit_csv_results.py',
              'scripts/organize_by_problem.py', 'scripts/problem_reports.py',
+             'scripts/research_readmes.py', 'docs/reports/readme_rewrite_audit.md',
              'tests/unit/test_csv_archives.py',
              *[a['archive'] for a in data['archives']]]
     staged = git('diff', '--cached', '--name-only', '-z', capture=True).stdout.split('\0')

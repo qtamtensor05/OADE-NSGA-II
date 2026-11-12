@@ -1,21 +1,53 @@
 # Hồ sơ nghiên cứu theo bài toán
 
-Ưu tiên nghiên cứu hiện tại: **ZDT1, ZDT2, ZDT3, ZDT4, ZDT6**. Không có dữ liệu ZDT5 trong các đợt được tuyển chọn.
+ZDT là trọng tâm hiện tại. Mỗi bài toán có một báo cáo chính và các báo cáo thí nghiệm riêng. DTLZ/WFG là phần mở rộng được bổ sung theo từng cấu hình. Không cộng lượt chạy hoặc kết quả kiểm định giữa các bảng để tạo một kết luận chung.
 
-| Bộ bài toán | Vai trò | Hồ sơ |
-|---|---|---|
-| ZDT | Trọng tâm: benchmark 7 thuật toán classic/adaptive, xác nhận restart, ablation, độ nhạy | [ZDT](zdt/README.md) |
-| DTLZ | Bằng chứng mở rộng hiện có, tiếp tục chạy và bổ sung | [DTLZ](dtlz/README.md) |
-| WFG | Bằng chứng mở rộng hiện có, tách benchmark M=2 và scaling | [WFG](wfg/README.md) |
+## ZDT
 
-Mỗi hồ sơ có thư mục `reports/` chứa báo cáo Markdown riêng cho từng nhóm thí nghiệm, với bảng số liệu chỉ của bài toán tương ứng. ZDT có thêm `reports/classic_vs_adaptive.md`. Báo cáo được tái tạo cùng dữ liệu khi chạy script.
+| Bài toán | Báo cáo chính | Thí nghiệm | CSV |
+| --- | --- | --- | --- |
+| ZDT1 | [README](zdt/zdt1/README.md) | [Báo cáo](zdt/zdt1/reports/README.md) | [ZIP](zdt/zdt1/csv_results.zip) |
+| ZDT2 | [README](zdt/zdt2/README.md) | [Báo cáo](zdt/zdt2/reports/README.md) | [ZIP](zdt/zdt2/csv_results.zip) |
+| ZDT3 | [README](zdt/zdt3/README.md) | [Báo cáo](zdt/zdt3/reports/README.md) | [ZIP](zdt/zdt3/csv_results.zip) |
+| ZDT4 | [README](zdt/zdt4/README.md) | [Báo cáo](zdt/zdt4/reports/README.md) | [ZIP](zdt/zdt4/csv_results.zip) |
+| ZDT6 | [README](zdt/zdt6/README.md) | [Báo cáo](zdt/zdt6/reports/README.md) | [ZIP](zdt/zdt6/csv_results.zip) |
 
-Mỗi bài toán có thư mục thí nghiệm riêng, README, CSV đã lọc và manifest SHA-256. [coverage.csv (ZIP)](csv_results.zip) thống kê số dòng raw theo bài toán/đợt, không phải tổng lượt thực thi độc lập.
+## DTLZ
 
-Nguồn gốc và đường dẫn thực thi giữ nguyên; đây là lớp tổ chức để đọc và phân tích. Không lấy smoke, correction trung gian hoặc benchmark legacy làm bằng chứng chính. Các báo cáo/hình nhiều bài toán được liên kết thay vì sao chép và đổi nhãn thành hình riêng.
+| Bài toán | Báo cáo chính | Thí nghiệm | CSV |
+| --- | --- | --- | --- |
+| DTLZ1_M2 | [README](dtlz/dtlz1_m2/README.md) | [Báo cáo](dtlz/dtlz1_m2/reports/README.md) | [ZIP](dtlz/dtlz1_m2/csv_results.zip) |
+| DTLZ1_M3 | [README](dtlz/dtlz1_m3/README.md) | [Báo cáo](dtlz/dtlz1_m3/reports/README.md) | [ZIP](dtlz/dtlz1_m3/csv_results.zip) |
+| DTLZ1_M5 | [README](dtlz/dtlz1_m5/README.md) | [Báo cáo](dtlz/dtlz1_m5/reports/README.md) | [ZIP](dtlz/dtlz1_m5/csv_results.zip) |
+| DTLZ2_M2 | [README](dtlz/dtlz2_m2/README.md) | [Báo cáo](dtlz/dtlz2_m2/reports/README.md) | [ZIP](dtlz/dtlz2_m2/csv_results.zip) |
+| DTLZ2_M3 | [README](dtlz/dtlz2_m3/README.md) | [Báo cáo](dtlz/dtlz2_m3/reports/README.md) | [ZIP](dtlz/dtlz2_m3/csv_results.zip) |
+| DTLZ2_M5 | [README](dtlz/dtlz2_m5/README.md) | [Báo cáo](dtlz/dtlz2_m5/reports/README.md) | [ZIP](dtlz/dtlz2_m5/csv_results.zip) |
+| DTLZ3_M2 | [README](dtlz/dtlz3_m2/README.md) | [Báo cáo](dtlz/dtlz3_m2/reports/README.md) | [ZIP](dtlz/dtlz3_m2/csv_results.zip) |
+| DTLZ3_M3 | [README](dtlz/dtlz3_m3/README.md) | [Báo cáo](dtlz/dtlz3_m3/reports/README.md) | [ZIP](dtlz/dtlz3_m3/csv_results.zip) |
+| DTLZ3_M5 | [README](dtlz/dtlz3_m5/README.md) | [Báo cáo](dtlz/dtlz3_m5/reports/README.md) | [ZIP](dtlz/dtlz3_m5/csv_results.zip) |
+| DTLZ4_M2 | [README](dtlz/dtlz4_m2/README.md) | [Báo cáo](dtlz/dtlz4_m2/reports/README.md) | [ZIP](dtlz/dtlz4_m2/csv_results.zip) |
+| DTLZ4_M3 | [README](dtlz/dtlz4_m3/README.md) | [Báo cáo](dtlz/dtlz4_m3/reports/README.md) | [ZIP](dtlz/dtlz4_m3/csv_results.zip) |
+| DTLZ4_M5 | [README](dtlz/dtlz4_m5/README.md) | [Báo cáo](dtlz/dtlz4_m5/reports/README.md) | [ZIP](dtlz/dtlz4_m5/csv_results.zip) |
 
-ZDT: benchmark classic/adaptive mỗi bộ 1.050 dòng (5 × 7 × 30), dùng chung 6 block đối chứng; restart confirmation 450 dòng; adaptive OFAT 2.850 dòng duy nhất. Sensitivity classic là bằng chứng lịch sử riêng.
+## WFG
 
-Tái tạo sau khi bổ sung dữ liệu: `python scripts/organize_by_problem.py`. Thêm nguồn nghiên cứu mới vào `SOURCES` của script; mọi bài toán xuất hiện trong cột `problem` sẽ được tách vào đúng bộ. Nguồn chưa có CSV derived sẽ chưa được đánh dấu có kết quả. Không dùng thư mục này làm nơi ghi checkpoint của các lượt đang chạy.
+| Bài toán | Báo cáo chính | Thí nghiệm | CSV |
+| --- | --- | --- | --- |
+| WFG1_M2 | [README](wfg/wfg1_m2/README.md) | [Báo cáo](wfg/wfg1_m2/reports/README.md) | [ZIP](wfg/wfg1_m2/csv_results.zip) |
+| WFG1_M3 | [README](wfg/wfg1_m3/README.md) | [Báo cáo](wfg/wfg1_m3/reports/README.md) | [ZIP](wfg/wfg1_m3/csv_results.zip) |
+| WFG1_M5 | [README](wfg/wfg1_m5/README.md) | [Báo cáo](wfg/wfg1_m5/reports/README.md) | [ZIP](wfg/wfg1_m5/csv_results.zip) |
+| WFG4_M2 | [README](wfg/wfg4_m2/README.md) | [Báo cáo](wfg/wfg4_m2/reports/README.md) | [ZIP](wfg/wfg4_m2/csv_results.zip) |
+| WFG4_M3 | [README](wfg/wfg4_m3/README.md) | [Báo cáo](wfg/wfg4_m3/reports/README.md) | [ZIP](wfg/wfg4_m3/csv_results.zip) |
+| WFG4_M5 | [README](wfg/wfg4_m5/README.md) | [Báo cáo](wfg/wfg4_m5/reports/README.md) | [ZIP](wfg/wfg4_m5/csv_results.zip) |
+| WFG6_M2 | [README](wfg/wfg6_m2/README.md) | [Báo cáo](wfg/wfg6_m2/reports/README.md) | [ZIP](wfg/wfg6_m2/csv_results.zip) |
+| WFG6_M3 | [README](wfg/wfg6_m3/README.md) | [Báo cáo](wfg/wfg6_m3/reports/README.md) | [ZIP](wfg/wfg6_m3/csv_results.zip) |
+| WFG6_M5 | [README](wfg/wfg6_m5/README.md) | [Báo cáo](wfg/wfg6_m5/reports/README.md) | [ZIP](wfg/wfg6_m5/csv_results.zip) |
+| WFG9_M2 | [README](wfg/wfg9_m2/README.md) | [Báo cáo](wfg/wfg9_m2/reports/README.md) | [ZIP](wfg/wfg9_m2/csv_results.zip) |
+| WFG9_M3 | [README](wfg/wfg9_m3/README.md) | [Báo cáo](wfg/wfg9_m3/reports/README.md) | [ZIP](wfg/wfg9_m3/csv_results.zip) |
+| WFG9_M5 | [README](wfg/wfg9_m5/README.md) | [Báo cáo](wfg/wfg9_m5/reports/README.md) | [ZIP](wfg/wfg9_m5/csv_results.zip) |
 
-[Tải CSV dạng ZIP và hướng dẫn khôi phục](../CSV_DOWNLOADS.md).
+## Tái lập và bổ sung
+
+[Hướng dẫn tải, khôi phục và kiểm tra CSV](../CSV_DOWNLOADS.md).
+
+`python scripts/organize_by_problem.py` tái tạo các báo cáo từ nguồn đã lưu. `python scripts/csv_archives.py pack` cập nhật các ZIP sau khi bổ sung kết quả. Manifest trong từng thư mục ghi SHA-256 và nguồn của CSV. Không chỉnh sửa trực tiếp các README được sinh tự động; sửa nội dung trong `scripts/research_readmes.py`.
