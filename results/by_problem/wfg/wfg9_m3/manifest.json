@@ -1,0 +1,72 @@
+{
+  "problem": "wfg9_m3",
+  "artifacts": [
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_convergence.csv",
+      "source_sha256": "43b18ada3a29069ab605ca4a510921ecf05dbfceb23387593326056876b55d05",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_convergence.csv",
+      "output_sha256": "03ba096d50848e61934331470b03a2cb69ab07064ba14daab55c21daff3c1bcf",
+      "rows": 1442,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    },
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "bca6dbc544b89a39ebf8d02a1cb1bfb8b44b9e52f4aa8f79a7c0f033392c7186",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "3b78c6802211866405d8c9efb4cb819adae6906f348542b4b53f25612f59b9ed",
+      "rows": 5,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    },
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "c9567d21491646f81e2c7b54bce91e701618b5bccb6ab3a859903defcffa4823",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "4ff9ba543e09f4001e9044f506f449e59af89e41b89273103b1df86c45315f27",
+      "rows": 5,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    },
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "ccfd5db0ac0d2375d0272ba56d87baf5b578032dec8c6f1754e74f2a60843739",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "3e8601313239e887193eaa668d5eff4396f8f3fce2d77865ade149cde75fed8c",
+      "rows": 8,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    },
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "b75ff5836efd09607451e717bb3a83cc1c0c697c2212cff39c141aca5e0df8c1",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "59b3525c087babce7fd27be047011d05030bc8a545c49d99749b9b72ebc78b3d",
+      "rows": 150,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    },
+    {
+      "category": "benchmark_wfg_scaling",
+      "source": "results/wfg_compact_benchmark/algorithm_benchmark_validation.csv",
+      "source_sha256": "9a7148bd04c65e99b0bc46751f4ab4a80a5ead77ceadfbc1504c121b79fbada6",
+      "output": "results/by_problem/wfg/wfg9_m3/benchmark_wfg_scaling/algorithm_benchmark_validation.csv",
+      "output_sha256": "9eb14277c781e8e94ae1d90865d6670b538438b5903f110a4cd0bb63fd03a151",
+      "rows": 150,
+      "filter": {
+        "problem": "wfg9_m3"
+      }
+    }
+  ],
+  "note": "Filtered views, not new independent executions. Original statistical correction families are preserved."
+}

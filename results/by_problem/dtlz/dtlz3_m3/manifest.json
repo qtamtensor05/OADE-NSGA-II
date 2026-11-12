@@ -1,0 +1,72 @@
+{
+  "problem": "dtlz3_m3",
+  "artifacts": [
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_convergence.csv",
+      "source_sha256": "2577c5b9f3d8d26aa8a6a26940f5d6f766344338a10b85e96ae73ca7adb80ac4",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_convergence.csv",
+      "output_sha256": "1d3b26caff202b8779991b3851b80c7745a284229bb49f4035aa75d6adae4b70",
+      "rows": 2040,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    },
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "8e9d6adbcec7b84ba9f3f8d6e6353fa7e50ed6f899a4fb7049651764bf1eb522",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "ddfc2835c2edc6446c54dd3c91b4f6dda35641b43d09ed37ea03ba0cacc75b0f",
+      "rows": 7,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    },
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "4755261d8575520c1db865b1ab0e3c03af8b2d249431af7944c0f54f0c7d70d2",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "cd9e91adfdd9a5998d037fbf020f01190941bd5d02b7499acfe7ae714d008e48",
+      "rows": 7,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    },
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "a5030a36bdf0a0ee2b4a1240bea6b95b6ddd1f00afc4d352ae121839e078493f",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "4ed580dab342b2e5ecc2e5f62be91ce552f21600303a2a7e4ef7849b50c0f2f1",
+      "rows": 12,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    },
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "9e8196bc7f11c891cd8e0203f66212d2fb7471e9ce60b2567b488184fe8fe99f",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "323dfa4392a6199b81b8d877f0d3f661b85edc0ca4b7360d61b2e04f07f24a15",
+      "rows": 210,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    },
+    {
+      "category": "benchmark_dtlz",
+      "source": "results/dtlz_benchmark/algorithm_benchmark_validation.csv",
+      "source_sha256": "4d7e0820f48abeff21d54937e1097e609e630c0cfac21da093feebb0d9318dea",
+      "output": "results/by_problem/dtlz/dtlz3_m3/benchmark_dtlz/algorithm_benchmark_validation.csv",
+      "output_sha256": "d806d2e62e2fed117e74096f68cb51e5f900ac229a8d40fa3513dd4eb5278cce",
+      "rows": 210,
+      "filter": {
+        "problem": "dtlz3_m3"
+      }
+    }
+  ],
+  "note": "Filtered views, not new independent executions. Original statistical correction families are preserved."
+}

@@ -25,6 +25,10 @@ results/smoke*/
 # plus manifest/config, compact tables and report figures instead.
 /results/experiments/**/primary/
 
+# Published CSV evidence is distributed in verified csv_results.zip bundles.
+# Local extracted/generated CSVs remain available to analysis commands.
+/results/**/*.csv
+
 # Local report-writing, figure-generation scripts, and heavy/QA artifacts
 .r-bootstrap/
 renv/library/

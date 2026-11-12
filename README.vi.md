@@ -212,3 +212,9 @@ Các lệnh vẽ tích hợp dùng cấu hình/đường dẫn đầu vào của
 - [Độ nhạy tham số của cấu hình classic](docs/reports/sensitivity_analysis.md).
 
 Khi trích dẫn hoặc sử dụng kết quả, nêu đúng phiên bản cấu hình, implementation đối chứng và giới hạn giao thức. Giấy phép phát hành của dự án chưa được xác định trong hồ sơ hiện tại.
+
+## Kết quả theo từng bài toán
+
+Tải CSV từ [danh mục ZIP](results/CSV_DOWNLOADS.md). Sau khi clone, chạy `python scripts/csv_archives.py restore` trước khi phân tích dữ liệu. Báo cáo và hình vẫn xem trực tiếp, không cần giải nén.
+
+Nghiên cứu hiện ưu tiên **ZDT**. Mở [hồ sơ từng bài toán](results/by_problem/README.md) để xem kết quả 7 thuật toán, so sánh classic/adaptive, xác nhận restart, ablation và độ nhạy tham số. DTLZ/WFG được tổ chức cùng cấu trúc để bổ sung dần. Cập nhật các bản tách sau khi có dữ liệu mới bằng `python scripts/organize_by_problem.py`.

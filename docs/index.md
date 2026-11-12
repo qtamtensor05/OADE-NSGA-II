@@ -1,5 +1,11 @@
 # Research documentation
 
+CSV downloads: [verified ZIP bundles and restore instructions](../results/CSV_DOWNLOADS.md). Reports and figures remain directly readable. Restore the CSVs before running data-dependent analyses on a fresh clone.
+
+Current research priority: **ZDT**. Open the [per-problem research folders](../results/by_problem/README.md) for ZDT1/2/3/4/6: seven-algorithm classic/adaptive benchmarks, restart confirmation, ablation and parameter sensitivity. Each folder contains filtered CSVs, source checksums and report/figure links. DTLZ and WFG use the same layout for incremental extension.
+
+Standalone reports are now split by problem inside each folder's `reports/` directory: [ZDT1](../results/by_problem/zdt/zdt1/reports/README.md), [ZDT2](../results/by_problem/zdt/zdt2/reports/README.md), [ZDT3](../results/by_problem/zdt/zdt3/reports/README.md), [ZDT4](../results/by_problem/zdt/zdt4/reports/README.md), [ZDT6](../results/by_problem/zdt/zdt6/reports/README.md). These contain the problem's numeric tables and interpretation limits, rather than only links to combined reports. DTLZ and WFG folders also contain their own reports.
+
 Start with [the integrated research manuscript](manuscript/manuscript.md) for the central question, implemented method, findings and limitations. It is a bounded research draft, not a submission-ready claim of novelty or journal compliance.
 
 | Document | Role |

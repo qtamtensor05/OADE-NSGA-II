@@ -179,3 +179,9 @@ If you use OADE-NSGA-II in your research, please refer to the detailed evaluatio
 * **Benchmark v2 Report (ZDT)**: [`docs/reports/benchmark_v2_results_report.md`](docs/reports/benchmark_v2_results_report.md)
 * **Restart Confirmation Report**: [`docs/reports/restart_confirmation_report.md`](docs/reports/restart_confirmation_report.md)
 * **Component Ablation Report**: [`docs/reports/ablation_results_report.md`](docs/reports/ablation_results_report.md)
+
+## Results organized by problem
+
+Download CSV evidence from the [ZIP index](results/CSV_DOWNLOADS.md). After cloning, run `python scripts/csv_archives.py restore` before data-dependent analyses. Reports and figures remain readable without extraction.
+
+The current research focus is **ZDT**. See [the per-problem research folders](results/by_problem/README.md) for seven-algorithm results, classic/adaptive comparisons, restart confirmation, ablation and sensitivity. Existing DTLZ/WFG evidence is organized alongside ZDT for gradual extension. Rebuild these views with `python scripts/organize_by_problem.py` after adding source results.

@@ -1,0 +1,380 @@
+{
+  "problem": "zdt6",
+  "artifacts": [
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_convergence.csv",
+      "source_sha256": "2a27023feb297fda0f253e798b67f885d2b544e7c31ce36f3e6c46afbb29071c",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_convergence.csv",
+      "output_sha256": "01e9740ef43ad8a39c447508727a67f2e0ff0b9ef66201beb444355ada9de784",
+      "rows": 2040,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "b6e8750882b815e45732da3b2280fe8825cf7d9cebe899c540f0be1771a46f89",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "775be504373a5602601334ec9310e741203d354ddb2ef78244cfca86f9d1775f",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "32bfcc76867c7bdcb43d67f487442ee9c07d2e2824145b5ea1b4c70944fa44dc",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "d8c583f37738252c03af0e365bb075e7c69a2a8ec563bec0b7ef8833c797fc4e",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "0311dab46ebb770cc897a92e204b6ad0044361db4bd61d48bde1f444cd70356f",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "2306a632513357cb5a28f1b0f128e54a6cb5c725ec6d56d6ce5ccf12649ffea4",
+      "rows": 12,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "1691b89306b9a8a32d448d55a4c3ee2f732a653c57a98bf9490f5193177dc96d",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "320c7ad8f4c7d8170c412c166c560a76961203ac48a93597189e3be51518d3fc",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_classic",
+      "source": "results/algorithm_benchmark/algorithm_benchmark_validation.csv",
+      "source_sha256": "bf029f94d3cdd124b552a0bc136d08560053647fe0ab8664b24cc176c1b23cb5",
+      "output": "results/by_problem/zdt/zdt6/benchmark_classic/algorithm_benchmark_validation.csv",
+      "output_sha256": "13bb8fb7b6e1c1643dbe13ae98a70cd37c062614880cbbdf9c788c3dacc027f2",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_convergence.csv",
+      "source_sha256": "cabd2b49370f529bc88c41667279e7968b2563d2aafd6bb7dd51f401aaea00c0",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_convergence.csv",
+      "output_sha256": "fdbb774f1567f2a7629676d9cc4189c2b7e1d2d9a43f63d96cc9b0147e06efb0",
+      "rows": 2041,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "993569e243027c91593fd358bde93573317a7b96351f5167bec84706be416cf7",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "5aa595cb806bee77c4630a9dd6309eb43c8f342a655fe3a3ade73c33386ca5b9",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "19db9b118bd68f2011164105ed20f089b56f19925988488b90a3dd66a2d7a74b",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "819e95b6012179e6f02b4a258c5e149680837640291679cfb582a9cd40ee23e7",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "cfad6b4e5776217969ec6ebc66392b006a0381e3433da5dec2cd49732f308d04",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "d75add0d0f0ef9e30e7f114061bddb69c1c72f58c7531c1ca17ce35f57ea7e16",
+      "rows": 12,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "0e33aa7f53d04ea7f0b9e57ca33e7133974d854f9dbcf1b94e29388f9c811fbe",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "3ea9177f792ea3c11adda8c9d2da52fa0846e61fddd6a8b9833eef0a970ceb63",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "benchmark_adaptive",
+      "source": "results/algorithm_benchmark_v2/algorithm_benchmark_validation.csv",
+      "source_sha256": "f252bb1315dda7086fe22bafda908e237c8cbc12fb88ee6b1dad004fb1fe4edc",
+      "output": "results/by_problem/zdt/zdt6/benchmark_adaptive/algorithm_benchmark_validation.csv",
+      "output_sha256": "7607c69bc437b6e448bf8c769c9ad51983116fd6627103c5f7ac6dd64cf4aa49",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_convergence.csv",
+      "source_sha256": "38f81305e538ed678958e142160228e76b679a9119486a64f058cfe2d75ba430",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_convergence.csv",
+      "output_sha256": "b17529cc225120e22f40ef1540a5ee6955bfb53610b24435608bf0860c084a0c",
+      "rows": 812,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "a0ec387e52fa7aefd81f6e22628a4f507c9dfd3570cfb392dc58cd73b1f9aab4",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "cf73fd332f55d15148b3ed1d7c2434ca0bb68ec1c083d751c61714d3342f6977",
+      "rows": 3,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "a727e8ea1bd3ea3bbd6bb4a8444aebd9df2ceb0d0a7504b5e94a79c500cd4193",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "c5cf821b56baca101d042bd91e7bf8f81b66cad82cf3257be811a1f927e64ac6",
+      "rows": 3,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "0bbf36c0ba802a9baab8c0b68461215e7ae01912a8fa8069477d14d13d34cb2b",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "0e9ad87c2cb3acc5cb1ff1d27c71fd210bc36eb93309afd5fbdd831f2c83c873",
+      "rows": 4,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "67f24faadb4babf518d6ec8997e735e6db71b37b116027fe8d639d5467e0edcb",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "820d68fa98c7e63e58edd17e38ff2e723fe033bbf06649e67557f2e10757225a",
+      "rows": 90,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "restart_confirmation",
+      "source": "results/restart_confirmation/algorithm_benchmark_validation.csv",
+      "source_sha256": "47c34fa0b2711c8652695741666bc26541d4778a23aacf3ddd63b3595960b0b0",
+      "output": "results/by_problem/zdt/zdt6/restart_confirmation/algorithm_benchmark_validation.csv",
+      "output_sha256": "10e66dbc158ad860299555cf82ad35b37802a25e938130b1f5667e11652e46bb",
+      "rows": 90,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_convergence.csv",
+      "source_sha256": "0464d1d7b9845d696eaba8a7e2e133720a121d279fe92988c05e92c6f6feceda",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_convergence.csv",
+      "output_sha256": "6b4a7dff95104f47270a73f5014ee5eb75455876c7389b25edf92301ef36eaea",
+      "rows": 1920,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_cost_summary.csv",
+      "source_sha256": "8c8eb9bec2973ef67eeaec6082b66b1040d7aeb09ead787c5f89be621cd666e6",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_cost_summary.csv",
+      "output_sha256": "9a35eb99038b6b3814c20c69672cc4ae086b396c9d285ff881210f62f09ef06b",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_igd_hv_summary.csv",
+      "source_sha256": "c3a526303211aa9488e7c1a21a7d9f671dcef66b61a5f0fb02a732a0c16c511f",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_igd_hv_summary.csv",
+      "output_sha256": "5d4ddc436f868ecabbd4a38156924f5ad61163f7d018274570f017f7f4a5b3e4",
+      "rows": 7,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_paired_statistics.csv",
+      "source_sha256": "33b2e33183ee4a2e2183ec624b96b3a28e0d8016eea0f68a9f936543126876c7",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_paired_statistics.csv",
+      "output_sha256": "e00ad321300f0c9024dbf8148aa9ca27e57c3420043c122ac163a606c139a8e0",
+      "rows": 12,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_raw_runs.csv",
+      "source_sha256": "9650ddf218ddbf9891c2fd5ffcd53d0afea60dfd414fef8938bd5fca3091f1d1",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_raw_runs.csv",
+      "output_sha256": "49f6d9e6e0758988fa33251146df288d567b1cc91305e8c9d4561eaaaa65a15c",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "ablation_classic",
+      "source": "results/ablation/algorithm_benchmark_validation.csv",
+      "source_sha256": "c082c90940b6a8a80796ac34a250a95d6af74fb6af92acea4c761aac3a01c0f8",
+      "output": "results/by_problem/zdt/zdt6/ablation_classic/algorithm_benchmark_validation.csv",
+      "output_sha256": "ae5e28bef99216eaf33cbea4a058004fc1aedc3f8e6f7df6c2daf5fcc0328536",
+      "rows": 210,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_classic",
+      "source": "results/sensitivity/sensitivity_fcr_trace.csv",
+      "source_sha256": "85a8c670cbc0017f20c7454010b8311da85a8e49496e75720304f42691627497",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_classic/sensitivity_fcr_trace.csv",
+      "output_sha256": "3dc1c8abc95a5753d7e83b768e2d1091965e9fc7b8a914c9bc485d8f2b992abf",
+      "rows": 84000,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_classic",
+      "source": "results/sensitivity/sensitivity_raw_runs.csv",
+      "source_sha256": "bdbfc8cafb694ee1a69bd2f56cb29cd0bd9e233e73eb0333c76b4a6e7705a5e3",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_classic/sensitivity_raw_runs.csv",
+      "output_sha256": "c8671530904a5095448fa921ff6d76d9b79014e1886cd008acbd95e503739318",
+      "rows": 420,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_classic",
+      "source": "results/sensitivity/sensitivity_statistics.csv",
+      "source_sha256": "6ae119fa545fbdbad417223c57a6c7a5d4e7bc29d609ee8e7bf27ec549361e18",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_classic/sensitivity_statistics.csv",
+      "output_sha256": "c616684a45a19be2958e26d0f7b44436e626a45c48cd80a24a3d9119a3678d34",
+      "rows": 28,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_classic",
+      "source": "results/sensitivity/sensitivity_summary.csv",
+      "source_sha256": "b90c3fd26bda13e99d31bed3576d4a306ca40e807e1308f2a80433d05da97482",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_classic/sensitivity_summary.csv",
+      "output_sha256": "af930153d2baf688f5190a6b24e786e0bd4fcfa065bcd150071260f54e8a232e",
+      "rows": 14,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/comparisons.csv",
+      "source_sha256": "37a70331e2ee26fcc6341143bb5b2bd20a9f67f92dac3e58fad99405bc78fa22",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/comparisons.csv",
+      "output_sha256": "745fd6e37a04646afe78a89006ff05bfd09bf482ac3d84d585bd9d7730f78ad3",
+      "rows": 81,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/paired_seed_changes.csv",
+      "source_sha256": "79cc7bccc13530444bf7e933ef6bf1ad91299b9b8fab4e83af685babe0da545a",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/paired_seed_changes.csv",
+      "output_sha256": "f94a0c4015e44b9305d1f4643233c66402ec8a6dcccea9df1c3a1485d258401e",
+      "rows": 1620,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/prob_de_paired_plot_data.csv",
+      "source_sha256": "aa630bb3161926058c091f6df8fd0cba8b05961e58cee1f80d832ba92f1ad322",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/prob_de_paired_plot_data.csv",
+      "output_sha256": "47995aa5ae01d03c07f774abcc0b46cbaa7fbcdb4a228156bd63eb85aebfc027",
+      "rows": 4,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/raw_runs.csv",
+      "source_sha256": "70ba4aeabb164a85cd0b08aa17d8bb8eea15d33d5b7aa6dc052acd0420b42a4a",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/raw_runs.csv",
+      "output_sha256": "6779a38db62e23ce0abf67d40e90e72451585bdf489c07445293a3f213b80a0d",
+      "rows": 570,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/response_diagnostics.csv",
+      "source_sha256": "0b9e633de6154a716c6888a393725094cf7b52e265f54583e9ba343d5d4721b1",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/response_diagnostics.csv",
+      "output_sha256": "009bd9098bd2a0151407f3edb2b1075d1c21763afa33b5d9a4571bc75ae4551a",
+      "rows": 18,
+      "filter": {
+        "problem": "zdt6"
+      }
+    },
+    {
+      "category": "sensitivity_adaptive",
+      "source": "results/experiments/zdt_sensitivity_ofat_v1/derived/summary.csv",
+      "source_sha256": "89e3ec10fa335164115b76ffbfb70b099ef400c876678a817399b5b5561675b2",
+      "output": "results/by_problem/zdt/zdt6/sensitivity_adaptive/summary.csv",
+      "output_sha256": "99f752a6ff5d4b49ce8295755ec1e75300b348a72221d52b34ba0918711eacf9",
+      "rows": 27,
+      "filter": {
+        "problem": "zdt6"
+      }
+    }
+  ],
+  "note": "Filtered views, not new independent executions. Original statistical correction families are preserved."
+}

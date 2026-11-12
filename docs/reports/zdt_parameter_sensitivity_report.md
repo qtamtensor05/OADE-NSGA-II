@@ -197,11 +197,11 @@ Thí nghiệm xác định population và xác suất DE khởi tạo là các t
 
 - [Bằng chứng gốc được đóng gói](../../results/experiments/zdt_sensitivity_ofat_v1/evidence.zip) và [checksum gói dữ liệu](../../results/experiments/zdt_sensitivity_ofat_v1/evidence_archive.json): 2.850 bản ghi, cấu hình và manifest; checkpoint rời được giữ cục bộ để resume.
 - [Bảng chi tiết kèm đủ chín biểu đồ](../../results/experiments/zdt_sensitivity_ofat_v1/derived/report.md).
-- [Summary: mean, SD, median và IQR](../../results/experiments/zdt_sensitivity_ofat_v1/derived/summary.csv).
-- [Chênh lệch median so với mốc](../../results/experiments/zdt_sensitivity_ofat_v1/derived/comparisons.csv).
-- [Chênh lệch từng seed](../../results/experiments/zdt_sensitivity_ofat_v1/derived/paired_seed_changes.csv).
-- [Đếm khớp chỉ số, restart và HV bằng 0](../../results/experiments/zdt_sensitivity_ofat_v1/derived/response_diagnostics.csv).
-- [Số liệu nguồn của hình chênh lệch DE theo seed](../../results/experiments/zdt_sensitivity_ofat_v1/derived/prob_de_paired_plot_data.csv).
+- [Summary: mean, SD, median và IQR (ZIP)](../../results/experiments/zdt_sensitivity_ofat_v1/derived/csv_results.zip).
+- [Chênh lệch median so với mốc (ZIP)](../../results/experiments/zdt_sensitivity_ofat_v1/derived/csv_results.zip).
+- [Chênh lệch từng seed (ZIP)](../../results/experiments/zdt_sensitivity_ofat_v1/derived/csv_results.zip).
+- [Đếm khớp chỉ số, restart và HV bằng 0 (ZIP)](../../results/experiments/zdt_sensitivity_ofat_v1/derived/csv_results.zip).
+- [Số liệu nguồn của hình chênh lệch DE theo seed (ZIP)](../../results/experiments/zdt_sensitivity_ofat_v1/derived/csv_results.zip).
 - [Kiểm tra toàn vẹn và tái tính bảng](../../results/experiments/zdt_sensitivity_ofat_v1/derived/analysis_audit.json).
 - [Protocol và lệnh chạy](../protocols/zdt_sensitivity.md).
 
