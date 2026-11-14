@@ -6,16 +6,19 @@ from __future__ import annotations
 
 from typing import Callable, List, Optional
 
+import random
+
 import numpy as np
 
 from .core import CreationMode, Individual, ProblemWrapper
+from .configuration import FIXED_PARAMETERS
+from shared.population import make_initial_population
 from .operators import (
     _make_evaluated_individual,
     de_mutation,
     generate_obl_offspring,
     get_neighborhood_indices,
     initialize_from_data,
-    initialize_obl,
     sbx_crossover_mutation,
     tournament_selection,
 )
@@ -23,23 +26,14 @@ from .selection import environmental_selection, remove_duplicates
 
 
 class OADE_NSGAII:
-    """
-    NSGA-II cải tiến với DE thích nghi, OBL và partial restart khi trì trệ.
+    """Fixed OADE: uniform initialization, adaptive restart, periodic OBL,
+    neighborhood DE/SBX, corrected F/CR learning and success-rate pDE.
 
-    Cải tiến so với NSGA-II gốc (Deb et al., 2002)
-    ------------------------------------------------
-    - Khởi tạo OBL + Sobol/LHS khi initial_x=None; benchmark dùng uniform chung
-    - Đột biến DE/current-to-pbest/1 hướng láng giềng thay SBX đơn thuần
-    - F cập nhật theo Lehmer mean, CR theo trung bình cộng của DE có rank 1
-    - Phun đa dạng định kỳ qua OBL mỗi 10 thế hệ
-    - Phát hiện trì trệ và partial restart khi ideal point ngừng cải thiện
-
-    Benchmark truyền initial_x để giữ cùng quần thể ban đầu giữa các solver,
-    nên không đo lợi ích của khởi tạo Sobol/OBL. OBL định kỳ trong quá trình
-    tiến hoá vẫn hoạt động khi enable_obl=True, độc lập với cách khởi tạo.
+    Only run dimensions and the seed are arguments; no ablation switches.
     """
 
-    def __init__(self, problem: ProblemWrapper, pop_size: int = 100, n_gen: int = 100) -> None:
+    def __init__(self, problem: ProblemWrapper, pop_size: int = 100, n_gen: int = 100, *, seed: int = 42) -> None:
+        self.seed = seed
         self.problem  = problem
         self.pop_size = pop_size
         self.n_gen    = n_gen
@@ -48,17 +42,11 @@ class OADE_NSGAII:
         self.xl       = problem.xl
         self.xu       = problem.xu
 
-        # Tham số DE thích nghi — khởi đầu tại điểm trung tính
-        self.mean_F  = 0.5  # trung bình phân phối Cauchy của scale factor F
-        self.mean_CR = 0.5  # trung bình phân phối Normal của crossover rate CR
-        self.prob_de = 0.5  # xác suất chọn DE thay vì SBX
-        self.probability_update_mode = "success_rate"  # or fixed
-        self.last_probability_update = {}
-        self.initialization_seed = None  # explicit Sobol/OBL reproducibility
-
-        # Bài toán nhiều mục tiêu cần láng giềng rộng hơn để ước lượng tốt
-        min_neighbors = 10 if self.n_obj >= 3 else 5
-        self.n_neighbors = max(min_neighbors, int(pop_size * 0.15))
+        # Trạng thái thích nghi khởi đầu theo cấu hình cố định
+        self.mean_F  = FIXED_PARAMETERS["mean_F"]  # trung bình phân phối Cauchy của scale factor F
+        self.mean_CR = FIXED_PARAMETERS["mean_CR"]  # trung bình phân phối Normal của crossover rate CR
+        self.prob_de = FIXED_PARAMETERS["prob_de"]  # xác suất chọn DE thay vì SBX
+        self.n_neighbors = FIXED_PARAMETERS["n_neighbors"]
 
         # Tham số SBX và Polynomial Mutation
         self.pc    = 0.9                                           # xác suất lai ghép
@@ -66,19 +54,10 @@ class OADE_NSGAII:
         self.eta_c = 20.0
         self.eta_m = 20.0
 
-        # Ngưỡng phát hiện trì trệ và chế độ restart
-        self.stagnation_patience   = n_gen // 4  # số thế hệ không cải thiện trước khi restart
-        self.stagnation_tolerance  = 1e-4        # cải thiện nhỏ hơn ngưỡng này bị coi là trì trệ
-        self.restart_elite_ratio   = 0.8         # tỉ lệ cá thể tốt giữ lại sau restart (conservative)
-        self.restart_mode          = "adaptive"  # mặc định: adaptive diversity-aware restart
-        self.diversity_threshold   = 0.02        # ngưỡng sụp đổ đa dạng cho restart mới
-
-        # Independent ablation switches; all enabled is the full OADE method.
-        self.enable_fcr_adaptation = True
-        self.enable_probability_adaptation = True
-        self.enable_neighborhood = True
-        self.enable_restart = True
-        self.enable_obl = True
+        self.stagnation_patience = FIXED_PARAMETERS["stagnation_patience"]
+        self.stagnation_tolerance = FIXED_PARAMETERS["stagnation_tolerance"]
+        self.restart_elite_ratio = FIXED_PARAMETERS["restart_elite_ratio"]
+        self.diversity_threshold = FIXED_PARAMETERS["diversity_threshold"]
 
         # Trạng thái runtime
         self.population: List[Individual] = []
@@ -87,18 +66,15 @@ class OADE_NSGAII:
     # Vòng lặp chính
     def run(
         self,
-        initial_x: Optional[np.ndarray] = None,
         progress_callback: Optional[Callable[[int, int], None]] = None,
     ) -> np.ndarray:
-        """
-        Chạy thuật toán và trả về ma trận F của quần thể cuối, shape (pop_size, n_obj).
-        Nếu initial_x được cung cấp, dùng nó làm quần thể khởi đầu (warm-start),
-        bỏ qua hoàn toàn Sobol/OBL khởi tạo. Đây là chế độ benchmark uniform chung.
-        Nếu không, khởi tạo bằng OBL + Sobol.
-        """
-        if self.probability_update_mode not in {"success_rate", "fixed"}:
-            raise ValueError("probability_update_mode must be success_rate or fixed")
-        self.population = self._build_initial_population(initial_x)
+        """Run with reproducible uniform initialization and the fixed mechanisms."""
+        np.random.seed(self.seed)
+        random.seed(self.seed)
+        self.mean_F = FIXED_PARAMETERS["mean_F"]
+        self.mean_CR = FIXED_PARAMETERS["mean_CR"]
+        self.prob_de = FIXED_PARAMETERS["prob_de"]
+        self.population = self._build_initial_population()
         self.history.clear()
 
         last_ideal         = None
@@ -126,17 +102,15 @@ class OADE_NSGAII:
         return np.array([ind.F for ind in self.population])
 
     # Khởi tạo
-    def _build_initial_population(self, initial_x: Optional[np.ndarray]) -> List[Individual]:
-        """Khởi tạo từ dữ liệu có sẵn hoặc bằng OBL + Sobol nếu không có dữ liệu."""
-        if initial_x is not None:
-            pop = initialize_from_data(self.problem, initial_x)
-            return environmental_selection(pop, self.pop_size, self.n_obj)
-        return initialize_obl(self.problem, self.pop_size, seed=self.initialization_seed)
+    def _build_initial_population(self) -> List[Individual]:
+        initial_x = make_initial_population(self.problem, self.pop_size, self.seed)
+        pop = initialize_from_data(self.problem, initial_x)
+        return environmental_selection(pop, self.pop_size, self.n_obj)
 
     # Sinh con lai
     def _generate_offspring(self, gen: int) -> List[Individual]:
         """Sinh toàn bộ con lai cho thế hệ này: DE hoặc SBX theo prob_de, thêm OBL mỗi 10 thế hệ."""
-        neighbor_count = self.n_neighbors if self.enable_neighborhood else self.pop_size
+        neighbor_count = self.n_neighbors
         neighbor_indices = get_neighborhood_indices(self.population, neighbor_count)
 
         offspring = [
@@ -150,8 +124,9 @@ class OADE_NSGAII:
 
     def _generate_periodic_obl(self, gen: int) -> List[Individual]:
         """Periodic injection only; independent of initialization and restart."""
-        if self.enable_obl and gen % 10 == 0:
-            return generate_obl_offspring(self.population, self.problem, self.xl, self.xu)
+        if gen % FIXED_PARAMETERS["obl_interval"] == 0:
+            return generate_obl_offspring(self.population, self.problem, self.xl, self.xu,
+                                          jump_rate=FIXED_PARAMETERS["obl_jump_rate"])
         return []
 
     def _create_one_child(self, idx: int, neighbor_indices: np.ndarray) -> Individual:
@@ -189,16 +164,12 @@ class OADE_NSGAII:
             improved       = np.linalg.norm(current_ideal - last_ideal) >= self.stagnation_tolerance
             stagnation_counter = 0 if improved else stagnation_counter + 1
 
-        if self.enable_restart and stagnation_counter >= self.stagnation_patience:
-            if self.restart_mode == "adaptive":
-                if self._is_diversity_collapsed():
-                    self._adaptive_restart()
-                    stagnation_counter = 0
-                else:
-                    stagnation_counter = self.stagnation_patience // 2
-            else:
-                self._partial_restart()
+        if stagnation_counter >= self.stagnation_patience:
+            if self._is_diversity_collapsed():
+                self._adaptive_restart()
                 stagnation_counter = 0
+            else:
+                stagnation_counter = self.stagnation_patience // 2
 
         return stagnation_counter, current_ideal
 
@@ -249,19 +220,6 @@ class OADE_NSGAII:
         self.mean_F = 0.8 * self.mean_F + 0.2 * 0.5
         self.mean_CR = 0.8 * self.mean_CR + 0.2 * 0.5
 
-    def _partial_restart(self) -> None:
-        """Giữ lại elite, thay thế phần còn lại bằng cá thể ngẫu nhiên, reset tham số DE."""
-        n_keep   = int(self.pop_size * self.restart_elite_ratio)
-        elite    = self.population[:n_keep]
-
-        n_new    = self.pop_size - n_keep
-        x_new    = self.xl + np.random.rand(n_new, self.n_var) * (self.xu - self.xl)
-        f_new    = self.problem.evaluate(x_new)
-        new_inds = [_make_evaluated_individual(x_new[i], f_new[i]) for i in range(n_new)]
-
-        self.population = environmental_selection(elite + new_inds, self.pop_size, self.n_obj)
-        self.mean_F = self.mean_CR = 0.5  # quên lịch sử thích nghi, tái học từ đầu
-
     def _fill_if_too_small(self, population: List[Individual]) -> List[Individual]:
         """Bổ sung cá thể ngẫu nhiên nếu remove_duplicates làm quần thể thiếu hụt."""
         missing = self.pop_size - len(population)
@@ -278,9 +236,9 @@ class OADE_NSGAII:
         self, offspring: List[Individual], *, reference_population: Optional[List[Individual]] = None
     ) -> None:
         """
-        Cập nhật prob_de theo tỷ phần con DE được sinh; F/CR theo DE có rank 1.
+        Cập nhật prob_de theo tỷ lệ thành công; F/CR theo DE không bị trội.
 
-        prob_de : success_rate (mặc định) hoặc fixed.
+        prob_de : success-rate only.
         success_rate chuẩn hóa tỷ lệ không bị trội theo số trial từng toán tử;
         giữ nguyên nếu thiếu toán tử hoặc cả hai không thành công.
         mean_F  : Lehmer mean của F — ưu giá trị lớn, khuyến khích khám phá
@@ -291,17 +249,14 @@ class OADE_NSGAII:
         trial contributes once, including duplicate trials. Selection metadata
         may be missing/stale on discarded individuals and is not a success test.
         """
-        if self.probability_update_mode not in {"success_rate", "fixed"}:
-            raise ValueError("probability_update_mode must be success_rate or fixed")
         de_offspring  = [ind for ind in offspring if ind.creation_mode == CreationMode.DE]
         sbx_offspring = [ind for ind in offspring if ind.creation_mode == CreationMode.SBX]
         successful_de = []
         successful_sbx = []
-        need_success = (self.enable_probability_adaptation and self.probability_update_mode == "success_rate")
-        if (self.enable_fcr_adaptation and de_offspring) or need_success:
+        if de_offspring or sbx_offspring:
             pool = reference_population if reference_population is not None else self.population + offspring
             objectives = np.asarray([ind.F for ind in pool])
-            for ind in de_offspring + (sbx_offspring if need_success else []):
+            for ind in de_offspring + sbx_offspring:
                 dominated = np.any(np.all(objectives <= ind.F, axis=1)
                                    & np.any(objectives < ind.F, axis=1))
                 if not dominated:
@@ -310,22 +265,15 @@ class OADE_NSGAII:
         total = len(de_offspring) + len(sbx_offspring)
         before = self.prob_de
         target = None
-        if self.enable_probability_adaptation and total > 0:
-            if self.probability_update_mode == "success_rate" and de_offspring and sbx_offspring:
+        if total > 0:
+            if de_offspring and sbx_offspring:
                 rate_de = len(successful_de) / len(de_offspring)
                 rate_sbx = len(successful_sbx) / len(sbx_offspring)
                 if rate_de + rate_sbx > 0:
                     target = rate_de / (rate_de + rate_sbx)
             if target is not None:
                 self.prob_de = float(np.clip(0.9 * before + 0.1 * target, 0.2, 0.8))
-        self.last_probability_update = {
-            "mode": self.probability_update_mode, "enabled": self.enable_probability_adaptation,
-            "n_de": len(de_offspring), "n_sbx": len(sbx_offspring),
-            "success_de": len(successful_de) if need_success else None,
-            "success_sbx": len(successful_sbx) if need_success else None,
-            "target": target, "prob_before": before, "prob_after": self.prob_de}
-
-        if self.enable_fcr_adaptation and successful_de:
+        if successful_de:
             f_values     = np.array([ind.used_F  for ind in successful_de])
             cr_values    = np.array([ind.used_CR for ind in successful_de])
             lehmer_mean_F = float(np.mean(f_values ** 2) / np.mean(f_values))

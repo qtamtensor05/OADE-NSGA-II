@@ -3,8 +3,8 @@ from pathlib import Path
 from unittest.mock import patch
 import numpy as np
 from pymoo.problems import get_problem
-from oade_nsga2.telemetry import InstrumentedOADE
-from oade_nsga2.core import ProblemWrapper
+from research.oade_nsga2.telemetry import InstrumentedOADE
+from research.oade_nsga2.core import ProblemWrapper
 from shared.evaluation import BudgetedProblem,EvaluationBudgetExceeded
 from shared.population import make_initial_population
 from shared.io.config import load_yaml_config
@@ -55,7 +55,7 @@ class DiversityTests(unittest.TestCase):
         counter=BudgetedProblem(problem,20)
         solver=InstrumentedOADE(ProblemWrapper(counter),pop_size=20,n_gen=20)
         solver.population=solver._build_initial_population(make_initial_population(problem,20,42))
-        with patch('oade_nsga2.algorithm.generate_obl_offspring',side_effect=lambda *args:counter.evaluate(np.zeros((2,10)))):
+        with patch('research.oade_nsga2.algorithm.generate_obl_offspring',side_effect=lambda *args:counter.evaluate(np.zeros((2,10)))):
             with self.assertRaises(EvaluationBudgetExceeded): solver._generate_periodic_obl(0)
         self.assertEqual(solver.telemetry['injection_budget_blocked'],1)
         self.assertEqual(solver.telemetry['injection_evaluations'],0)
@@ -65,7 +65,7 @@ class DiversityTests(unittest.TestCase):
     def test_disabled_and_unscheduled_injection_do_not_call_kernel(self):
         problem=get_problem('zdt1',n_var=10)
         solver=InstrumentedOADE(ProblemWrapper(BudgetedProblem(problem,100)),pop_size=20)
-        with patch('oade_nsga2.algorithm.generate_obl_offspring') as kernel:
+        with patch('research.oade_nsga2.algorithm.generate_obl_offspring') as kernel:
             self.assertEqual(solver._generate_periodic_obl(1),[])
             solver.enable_obl=False
             self.assertEqual(solver._generate_periodic_obl(0),[])

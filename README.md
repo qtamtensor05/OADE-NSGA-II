@@ -1,12 +1,16 @@
 # OADE-NSGA-II
 
+OADE implementations: [fixed solver and configurable research copy](docs/protocols/oade_implementations.md). The main package uses one policy (uniform, adaptive restart, periodic OBL and success-rate); research variants live under `src/research/oade_nsga2/`. Historical results are unchanged.
+
 **Language:** **English** | [Tiếng Việt](README.vi.md)
 
 This project evaluates adaptive differential evolution and opposition-based learning within NSGA-II. ZDT is the current research priority. Results are reported separately for each problem, including comparator performance, classic/adaptive configurations and inference boundaries.
 
 ## Study design and reading guide
 
-Periodic diversity ablation: [OBL injection on/off](docs/protocols/diversity_injection.md), with common uniform initialization, adaptive restart and success-rate. Includes injection events, evaluation costs, retention after selection and a planned Holm correction across 10 ZDT endpoints.
+Restart study: [protocol](docs/protocols/restart_comparison.md) and [450-run results](docs/reports/restart_no_classic_adaptive_zdt_report.md). Adaptive and no-restart have identical final X/F in 147/150 paired seeds. Classic is worse on ZDT1/2 IGD/HV and ZDT6 HV after Holm across 30 endpoints; active adaptive-restart benefit remains unestablished.
+
+Periodic diversity ablation: [protocol](docs/protocols/diversity_injection.md) and [300-run results](docs/reports/diversity_injection_zdt_report.md). OBL improves both IGD and HV on ZDT4 in all 30 paired seeds, surviving Holm correction across 10 endpoints; differences on the other four problems were not detected. OBL costs about 2% of the evaluation budget.
 
 Initialization study: [protocol](docs/protocols/initialization_comparison.md) and [300-run results](docs/reports/initialization_uniform_vs_sobol_obl_zdt_report.md). Sobol–OBL improves initial median IGD; final benefits are not consistent at the 20,000-evaluation cap. The isolated ZDT6 HV signal does not survive Holm correction across all 10 endpoints.
 

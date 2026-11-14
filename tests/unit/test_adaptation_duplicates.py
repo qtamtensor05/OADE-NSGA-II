@@ -4,9 +4,9 @@ from unittest.mock import patch
 
 import numpy as np
 from pymoo.problems import get_problem
-from oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
-from oade_nsga2.core import CreationMode, ProblemWrapper
-from oade_nsga2.selection import environmental_selection, remove_duplicates
+from research.oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
+from research.oade_nsga2.core import CreationMode, ProblemWrapper
+from research.oade_nsga2.selection import environmental_selection, remove_duplicates
 
 
 def individual(f, *, mode=CreationMode.INIT, scale=.5, cr=.5):

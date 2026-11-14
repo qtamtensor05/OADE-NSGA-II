@@ -2,11 +2,14 @@ smoke: true
 global:
   pop_size: 20
   evaluation_budget: 240
-  seeds: [42, 43]
+  seeds:
+  - 42
+  - 43
   jobs: 1
-  out_dir: tmp/restart_comparison_smoke
+  out_dir: tmp/restart_success_rate_smoke
 problems:
-  - {name: zdt1, n_var: 10}
+- name: zdt1
+  n_var: 10
 common_settings:
   stagnation_patience: 1
   stagnation_tolerance: 1000000.0
@@ -15,3 +18,8 @@ common_settings:
   n_neighbors: 5
   mean_F: 0.65
   mean_CR: 0.5
+  probability_update_mode: success_rate
+  enable_probability_adaptation: true
+  enable_obl: true
+  enable_fcr_adaptation: true
+  enable_neighborhood: true

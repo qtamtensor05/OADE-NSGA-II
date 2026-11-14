@@ -30,7 +30,7 @@ from shared.io.csv_io import write_csv
 from shared.fronts import non_dominated
 from shared.population import make_initial_population
 from rnsga2.reference_points import make_rnsga2_ref_points
-from oade_nsga2.legacy import run_oade
+from research.oade_nsga2.legacy import run_oade
 from nsga2.legacy import run_nsga2
 from rnsga2.legacy import run_rnsga2
 from dnsga2.legacy import run_dnsga2

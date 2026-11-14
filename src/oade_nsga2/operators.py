@@ -4,64 +4,18 @@ Các toán tử tiến hoá: khởi tạo, đột biến, lai ghép, OBL, chọn
 
 from __future__ import annotations
 
-import math
 import random
 from typing import List
 
 import numpy as np
 from scipy.spatial.distance import cdist
-from scipy.stats import cauchy, qmc
+from scipy.stats import cauchy
 
 from .core import CreationMode, Individual, ProblemWrapper
 from .selection import environmental_selection
 
 
-# Lấy mẫu ban đầu
-def _sample_in_bounds(n: int, n_var: int, xl: np.ndarray, xu: np.ndarray, use_sobol: bool, *, seed=None) -> np.ndarray:
-    """Lấy n điểm trong [xl, xu] bằng Sobol (mặc định) hoặc Latin Hypercube"""
-    if use_sobol:
-        n_rounded = 2 ** math.ceil(math.log2(max(n, 2)))
-        raw = qmc.Sobol(d=n_var, scramble=True, seed=seed).random(n=n_rounded)[:n]
-    else:
-        raw = qmc.LatinHypercube(d=n_var, seed=seed).random(n=n)
-
-    return qmc.scale(raw, xl, xu)
-
-
-# Khởi tạo quần thể
-def initialize_obl(problem: ProblemWrapper, pop_size: int, use_gobl: bool = True, use_sobol: bool = True, *, seed=None) -> List[Individual]:
-    """
-    Sinh quần thể ban đầu bằng Quasi-Opposition Based Learning + Sobol/LHS.
-    Quy trình: 
-    sinh pop_size gốc 
-    → phản chiếu mỗi điểm để tạo đối ứng
-    → đánh giá tất cả 2× pop_size ứng viên 
-    → giữ pop_size tốt nhất.
-
-    GOBL (Generalized OBL): điểm đối ứng = k·(xl+xu) − x, với k ∈ [0,1] ngẫu nhiên.
-    OBL thường:             điểm đối ứng = r + mid − x,  với r ∈ [xl, mid] ngẫu nhiên.
-    """
-    xl, xu = problem.xl, problem.xu
-
-    x_primary = _sample_in_bounds(pop_size, problem.n_var, xl, xu, use_sobol, seed=seed)
-    # An explicit seed isolates initialization draws from the evolution RNG.
-    rng = np.random.default_rng(seed) if seed is not None else np.random
-
-    if use_gobl:
-        k       = rng.uniform(0.0, 1.0, size=x_primary.shape)
-        x_opposite = k * (xl + xu) - x_primary
-    else:
-        mid     = (xl + xu) / 2.0
-        r       = rng.uniform(xl, mid, size=x_primary.shape)
-        x_opposite = r + mid - x_primary
-
-    x_all    = np.clip(np.vstack([x_primary, x_opposite]), xl, xu)
-    f_all    = problem.evaluate(x_all)
-    all_inds = [_make_evaluated_individual(x_all[i], f_all[i]) for i in range(len(x_all))]
-
-    return environmental_selection(all_inds, target_size=pop_size, n_obj=problem.n_obj)
-
-
+# Evaluate a seeded uniform initial population.
 def initialize_from_data(problem: ProblemWrapper, initial_x: np.ndarray) -> List[Individual]:
     """Khởi tạo quần thể từ bộ dữ liệu X sẵn có (warm-start)."""
     f_all = problem.evaluate(initial_x)

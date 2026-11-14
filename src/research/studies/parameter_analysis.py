@@ -20,7 +20,7 @@ from scipy.stats import friedmanchisquare, wilcoxon
 from research.benchmarking.evaluation import BudgetedProblem, EvaluationBudgetExceeded
 from shared.population import make_initial_population
 from shared.fronts import non_dominated
-from oade_nsga2 import OADE_NSGAII, ProblemWrapper
+from research.oade_nsga2 import OADE_NSGAII, ProblemWrapper
 from shared.io.config import load_yaml_config
 from shared.io.csv_io import write_csv
 

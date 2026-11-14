@@ -1,0 +1,30 @@
+{
+  "runs": 450,
+  "invalid": 0,
+  "source_drift": [],
+  "environment_matches": true,
+  "n_eval_range": [
+    19901,
+    20000
+  ],
+  "same_initial_population_triples": 150,
+  "probability_updates_verified": 87074,
+  "adaptive_xf_matches_previous_obl_on_runs": 150,
+  "adaptive_vs_no_restart_identical_xf_pairs": 147,
+  "checks": [
+    "primary/reference hashes",
+    "complete expected tasks",
+    "uniform initialization replay and triple identity",
+    "final X/F recomputation",
+    "IGD/HV recomputation",
+    "restart and injection accounting",
+    "probability recurrence",
+    "paired Wilcoxon and global Holm recomputation"
+  ],
+  "bootstrap": {
+    "method": "paired percentile",
+    "resamples": 20000,
+    "seed_base": 20261114,
+    "statistic": "mean delta b minus a"
+  }
+}

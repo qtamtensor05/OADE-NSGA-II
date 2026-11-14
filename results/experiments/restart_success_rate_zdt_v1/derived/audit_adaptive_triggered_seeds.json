@@ -1,0 +1,86 @@
+[
+  {
+    "problem": "zdt6",
+    "seed": 1006,
+    "events": [
+      {
+        "after": {
+          "HV": 0.436148634381025,
+          "IGD": 0.005247686588426832
+        },
+        "before": {
+          "HV": 0.43708022512962424,
+          "IGD": 0.004442982485785685
+        },
+        "evaluations": 20,
+        "generation": 108,
+        "mode": "adaptive",
+        "n_eval_after": 11048,
+        "n_eval_before": 11028,
+        "status": "completed"
+      }
+    ],
+    "adaptive_IGD": 0.003716760464633152,
+    "no_restart_IGD": 0.003546180754483755,
+    "adaptive_HV": 0.43844132529489066,
+    "no_restart_HV": 0.4382450991291496,
+    "adaptive_n_eval": 19930,
+    "no_restart_n_eval": 19907
+  },
+  {
+    "problem": "zdt6",
+    "seed": 1014,
+    "events": [
+      {
+        "after": {
+          "HV": 0.43658936186331415,
+          "IGD": 0.005169757280193588
+        },
+        "before": {
+          "HV": 0.43777488099140993,
+          "IGD": 0.003997621292770889
+        },
+        "evaluations": 20,
+        "generation": 171,
+        "mode": "adaptive",
+        "n_eval_after": 17481,
+        "n_eval_before": 17461,
+        "status": "completed"
+      }
+    ],
+    "adaptive_IGD": 0.003908022219378268,
+    "no_restart_IGD": 0.003904491375577617,
+    "adaptive_HV": 0.4379322796203362,
+    "no_restart_HV": 0.4379843691100569,
+    "adaptive_n_eval": 19943,
+    "no_restart_n_eval": 19918
+  },
+  {
+    "problem": "zdt6",
+    "seed": 1018,
+    "events": [
+      {
+        "after": {
+          "HV": 0.43615528488458266,
+          "IGD": 0.005167973657439439
+        },
+        "before": {
+          "HV": 0.43791668744173823,
+          "IGD": 0.0038145788739498182
+        },
+        "evaluations": 20,
+        "generation": 191,
+        "mode": "adaptive",
+        "n_eval_after": 19509,
+        "n_eval_before": 19489,
+        "status": "completed"
+      }
+    ],
+    "adaptive_IGD": 0.003941262186255111,
+    "no_restart_IGD": 0.0038537260804252294,
+    "adaptive_HV": 0.4375899399201056,
+    "no_restart_HV": 0.4377795453869126,
+    "adaptive_n_eval": 19927,
+    "no_restart_n_eval": 19908
+  }
+]

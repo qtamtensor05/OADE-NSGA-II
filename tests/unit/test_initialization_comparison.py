@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from pymoo.problems import get_problem
-from oade_nsga2.operators import initialize_obl
-from oade_nsga2.core import ProblemWrapper
+from research.oade_nsga2.operators import initialize_obl
+from research.oade_nsga2.core import ProblemWrapper
 from shared.evaluation import BudgetedProblem
 from shared.io.config import load_yaml_config
 from pathlib import Path

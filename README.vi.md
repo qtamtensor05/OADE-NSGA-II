@@ -1,6 +1,10 @@
 # OADE-NSGA-II
 
-Pipeline mới: [bật/tắt OBL bơm đa dạng định kỳ](docs/protocols/diversity_injection.md), giữ uniform, adaptive restart và success-rate; ghi từng lần bơm, chi phí và số ứng viên được giữ, hiệu chỉnh Holm trên 10 endpoint ZDT. Chưa chạy benchmark chính thức.
+Hai bản OADE: [bản chính một cấu hình và bản research](docs/protocols/oade_implementations.md). Bản chính dùng uniform, adaptive restart, OBL định kỳ và success-rate; các tùy chọn nghiên cứu ở `src/research/oade_nsga2/`. Giữ nguyên dữ liệu kết quả lịch sử.
+
+Đối chứng restart: [giao thức](docs/protocols/restart_comparison.md) và [báo cáo 450 run](docs/reports/restart_no_classic_adaptive_zdt_report.md). Adaptive trùng no-restart ở 147/150 cặp X/F cuối; classic kém IGD/HV trên ZDT1/2 và HV trên ZDT6 sau Holm 30 endpoint. Chưa xác lập lợi ích của adaptive restart thực sự kích hoạt.
+
+Đối chứng OBL định kỳ: [giao thức](docs/protocols/diversity_injection.md) và [báo cáo 300 run](docs/reports/diversity_injection_zdt_report.md). Bật OBL cải thiện IGD/HV trên ZDT4 ở cả 30 seed, vẫn đạt ngưỡng sau Holm trên 10 endpoint; chưa phát hiện khác biệt trên 4 bài còn lại. Chi phí OBL khoảng 2% ngân sách.
 
 Đối chứng khởi tạo: [giao thức uniform–Sobol–OBL](docs/protocols/initialization_comparison.md) và [báo cáo 300 run](docs/reports/initialization_uniform_vs_sobol_obl_zdt_report.md). Sobol–OBL giảm median IGD ban đầu nhưng chưa cải thiện cuối nhất quán ở cap 20.000; tín hiệu HV trên ZDT6 không còn đạt ngưỡng sau Holm trên cả 10 endpoint.
 

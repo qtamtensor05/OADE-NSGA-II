@@ -1,5 +1,7 @@
 # Ablation xác suất DE theo thành công
 
+**Triển khai nghiên cứu:** pipeline này dùng `research.oade_nsga2` và runner `local_oade_research`; bản chính `oade_nsga2` chỉ có một cấu hình. Xem [phân tách hai bản](oade_implementations.md). Dữ liệu execution cũ giữ nguyên provenance, không resume sau đổi layout mã nguồn.
+
 Mặc định `probability_update_mode: success_rate`; `fixed` giữ xác suất ban đầu. Chỉ hỗ trợ hai mode này; các phương án đối chứng cũ được mô tả trong [báo cáo kết quả lịch sử](../reports/probability_generated_vs_success_zdt_report.md). `enable_probability_adaptation: false` tắt mọi cập nhật xác suất, ưu tiên hơn mode.
 
 Thành công là không bị trội trong pool cha–con đã đánh giá trước loại trùng, không phải sống sót sau crowding hay cải thiện so với cha. Từng trial DE/SBX được đếm một lần, kể cả trùng; các cá thể OBL không nằm trong mẫu số toán tử nhưng vẫn có thể trội trial. Đây là một định nghĩa thiết kế cần kiểm chứng thực nghiệm, chưa bảo đảm cải thiện.

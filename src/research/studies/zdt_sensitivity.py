@@ -9,13 +9,14 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 
 import numpy as np
 from pymoo.indicators.igd import IGD
 from pymoo.indicators.hv import HV
 from pymoo.problems import get_problem
 
-from oade_nsga2.runner import run_instrumented
+from research.oade_nsga2.runner import run_instrumented
 from shared.contracts import AlgorithmSpec
 from shared.evaluation import validate_result
 from shared.io.config import load_yaml_config
@@ -35,7 +36,17 @@ def atomic_json(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(value, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    # Windows readers/scanners may briefly deny replacement even after this
+    # writer closed its handle. Keep atomic replacement and bounded retries;
+    # never fall back to truncating the committed checkpoint in place.
+    for attempt in range(8):
+        try:
+            temporary.replace(path)
+            break
+        except PermissionError:
+            if attempt == 7:
+                raise
+            time.sleep(min(.05 * 2**attempt, .5))
 
 
 def identity(cfg, candidates):
@@ -101,7 +112,7 @@ def run_task(cfg, candidate, problem_cfg, seed):
     igd, hv = IGD(front), HV(ref_point=np.max(front, axis=0) + 0.1)
     budget = cfg["global"]["evaluation_budget"]
     recorder = ConvergenceRecorder(budget, igd, hv)
-    spec = AlgorithmSpec(name="OADE_NSGAII", runner="local_oade", params={k: v for k, v in settings.items() if k != "pop_size"})
+    spec = AlgorithmSpec(name="OADE_NSGAII", runner="local_oade_research", params={k: v for k, v in settings.items() if k != "pop_size"})
     outcome, observed = run_instrumented(spec, problem, settings["pop_size"], budget,
                                         make_initial_population(problem, settings["pop_size"], seed), seed, recorder)
     validation = validate_result(outcome.x, outcome.f, problem)

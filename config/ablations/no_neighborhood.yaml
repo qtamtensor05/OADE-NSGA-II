@@ -1,5 +1,5 @@
 name: OADE_NO_NEIGHBORHOOD
-runner: local_oade
+runner: local_oade_research
 params:
   enable_neighborhood: false
   stagnation_patience: 20

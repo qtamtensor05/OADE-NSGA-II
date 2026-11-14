@@ -1,5 +1,7 @@
 # Đo độ nhạy tham số trên ZDT bằng cách tăng/giảm từng tham số
 
+**Triển khai nghiên cứu:** pipeline này dùng `research.oade_nsga2` và runner `local_oade_research`; bản chính `oade_nsga2` chỉ có một cấu hình. Xem [phân tách hai bản](oade_implementations.md). Dữ liệu execution cũ giữ nguyên provenance, không resume sau đổi layout mã nguồn.
+
 ## Phương pháp
 
 Dùng cấu hình adaptive v2 trong `config/algorithms/oade_nsga2.yaml` làm mốc.

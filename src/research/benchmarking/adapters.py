@@ -1,5 +1,6 @@
 """Route solver contracts to the owning algorithm package; no solver bodies here."""
 from oade_nsga2.runner import run as _run_oade
+from research.oade_nsga2.runner import run as _run_oade_research
 from cgde_nsga2.runner import run as _run_cgde
 from nsga2_sdr_ols.runner import run as _run_sdr
 from ce_moea.runner import run as _run_ce
@@ -22,6 +23,7 @@ def _run_pymoo(spec, problem, pop_size, budget, initial_x, seed, recorder):
     return PYMOO_RUNNERS[spec.class_path](spec, problem, pop_size, budget, initial_x, seed, recorder)
 
 RUNNERS = {
+    "local_oade_research": _run_oade_research,
     "pymoo": _run_pymoo, "local_oade": _run_oade, "local_cgde_nsga2": _run_cgde,
     "local_nsga2_sdr_ols": _run_sdr, "local_ce_moea": _run_ce,
 }

@@ -1,5 +1,5 @@
 name: OADE_NO_OBL
-runner: local_oade
+runner: local_oade_research
 params:
   enable_obl: false
   stagnation_patience: 20

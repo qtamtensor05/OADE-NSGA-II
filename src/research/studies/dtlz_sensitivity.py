@@ -13,7 +13,7 @@ from pymoo.problems import get_problem
 from pymoo.indicators.igd import IGD
 from pymoo.indicators.hv import HV
 
-from oade_nsga2.runner import run_instrumented
+from research.oade_nsga2.runner import run_instrumented
 from shared.contracts import AlgorithmSpec
 from shared.evaluation import validate_result
 from shared.population import make_initial_population
@@ -89,7 +89,7 @@ def run_task(cfg, candidate, p, seed):
     front = np.asarray(cfg['reference_fronts'][p['name']])
     igd, hv = IGD(front), HV(ref_point=np.max(front, axis=0) + .1)
     budget = cfg['global']['evaluation_budget']
-    spec = AlgorithmSpec(name='OADE_NSGAII', runner='local_oade', params={k: v for k, v in settings.items() if k != 'pop_size'})
+    spec = AlgorithmSpec(name='OADE_NSGAII', runner='local_oade_research', params={k: v for k, v in settings.items() if k != 'pop_size'})
     outcome, observed = run_instrumented(spec, problem, settings['pop_size'], budget,
         make_initial_population(problem, settings['pop_size'], seed), seed, ConvergenceRecorder(budget, igd, hv))
     validation = validate_result(outcome.x, outcome.f, problem, expected_objectives=p['n_obj'])

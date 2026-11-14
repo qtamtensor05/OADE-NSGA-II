@@ -16,7 +16,7 @@ problems:
 - name: zdt6
   n_var: 10
 algorithm_configs:
-- config/algorithms/oade_classic.yaml
+- config/research/oade_classic.yaml
 - config/algorithms/nsga2.yaml
 - config/algorithms/rnsga2.yaml
 - config/algorithms/dnsga2.yaml

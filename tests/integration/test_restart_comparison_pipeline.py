@@ -18,6 +18,13 @@ class RestartPipelineTests(unittest.TestCase):
             main([*args,'--stage','run'])
             manifest = json.loads((directory/'study_manifest.json').read_text())
             self.assertEqual(len(manifest['artifacts']),6)
+            import csv
+            paired=list(csv.DictReader((directory/'derived/comparisons.csv').open()))
+            self.assertEqual(len(paired),6)
+            self.assertTrue(all(float(r['p_holm_all_endpoints'])>=float(r['p_raw']) for r in paired))
+            self.assertTrue((directory/'derived/summary.csv').is_file())
+            self.assertTrue((directory/'derived/probability_trace.csv').is_file())
+            self.assertTrue((directory/'derived/diversity_events.csv').is_file())
             self.assertTrue((directory/'derived/restart_events.csv').exists())
             with patch('research.studies.restart_comparison.run_task') as worker:
                 main([*args,'--stage','run','--resume'])

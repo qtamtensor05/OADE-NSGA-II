@@ -1,10 +1,11 @@
 name: OADE_NSGAII
-runner: local_oade
+runner: local_oade_research
 params:
-  restart_mode: classic
+  restart_mode: adaptive
   stagnation_patience: 20
   stagnation_tolerance: 0.0001
-  restart_elite_ratio: 0.30
+  diversity_threshold: 0.02
+  restart_elite_ratio: 0.80
   probability_update_mode: success_rate
   prob_de: 0.5
   n_neighbors: 5

@@ -1,6 +1,6 @@
 schema: 1
 study_id: zdt_sensitivity_ofat_v1
-algorithm_config: config/algorithms/oade_nsga2.yaml
+algorithm_config: config/research/oade_nsga2.yaml
 global:
   pop_size: 100
   evaluation_budget: 20000

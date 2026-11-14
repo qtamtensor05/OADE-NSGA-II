@@ -40,7 +40,7 @@ def design(cfg):
     if cfg.get("schema") != 1 or set(cfg) - {"schema", "study_id", "smoke", "algorithm_config", "global", "problems", "parameters"}:
         raise ValueError("Unsupported OFAT configuration; no selection, interaction or confirmation stages")
     baseline_file = load_yaml_config(Path(cfg["algorithm_config"]))
-    if baseline_file.get("runner") != "local_oade":
+    if baseline_file.get("runner") != "local_oade_research":
         raise ValueError("Expected local OADE algorithm configuration")
     baseline = {"pop_size": cfg["global"]["pop_size"], **baseline_file["params"]}
     validate_settings(baseline)

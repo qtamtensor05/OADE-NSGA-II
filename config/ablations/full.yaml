@@ -1,5 +1,5 @@
 name: OADE_FULL
-runner: local_oade
+runner: local_oade_research
 params: &full
   restart_mode: classic
   stagnation_patience: 20

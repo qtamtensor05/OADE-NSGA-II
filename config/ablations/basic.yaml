@@ -1,5 +1,5 @@
 name: OADE_BASIC
-runner: local_oade
+runner: local_oade_research
 params:
   enable_fcr_adaptation: false
   enable_probability_adaptation: false

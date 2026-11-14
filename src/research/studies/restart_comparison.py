@@ -12,7 +12,7 @@ from pymoo.indicators.hv import HV
 from pymoo.problems import get_problem
 from scipy.stats import wilcoxon
 
-from oade_nsga2.runner import run_instrumented
+from research.oade_nsga2.runner import run_instrumented
 from shared.contracts import AlgorithmSpec
 from shared.evaluation import validate_result
 from shared.io.config import load_yaml_config
@@ -37,6 +37,9 @@ def design(cfg):
     if not names or len(set(names)) != len(names) or any(n not in {'zdt1','zdt2','zdt3','zdt4','zdt6'} for n in names):
         raise ValueError('This protocol supports unique ZDT1/2/3/4/6 problems')
     common = cfg['common_settings']
+    for key,value in {'probability_update_mode':'success_rate','enable_probability_adaptation':True,
+                      'enable_obl':True,'enable_fcr_adaptation':True,'enable_neighborhood':True}.items():
+        common.setdefault(key,value)
     if set(common) & {'restart_mode', 'enable_restart', 'restart_elite_ratio'}:
         raise ValueError('Restart switches belong to the fixed variants')
     if common['stagnation_patience'] < 1:
@@ -61,7 +64,7 @@ def run_task(cfg, candidate, problem_cfg, seed):
         _, nd = non_dominated_xy(np.zeros((len(f), 1)), f)
         return {'IGD': float(igd(nd)), 'HV': float(hv(nd))}
 
-    spec = AlgorithmSpec(candidate['id'], 'local_oade',
+    spec = AlgorithmSpec(candidate['id'], 'local_oade_research',
                          {k: v for k, v in candidate['settings'].items() if k != 'pop_size'})
     outcome, observed = run_instrumented(spec, problem, pop, budget, initial, seed,
                                         ConvergenceRecorder(budget, igd, hv), restart_metric=metrics)
@@ -122,6 +125,15 @@ def write_outputs(directory, manifest, cfg, candidates):
     scalar = [{k:v for k,v in r.items() if not isinstance(v,(dict,list))} | r['telemetry'] for r in rows]
     write_csv(derived/'raw_runs.csv', scalar, list(scalar[0]))
     paired = comparisons(cfg, candidates, rows)
+    previous = 0.
+    ordered = sorted([r for r in paired if r['p_raw'] is not None],key=lambda r:r['p_raw'])
+    for i,row in enumerate(ordered):
+        previous = max(previous,min(1.,(len(paired)-i)*row['p_raw']))
+        row['p_holm_all_endpoints'] = previous
+    for row in paired:
+        row.setdefault('p_holm_all_endpoints',None)
+        row['interpretation_all_endpoints'] = ('no_valid_pairs' if row['p_holm_all_endpoints'] is None else
+                                               'difference_detected' if row['p_holm_all_endpoints']<.05 else 'no_difference_detected')
     write_csv(derived/'comparisons.csv', paired, list(paired[0]))
     events = []
     for r in rows:
@@ -133,24 +145,52 @@ def write_outputs(directory, manifest, cfg, candidates):
     write_csv(derived/'restart_events.csv', events, fields)
     trace = [{k:r[k] for k in ('candidate','problem','seed')} | c for r in rows for c in r['convergence']]
     write_csv(derived/'convergence.csv', trace, ['candidate','problem','seed','checkpoint_fraction','target_evaluations','n_eval','IGD','HV'])
-    text = ['# Restart comparison', '', f'Runs: {len(rows)}; invalid: {sum(not r["valid"] for r in rows)}.',
-            'SMOKE: pipeline validation only.' if cfg.get('smoke') else 'Paired seed-controlled ablation.', '',
-            '| Problem | Variant | Valid / runs | Median IGD | Median HV | Restarts attempted / completed | Restart evaluations |',
-            '|---|---|---:|---:|---:|---:|---:|']
+    probability_trace = [{k:r[k] for k in ('candidate','problem','seed')} | t for r in rows for t in r['probability_trace']]
+    write_csv(derived/'probability_trace.csv',probability_trace,
+              ['candidate','problem','seed','generation','n_eval','mode','enabled','n_de','n_sbx','success_de','success_sbx','target','prob_before','prob_after'])
+    injection_trace = [{k:r[k] for k in ('candidate','problem','seed')} | t for r in rows for t in r['diversity_events']]
+    write_csv(derived/'diversity_events.csv',injection_trace,
+              ['candidate','problem','seed','generation','generation_index','n_eval_before','status','candidates','generation_completed','retained','n_eval_after','evaluations'])
+    summaries = []
+    text = ['# Đối chứng không restart, classic và adaptive', '',
+            f'Tổng run: **{len(rows)}**; invalid: **{sum(not r["valid"] for r in rows)}**.',
+            '**SMOKE: chỉ kiểm tra pipeline, không phải bằng chứng cải thiện.**' if cfg.get('smoke') else 'Đối chứng ghép seed trên ZDT.', '',
+            'Cả ba nhánh dùng cùng uniform initial population, success-rate, OBL định kỳ, adaptation F/CR và neighborhood. Chỉ thay toàn bộ chính sách restart.', '',
+            '| Bài | Nhánh | Valid/run | IGD median ↓ | HV median ↑ | Restart bắt đầu / hoàn tất | Evaluation restart |',
+            '|:---|:---|---:|---:|---:|---:|---:|']
     for p in cfg['problems']:
         for c in candidates:
             group = [r for r in rows if r['problem']==p['name'] and r['candidate']==c['id']]
             valid = [r for r in group if r['valid']]
             med = lambda m: f'{np.median([r[m] for r in valid]):.6g}' if valid else 'NA'
             totals = {k:sum(r['telemetry'][k] for r in group) for k in ('restart_attempts','restart_completed','restart_evaluations')}
+            summary = {'problem':p['name'],'variant':c['id'],'runs':len(group),'valid_runs':len(valid),**totals}
+            for key in ('trigger_checks','stagnation_eligible','collapse_checks','collapse_positive','restart_budget_blocked',
+                        'injection_attempts','injection_evaluations'):
+                summary[key] = sum(r['telemetry'][key] for r in group)
+            summary['runs_with_restart'] = sum(r['telemetry']['restart_attempts']>0 for r in group)
+            summary['adaptive_healthy_rejections'] = summary['collapse_checks']-summary['collapse_positive']
+            for metric in ('IGD','HV','runtime_seconds','n_eval','final_prob_de','restart_per_100_checks','restart_evaluation_fraction'):
+                values = [r[metric] for r in (valid if metric in {'IGD','HV'} else group)]
+                for label,fn in [('mean',np.mean),('median',np.median),('sd',lambda v:np.std(v,ddof=1) if len(v)>1 else 0.),
+                                 ('q25',lambda v:np.quantile(v,.25)),('q75',lambda v:np.quantile(v,.75))]:
+                    summary[metric+'_'+label] = float(fn(values)) if values else None
+            summaries.append(summary)
             text.append(f'| {p["name"]} | {c["id"]} | {len(valid)} / {len(group)} | {med("IGD")} | {med("HV")} | {totals["restart_attempts"]} / {totals["restart_completed"]} | {totals["restart_evaluations"]} |')
-    text += ['', 'See comparisons.csv for all three paired comparisons. IGD lower / HV higher is better.',
-             'Two-sided paired Wilcoxon signed-rank, zero_method=wilcox, normal approximation; all-zero differences p=1. Holm family: three pairs per problem and metric, alpha=0.05. Invalid pairs excluded and counted. No detected difference is not equivalence.',
-             'Classic keeps 30% elite, uses uniform immigrants and resets F/CR. Adaptive keeps >=80%, uses OBL/Gaussian immigrants and shrinks F/CR toward 0.5. These are whole restart policies, not an isolated diversity-gate comparison.',
-             'No-restart retains stagnation monitoring but performs no restart or extra random draws. Zero-restart identical pairs provide no evidence of restart benefit.',
-             'Event before/after changes are descriptive immediate effects, not proof of lasting benefit. Do not infer causality from trigger frequency correlations. Use paired no-restart final quality and event timing together.',
-             'All objective calls, including restart, count toward the strict cap. Atomic batches may leave unused budget; inspect n_eval. Convergence checkpoints record actual n_eval and may overshoot targets; no interpolation.',
-             'Primary JSON preserves final X/F, initial population hash, events, convergence and validity. Manifest captures sources/environment/references and checks resume integrity.', '']
+    write_csv(derived/'summary.csv',summaries,list(summaries[0]))
+    text += ['', '## Các chính sách được đo', '',
+             '| Nhánh | Điều kiện kích hoạt | Cách làm mới |',
+             '|:---|:---|:---|',
+             '| Không restart | Không kích hoạt | Chỉ theo dõi stagnation, không tốn RNG/evaluation restart |',
+             '| Classic | Đủ patience stagnation | Giữ 30% elite, sinh uniform phần còn lại, reset F/CR về 0,5 |',
+             '| Adaptive | Đủ patience và diversity collapse | Giữ ít nhất 80% elite, sinh OBL/Gauss, kéo F/CR về 0,5 |','',
+             'Theo mã hiện có, stagnation đo độ lớn thay đổi ideal point giữa hai thế hệ (chuẩn Euclid), không phải điều kiện cải thiện đơn điệu từng mục tiêu. Nếu thay đổi dưới tolerance thì tăng counter; đủ patience mới xét restart. Adaptive coi collapse khi objective range lớn nhất < 0,001 hoặc max std của biến quyết định chuẩn hóa < diversity_threshold. Nếu diversity khỏe, counter giảm về patience//2, không restart.',
+             '## Đọc đối chứng', '',
+             'comparisons.csv chứa đủ classic–adaptive, classic–no_restart và adaptive–no_restart; delta = a − b. IGD thấp hơn tốt, HV cao hơn tốt. Wilcoxon signed-rank hai phía, zero_method=wilcox, xấp xỉ chuẩn; toàn delta zero đặt p=1. Cột p_holm giữ họ ba cặp/bài/metric; p_holm_all_endpoints hiệu chỉnh đồng thời mọi bài × 2 metric × 3 cặp (30 endpoint khi chạy đủ ZDT), alpha=0,05. Invalid được giữ và đếm, loại riêng khỏi cặp chất lượng. Không phát hiện khác biệt không chứng minh tương đương.',
+             'summary.csv ghi số lần đủ stagnation, số xét collapse/dương tính/từ chối do diversity khỏe, số run có restart, tần suất, chi phí và chất lượng mean/SD/median/Q25/Q75. restart_events.csv ghi generation, evaluations trước/sau, trạng thái và IGD/HV tức thời trước/sau restart.',
+             'Nếu adaptive không trigger và trùng no-restart, không có bằng chứng về lợi ích của restart đã kích hoạt. Classic kém no-restart không tự chứng minh adaptive chủ động cải thiện. Đây là đối chứng toàn bộ chính sách restart, không tách riêng gate, elite ratio, kernel và F/CR reset.',
+             'Cùng cap tổng, gồm khởi tạo, OBL định kỳ và restart; batch nguyên tử có thể để dư nên phải xem n_eval. Convergence dùng mốc observation thực, không nội suy. Tác động trước/sau event chỉ là mô tả tức thời, chưa chứng minh lợi ích cuối.',
+             'Primary JSON lưu X/F đầu và cuối, hash quần thể đầu, các event và probability trace. Manifest chụp source/environment/reference và kiểm tra resume; writer có bounded retry cho lỗi Windows tạm thời. Giữ dữ liệu nếu lỗi checkpoint kéo dài, không xóa primary để ép resume.', '']
     (derived/'report.md').write_text('\n'.join(text), encoding='utf-8')
 
 

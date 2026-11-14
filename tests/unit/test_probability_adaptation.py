@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
 from pymoo.problems import get_problem
-from oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
-from oade_nsga2.core import ProblemWrapper, CreationMode
+from research.oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
+from research.oade_nsga2.core import ProblemWrapper, CreationMode
 
 
 class ProbabilityTests(unittest.TestCase):

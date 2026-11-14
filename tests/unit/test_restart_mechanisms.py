@@ -3,8 +3,8 @@ from __future__ import annotations
 import unittest
 import numpy as np
 
-from oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
-from oade_nsga2.core import ProblemWrapper
+from research.oade_nsga2.algorithm import OADE_NSGAII, _make_evaluated_individual
+from research.oade_nsga2.core import ProblemWrapper
 
 
 class DummyProblem:

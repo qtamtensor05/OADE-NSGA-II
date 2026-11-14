@@ -1,5 +1,5 @@
 name: OADE_ADAPTIVE_RESTART
-runner: local_oade
+runner: local_oade_research
 params:
   enable_restart: true
   restart_mode: adaptive

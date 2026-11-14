@@ -6,12 +6,41 @@ from pymoo.indicators.igd import IGD
 from pymoo.indicators.hv import HV
 from shared.contracts import AlgorithmSpec
 from shared.population import make_initial_population
-from oade_nsga2.runner import run, run_instrumented
+from research.oade_nsga2.runner import run, run_instrumented
 from research.benchmarking.convergence import ConvergenceRecorder
 from research.studies.restart_comparison import design, run_task, comparisons
 
 
 class RestartComparisonTests(unittest.TestCase):
+    def test_current_protocol_pins_success_rate_and_periodic_obl(self):
+        from shared.io.config import load_yaml_config
+        from pathlib import Path
+        cfg,candidates=design(load_yaml_config(Path('config/studies/restart_comparison.yaml')))
+        self.assertEqual(len(candidates),3)
+        self.assertEqual(len(cfg['problems'])*len(cfg['global']['seeds'])*len(candidates),450)
+        for c in candidates:
+            self.assertEqual(c['settings']['probability_update_mode'],'success_rate')
+            self.assertTrue(c['settings']['enable_obl'])
+            self.assertTrue(c['settings']['enable_fcr_adaptation'])
+        common=[{k:v for k,v in c['settings'].items() if k not in {'restart_mode','restart_elite_ratio','enable_restart'}} for c in candidates]
+        self.assertEqual(common[0],common[1])
+        self.assertEqual(common[1],common[2])
+
+    def test_healthy_adaptive_rejection_is_observed(self):
+        from research.oade_nsga2.telemetry import InstrumentedOADE
+        from research.oade_nsga2.core import ProblemWrapper
+        from research.oade_nsga2.algorithm import _make_evaluated_individual
+        from shared.evaluation import BudgetedProblem
+        solver=InstrumentedOADE(ProblemWrapper(BudgetedProblem(get_problem('zdt1',n_var=10),100)),pop_size=20)
+        solver.stagnation_patience=2
+        solver.population=[_make_evaluated_individual(np.full(10,i/20),np.array([i/20,1-i/20])) for i in range(20)]
+        ideal=np.min([i.F for i in solver.population],axis=0)
+        solver._check_and_handle_stagnation(1,ideal)
+        self.assertEqual(solver.telemetry['stagnation_eligible'],1)
+        self.assertEqual(solver.telemetry['collapse_checks'],1)
+        self.assertEqual(solver.telemetry['collapse_positive'],0)
+        self.assertEqual(solver.telemetry['restart_attempts'],0)
+
     def config(self):
         return {'global':{'pop_size':20,'evaluation_budget':240,'seeds':[42]},
                 'problems':[{'name':'zdt1','n_var':10}],
@@ -37,7 +66,7 @@ class RestartComparisonTests(unittest.TestCase):
         problem = get_problem('zdt1',n_var=10)
         initial = make_initial_population(problem,20,42)
         for mode in ('classic','adaptive'):
-            spec = AlgorithmSpec(mode,'local_oade',{'restart_mode':mode,'stagnation_patience':1,
+            spec = AlgorithmSpec(mode,'local_oade_research',{'restart_mode':mode,'stagnation_patience':1,
                                   'stagnation_tolerance':1e6,'diversity_threshold':1e6})
             def recorder():
                 return ConvergenceRecorder(240,IGD(problem.pareto_front()),HV(ref_point=np.array([2.,12.])))
@@ -61,8 +90,8 @@ class RestartComparisonTests(unittest.TestCase):
             self.assertEqual(comparison['both_zero_restart_pairs'],1)
 
     def test_budget_blocked_restart_is_not_completed(self):
-        from oade_nsga2.telemetry import InstrumentedOADE
-        from oade_nsga2.core import ProblemWrapper
+        from research.oade_nsga2.telemetry import InstrumentedOADE
+        from research.oade_nsga2.core import ProblemWrapper
         from shared.evaluation import BudgetedProblem, EvaluationBudgetExceeded
         problem = get_problem('zdt1',n_var=10)
         counter = BudgetedProblem(problem,21)

@@ -1,14 +1,6 @@
-"""
-Package thuật toán Improved NSGA-II.
-
-Dùng nhanh
-----------
-    from oade_nsga2 import ProblemWrapper, OADE_NSGAII
-    solver = OADE_NSGAII(problem, pop_size=100, n_gen=200)
-    front  = solver.run()
-"""
-
+"""Fixed OADE implementation. Configurable experiments live in research.oade_nsga2."""
 from .algorithm import OADE_NSGAII
 from .core import CreationMode, Individual, ProblemWrapper
+from .configuration import FIXED_PARAMETERS
 
-__all__ = ["OADE_NSGAII", "ProblemWrapper", "Individual", "CreationMode"]
+__all__ = ["OADE_NSGAII", "ProblemWrapper", "Individual", "CreationMode", "FIXED_PARAMETERS"]

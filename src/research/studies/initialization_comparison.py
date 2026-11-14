@@ -7,7 +7,7 @@ from pymoo.problems import get_problem
 from pymoo.indicators.igd import IGD
 from pymoo.indicators.hv import HV
 
-from oade_nsga2.runner import run_instrumented
+from research.oade_nsga2.runner import run_instrumented
 from shared.contracts import AlgorithmSpec
 from shared.evaluation import validate_result
 from shared.population import make_initial_population
@@ -49,7 +49,7 @@ def run_task(cfg,candidate,problem_cfg,seed):
     initial = make_initial_population(problem,pop,seed) if mode=='uniform' else None
     params = {k:v for k,v in candidate['settings'].items() if k not in {'pop_size','initialization_method'}}
     params['initialization_seed'] = seed
-    spec = AlgorithmSpec(candidate['id'],'local_oade',params)
+    spec = AlgorithmSpec(candidate['id'],'local_oade_research',params)
 
     def metrics(f):
         return {'IGD':float(igd(f)), 'HV':float(hv(f))}
