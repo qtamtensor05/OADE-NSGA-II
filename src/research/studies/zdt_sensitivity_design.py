@@ -12,8 +12,12 @@ ZDT_DIMENSIONS = {"zdt1": 30, "zdt2": 30, "zdt3": 30, "zdt4": 10, "zdt6": 10}
 
 
 def validate_settings(settings):
-    if set(settings) != PARAMETERS | {"restart_mode"} or settings["restart_mode"] != "adaptive":
+    required = PARAMETERS | {"restart_mode"}
+    if (not required <= set(settings) or set(settings) - required - {"probability_update_mode"}
+            or settings["restart_mode"] != "adaptive"):
         raise ValueError("Expected explicit adaptive-v2 baseline settings")
+    if settings.get("probability_update_mode", "success_rate") not in {"success_rate", "fixed"}:
+        raise ValueError("probability_update_mode must be success_rate or fixed")
     for key in PARAMETERS:
         value = settings[key]
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):

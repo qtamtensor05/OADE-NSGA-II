@@ -21,7 +21,7 @@ The main empirical claim is restricted to these implementations and parameteriza
 - Periodic OBL: enabled injection occurs when generation index modulo 10 equals zero, including generation zero. The no-OBL ablation disables these injections under the common warm start.
 - F update: μF ← 0.9 μF + 0.1 mean(F²)/mean(F) for DE offspring assigned rank 1 during selection.
 - CR update: μCR ← 0.9 μCR + 0.1 mean(CR) over the same offspring.
-- Operator probability: pDE ← clip(0.9 pDE + 0.1 nDE/(nDE+nSBX), 0.2, 0.8). This tracks generated share, not comparative survival success.
+- Current default `probability_update_mode=success_rate` normalizes nondominated-trial success by each operator's trial count; `fixed` holds pDE. These are separate ablation variants, not relabelings of historical results. See [probability ablation](probability_ablation.md).
 - Restart configuration is part of the tested algorithm version. Descriptive differences between classic and adaptive result sets do not isolate the adaptive trigger's causal contribution.
 
 ## Citation status

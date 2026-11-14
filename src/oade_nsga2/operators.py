@@ -17,19 +17,19 @@ from .selection import environmental_selection
 
 
 # Lấy mẫu ban đầu
-def _sample_in_bounds(n: int, n_var: int, xl: np.ndarray, xu: np.ndarray, use_sobol: bool) -> np.ndarray:
+def _sample_in_bounds(n: int, n_var: int, xl: np.ndarray, xu: np.ndarray, use_sobol: bool, *, seed=None) -> np.ndarray:
     """Lấy n điểm trong [xl, xu] bằng Sobol (mặc định) hoặc Latin Hypercube"""
     if use_sobol:
         n_rounded = 2 ** math.ceil(math.log2(max(n, 2)))
-        raw = qmc.Sobol(d=n_var, scramble=True).random(n=n_rounded)[:n]
+        raw = qmc.Sobol(d=n_var, scramble=True, seed=seed).random(n=n_rounded)[:n]
     else:
-        raw = qmc.LatinHypercube(d=n_var).random(n=n)
+        raw = qmc.LatinHypercube(d=n_var, seed=seed).random(n=n)
 
     return qmc.scale(raw, xl, xu)
 
 
 # Khởi tạo quần thể
-def initialize_obl(problem: ProblemWrapper, pop_size: int, use_gobl: bool = True, use_sobol: bool = True) -> List[Individual]:
+def initialize_obl(problem: ProblemWrapper, pop_size: int, use_gobl: bool = True, use_sobol: bool = True, *, seed=None) -> List[Individual]:
     """
     Sinh quần thể ban đầu bằng Quasi-Opposition Based Learning + Sobol/LHS.
     Quy trình: 
@@ -43,14 +43,16 @@ def initialize_obl(problem: ProblemWrapper, pop_size: int, use_gobl: bool = True
     """
     xl, xu = problem.xl, problem.xu
 
-    x_primary = _sample_in_bounds(pop_size, problem.n_var, xl, xu, use_sobol)
+    x_primary = _sample_in_bounds(pop_size, problem.n_var, xl, xu, use_sobol, seed=seed)
+    # An explicit seed isolates initialization draws from the evolution RNG.
+    rng = np.random.default_rng(seed) if seed is not None else np.random
 
     if use_gobl:
-        k       = np.random.uniform(0.0, 1.0, size=x_primary.shape)
+        k       = rng.uniform(0.0, 1.0, size=x_primary.shape)
         x_opposite = k * (xl + xu) - x_primary
     else:
         mid     = (xl + xu) / 2.0
-        r       = np.random.uniform(xl, mid, size=x_primary.shape)
+        r       = rng.uniform(xl, mid, size=x_primary.shape)
         x_opposite = r + mid - x_primary
 
     x_all    = np.clip(np.vstack([x_primary, x_opposite]), xl, xu)

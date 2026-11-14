@@ -1,5 +1,11 @@
 # OADE-NSGA-II
 
+Đối chứng tiếp theo: [khởi tạo uniform và Sobol–OBL](docs/protocols/initialization_comparison.md), giữ adaptive restart và success-rate; cùng cap tính cả khởi tạo. Thiết kế 300 run, chưa có kết quả benchmark chính thức.
+
+Option mới: [ablation xác suất DE theo thành công](docs/protocols/probability_ablation.md), so sánh fixed / success-rate; mặc định hiện tại là success-rate, đã bỏ generated-share. Các bảng lịch sử bên dưới giữ nguyên phiên bản thuật toán đã đo, chưa xác nhận mặc định mới.
+
+Pipeline mới: [so sánh classic / adaptive / không restart có telemetry](docs/protocols/restart_comparison.md). Ghi từng lần kích hoạt, chi phí evaluation và kiểm định đủ ba cặp; xem kế hoạch bằng `.\.venv\Scripts\python.exe -m research restart-comparison --stage plan`.
+
 **Ngôn ngữ:** [English](README.md) | **Tiếng Việt**
 
 Dự án đánh giá việc kết hợp differential evolution thích nghi và học đối lập trong khung NSGA-II. Nghiên cứu hiện ưu tiên ZDT. Kết quả được trình bày theo từng bài toán, với đối chứng, cấu hình classic/adaptive và giới hạn suy luận riêng.

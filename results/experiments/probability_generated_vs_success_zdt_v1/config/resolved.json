@@ -1,0 +1,122 @@
+{
+  "candidates": [
+    {
+      "id": "generated_share",
+      "level": "generated_share",
+      "parameter": "probability_update_mode",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "enable_probability_adaptation": true,
+        "enable_restart": true,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "probability_update_mode": "generated_share",
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    },
+    {
+      "id": "success_rate",
+      "level": "success_rate",
+      "parameter": "probability_update_mode",
+      "settings": {
+        "diversity_threshold": 0.02,
+        "enable_probability_adaptation": true,
+        "enable_restart": true,
+        "mean_CR": 0.5,
+        "mean_F": 0.65,
+        "n_neighbors": 5,
+        "pop_size": 100,
+        "prob_de": 0.5,
+        "probability_update_mode": "success_rate",
+        "restart_elite_ratio": 0.8,
+        "restart_mode": "adaptive",
+        "stagnation_patience": 20,
+        "stagnation_tolerance": 0.0001
+      }
+    }
+  ],
+  "protocol": {
+    "common_settings": {
+      "diversity_threshold": 0.02,
+      "enable_restart": true,
+      "mean_CR": 0.5,
+      "mean_F": 0.65,
+      "n_neighbors": 5,
+      "prob_de": 0.5,
+      "restart_elite_ratio": 0.8,
+      "restart_mode": "adaptive",
+      "stagnation_patience": 20,
+      "stagnation_tolerance": 0.0001
+    },
+    "global": {
+      "evaluation_budget": 20000,
+      "jobs": 4,
+      "out_dir": "results/experiments/probability_generated_vs_success_zdt_v1",
+      "pop_size": 100,
+      "seeds": [
+        1000,
+        1001,
+        1002,
+        1003,
+        1004,
+        1005,
+        1006,
+        1007,
+        1008,
+        1009,
+        1010,
+        1011,
+        1012,
+        1013,
+        1014,
+        1015,
+        1016,
+        1017,
+        1018,
+        1019,
+        1020,
+        1021,
+        1022,
+        1023,
+        1024,
+        1025,
+        1026,
+        1027,
+        1028,
+        1029
+      ]
+    },
+    "probability_modes": [
+      "generated_share",
+      "success_rate"
+    ],
+    "problems": [
+      {
+        "n_var": 30,
+        "name": "zdt1"
+      },
+      {
+        "n_var": 30,
+        "name": "zdt2"
+      },
+      {
+        "n_var": 30,
+        "name": "zdt3"
+      },
+      {
+        "n_var": 10,
+        "name": "zdt4"
+      },
+      {
+        "n_var": 10,
+        "name": "zdt6"
+      }
+    ]
+  }
+}

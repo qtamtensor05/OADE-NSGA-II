@@ -6,6 +6,12 @@ This project evaluates adaptive differential evolution and opposition-based lear
 
 ## Study design and reading guide
 
+Initialization study: [uniform versus Sobol–OBL](docs/protocols/initialization_comparison.md), with adaptive restart and success-rate held constant. Both initialization and search objective calls count toward the same cap; 300 runs planned, no results claimed yet.
+
+Optional success-rate operator adaptation: [probability ablation](docs/protocols/probability_ablation.md) compares fixed and success-rate pDE. The current default is success-rate; generated-share has been removed. Historical tables below retain their original algorithm and do not validate this new default.
+
+New instrumented study: [classic / adaptive / no-restart pipeline](docs/protocols/restart_comparison.md), including restart events, evaluation costs and all three paired comparisons. Preview without running experiments: `.\.venv\Scripts\python.exe -m research restart-comparison --stage plan`.
+
 OADE-NSGA-II combines neighborhood-based DE offspring, online F/CR updates, periodic opposition-based candidates and NSGA-II environmental selection. Classic uses the original restart; adaptive adds diversity conditions and local replacement. Algorithm design and evidence for individual component contributions are interpreted separately.
 
 | Item | Specification |

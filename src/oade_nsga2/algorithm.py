@@ -28,11 +28,15 @@ class OADE_NSGAII:
 
     Cải tiến so với NSGA-II gốc (Deb et al., 2002)
     ------------------------------------------------
-    - Khởi tạo OBL + Sobol/LHS thay vì phân phối đều thuần tuý
+    - Khởi tạo OBL + Sobol/LHS khi initial_x=None; benchmark dùng uniform chung
     - Đột biến DE/current-to-pbest/1 hướng láng giềng thay SBX đơn thuần
     - F cập nhật theo Lehmer mean, CR theo trung bình cộng của DE có rank 1
     - Phun đa dạng định kỳ qua OBL mỗi 10 thế hệ
     - Phát hiện trì trệ và partial restart khi ideal point ngừng cải thiện
+
+    Benchmark truyền initial_x để giữ cùng quần thể ban đầu giữa các solver,
+    nên không đo lợi ích của khởi tạo Sobol/OBL. OBL định kỳ trong quá trình
+    tiến hoá vẫn hoạt động khi enable_obl=True, độc lập với cách khởi tạo.
     """
 
     def __init__(self, problem: ProblemWrapper, pop_size: int = 100, n_gen: int = 100) -> None:
@@ -48,6 +52,9 @@ class OADE_NSGAII:
         self.mean_F  = 0.5  # trung bình phân phối Cauchy của scale factor F
         self.mean_CR = 0.5  # trung bình phân phối Normal của crossover rate CR
         self.prob_de = 0.5  # xác suất chọn DE thay vì SBX
+        self.probability_update_mode = "success_rate"  # or fixed
+        self.last_probability_update = {}
+        self.initialization_seed = None  # explicit Sobol/OBL reproducibility
 
         # Bài toán nhiều mục tiêu cần láng giềng rộng hơn để ước lượng tốt
         min_neighbors = 10 if self.n_obj >= 3 else 5
@@ -85,9 +92,12 @@ class OADE_NSGAII:
     ) -> np.ndarray:
         """
         Chạy thuật toán và trả về ma trận F của quần thể cuối, shape (pop_size, n_obj).
-        Nếu initial_x được cung cấp, dùng nó làm quần thể khởi đầu (warm-start).
+        Nếu initial_x được cung cấp, dùng nó làm quần thể khởi đầu (warm-start),
+        bỏ qua hoàn toàn Sobol/OBL khởi tạo. Đây là chế độ benchmark uniform chung.
         Nếu không, khởi tạo bằng OBL + Sobol.
         """
+        if self.probability_update_mode not in {"success_rate", "fixed"}:
+            raise ValueError("probability_update_mode must be success_rate or fixed")
         self.population = self._build_initial_population(initial_x)
         self.history.clear()
 
@@ -102,11 +112,12 @@ class OADE_NSGAII:
             offspring = self._generate_offspring(gen)
             self._evaluate_unevaluated(offspring)
 
-            combined        = remove_duplicates(self.population + offspring)
+            adaptation_pool = self.population + offspring
+            combined        = remove_duplicates(adaptation_pool)
             combined        = self._fill_if_too_small(combined)
             self.population = environmental_selection(combined, self.pop_size, self.n_obj)
 
-            self._update_adaptive_parameters(offspring)
+            self._update_adaptive_parameters(offspring, reference_population=adaptation_pool)
             self.history.append(np.array([ind.F for ind in self.population]))
 
             if progress_callback is not None:
@@ -120,7 +131,7 @@ class OADE_NSGAII:
         if initial_x is not None:
             pop = initialize_from_data(self.problem, initial_x)
             return environmental_selection(pop, self.pop_size, self.n_obj)
-        return initialize_obl(self.problem, self.pop_size)
+        return initialize_obl(self.problem, self.pop_size, seed=self.initialization_seed)
 
     # Sinh con lai
     def _generate_offspring(self, gen: int) -> List[Individual]:
@@ -258,22 +269,56 @@ class OADE_NSGAII:
         return population + extras
 
     # Cập nhật tham số thích nghi
-    def _update_adaptive_parameters(self, offspring: List[Individual]) -> None:
+    def _update_adaptive_parameters(
+        self, offspring: List[Individual], *, reference_population: Optional[List[Individual]] = None
+    ) -> None:
         """
         Cập nhật prob_de theo tỷ phần con DE được sinh; F/CR theo DE có rank 1.
 
-        prob_de : EMA của tỷ phần DE được sinh, không phải tỷ lệ thành công
+        prob_de : success_rate (mặc định) hoặc fixed.
+        success_rate chuẩn hóa tỷ lệ không bị trội theo số trial từng toán tử;
+        giữ nguyên nếu thiếu toán tử hoặc cả hai không thành công.
         mean_F  : Lehmer mean của F — ưu giá trị lớn, khuyến khích khám phá
         mean_CR : trung bình cộng của CR
+
+        F/CR success means nondominated in the evaluated parent/offspring pool
+        BEFORE objective-space duplicate removal or crowding truncation. Each DE
+        trial contributes once, including duplicate trials. Selection metadata
+        may be missing/stale on discarded individuals and is not a success test.
         """
+        if self.probability_update_mode not in {"success_rate", "fixed"}:
+            raise ValueError("probability_update_mode must be success_rate or fixed")
         de_offspring  = [ind for ind in offspring if ind.creation_mode == CreationMode.DE]
         sbx_offspring = [ind for ind in offspring if ind.creation_mode == CreationMode.SBX]
-        successful_de = [ind for ind in de_offspring if ind.rank == 1]
+        successful_de = []
+        successful_sbx = []
+        need_success = (self.enable_probability_adaptation and self.probability_update_mode == "success_rate")
+        if (self.enable_fcr_adaptation and de_offspring) or need_success:
+            pool = reference_population if reference_population is not None else self.population + offspring
+            objectives = np.asarray([ind.F for ind in pool])
+            for ind in de_offspring + (sbx_offspring if need_success else []):
+                dominated = np.any(np.all(objectives <= ind.F, axis=1)
+                                   & np.any(objectives < ind.F, axis=1))
+                if not dominated:
+                    (successful_de if ind.creation_mode == CreationMode.DE else successful_sbx).append(ind)
 
         total = len(de_offspring) + len(sbx_offspring)
+        before = self.prob_de
+        target = None
         if self.enable_probability_adaptation and total > 0:
-            de_ratio     = len(de_offspring) / total
-            self.prob_de = float(np.clip(0.9 * self.prob_de + 0.1 * de_ratio, 0.2, 0.8))
+            if self.probability_update_mode == "success_rate" and de_offspring and sbx_offspring:
+                rate_de = len(successful_de) / len(de_offspring)
+                rate_sbx = len(successful_sbx) / len(sbx_offspring)
+                if rate_de + rate_sbx > 0:
+                    target = rate_de / (rate_de + rate_sbx)
+            if target is not None:
+                self.prob_de = float(np.clip(0.9 * before + 0.1 * target, 0.2, 0.8))
+        self.last_probability_update = {
+            "mode": self.probability_update_mode, "enabled": self.enable_probability_adaptation,
+            "n_de": len(de_offspring), "n_sbx": len(sbx_offspring),
+            "success_de": len(successful_de) if need_success else None,
+            "success_sbx": len(successful_sbx) if need_success else None,
+            "target": target, "prob_before": before, "prob_after": self.prob_de}
 
         if self.enable_fcr_adaptation and successful_de:
             f_values     = np.array([ind.used_F  for ind in successful_de])

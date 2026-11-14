@@ -37,17 +37,20 @@ def run(spec, problem, pop_size, budget, initial_x, seed, recorder, *, solver_fa
     return RunOutcome(x, f, budgeted.n_eval, runtime, tuple(recorder.rows))
 
 
-def run_instrumented(spec, problem, pop_size, budget, initial_x, seed, recorder):
+def run_instrumented(spec, problem, pop_size, budget, initial_x, seed, recorder, *, restart_metric=None):
     """Return normal outcome plus restart/adaptation observations for sensitivity."""
     from .telemetry import InstrumentedOADE
-    holder, trace = [], []
+    holder, trace, probability_trace = [], [], []
 
     def factory(*args, **kwargs):
         solver = InstrumentedOADE(*args, **kwargs)
+        solver.restart_metric = restart_metric
         holder.append(solver)
         return solver
 
     def observe(solver, generation, n_eval):
+        probability_trace.append({"generation": generation, "n_eval": n_eval,
+                                  **solver.last_probability_update})
         if not trace or n_eval - trace[-1]["n_eval"] >= max(1, budget // 10):
             trace.append({"generation": generation, "n_eval": n_eval,
                           "mean_F": float(solver.mean_F), "mean_CR": float(solver.mean_CR),
@@ -57,5 +60,8 @@ def run_instrumented(spec, problem, pop_size, budget, initial_x, seed, recorder)
                   solver_factory=factory, observer=observe)
     solver = holder[0]
     return outcome, {"telemetry": solver.telemetry, "adaptation_trace": trace,
+                     "restart_events": solver.restart_events,
+                     "probability_trace": probability_trace,
+                     "initialization_evidence": solver.initialization_evidence,
                      "final_mean_F": float(solver.mean_F), "final_mean_CR": float(solver.mean_CR),
                      "final_prob_de": float(solver.prob_de)}
