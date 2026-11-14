@@ -144,10 +144,15 @@ class OADE_NSGAII:
             for i in range(self.pop_size)
         ]
 
-        if self.enable_obl and gen % 10 == 0:
-            offspring += generate_obl_offspring(self.population, self.problem, self.xl, self.xu)
+        offspring += self._generate_periodic_obl(gen)
 
         return offspring
+
+    def _generate_periodic_obl(self, gen: int) -> List[Individual]:
+        """Periodic injection only; independent of initialization and restart."""
+        if self.enable_obl and gen % 10 == 0:
+            return generate_obl_offspring(self.population, self.problem, self.xl, self.xu)
+        return []
 
     def _create_one_child(self, idx: int, neighbor_indices: np.ndarray) -> Individual:
         """Tạo một con lai bằng DE (theo prob_de) hoặc SBX."""

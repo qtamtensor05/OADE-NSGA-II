@@ -13,6 +13,48 @@ class InstrumentedOADE(OADE_NSGAII):
         self.restart_events = []
         self.restart_metric = None
         self.initialization_evidence = {}
+        self.diversity_events = []
+        self._pending_diversity = None
+        self.telemetry.update(injection_attempts=0, injection_completed=0,
+                              injection_budget_blocked=0, injection_candidates=0,
+                              injection_evaluations=0, injection_retained=0)
+
+    def _generate_periodic_obl(self, gen):
+        if not self.enable_obl or gen % 10 != 0:
+            return []
+        counter = self.problem._prob
+        before = counter.n_eval
+        event = dict(generation=gen+1, generation_index=gen, n_eval_before=before,
+                     status="error", candidates=0, generation_completed=False, retained=None)
+        self.telemetry["injection_attempts"] += 1
+        try:
+            candidates = super()._generate_periodic_obl(gen)
+        except EvaluationBudgetExceeded:
+            event["status"] = "budget_blocked"
+            self.telemetry["injection_budget_blocked"] += 1
+            raise
+        else:
+            event["candidates"] = len(candidates)
+            event["status"] = "completed" if candidates else "empty"
+            self.telemetry["injection_completed"] += 1
+            self.telemetry["injection_candidates"] += len(candidates)
+            self._pending_diversity = (event, candidates)
+            return candidates
+        finally:
+            event["n_eval_after"] = counter.n_eval
+            event["evaluations"] = counter.n_eval-before
+            self.telemetry["injection_evaluations"] += event["evaluations"]
+            self.diversity_events.append(event)
+
+    def _update_adaptive_parameters(self, offspring, *, reference_population=None):
+        super()._update_adaptive_parameters(offspring, reference_population=reference_population)
+        if self._pending_diversity is not None:
+            event, candidates = self._pending_diversity
+            survivors = {id(i) for i in self.population}
+            event["retained"] = sum(id(i) in survivors for i in candidates)
+            event["generation_completed"] = True
+            self.telemetry["injection_retained"] += event["retained"]
+            self._pending_diversity = None
 
     def _build_initial_population(self, initial_x):
         counter = self.problem._prob

@@ -183,7 +183,7 @@ def write_outputs(directory, manifest, cfg, candidates, *, report_writer=None):
     rows = load_records(directory, manifest)
     validate_records(cfg, candidates, rows, complete=True)
     summaries, comparisons = analyze(cfg, candidates, rows)
-    scalar = [{k: v for k, v in row.items() if k not in {"settings", "convergence", "adaptation_trace", "telemetry", "restart_events", "probability_trace", "initialization_evidence"}}
+    scalar = [{k: v for k, v in row.items() if k not in {"settings", "convergence", "adaptation_trace", "telemetry", "restart_events", "probability_trace", "initialization_evidence", "diversity_events"}}
               | {"settings_json": json.dumps(row["settings"], sort_keys=True)} | row["telemetry"] for row in rows]
     for filename, data in (("raw_runs.csv", scalar), ("summary.csv", summaries), ("comparisons.csv", comparisons)):
         write_csv(directory / "derived" / filename, data, list(data[0]))

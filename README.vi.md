@@ -1,6 +1,8 @@
 # OADE-NSGA-II
 
-Đối chứng tiếp theo: [khởi tạo uniform và Sobol–OBL](docs/protocols/initialization_comparison.md), giữ adaptive restart và success-rate; cùng cap tính cả khởi tạo. Thiết kế 300 run, chưa có kết quả benchmark chính thức.
+Pipeline mới: [bật/tắt OBL bơm đa dạng định kỳ](docs/protocols/diversity_injection.md), giữ uniform, adaptive restart và success-rate; ghi từng lần bơm, chi phí và số ứng viên được giữ, hiệu chỉnh Holm trên 10 endpoint ZDT. Chưa chạy benchmark chính thức.
+
+Đối chứng khởi tạo: [giao thức uniform–Sobol–OBL](docs/protocols/initialization_comparison.md) và [báo cáo 300 run](docs/reports/initialization_uniform_vs_sobol_obl_zdt_report.md). Sobol–OBL giảm median IGD ban đầu nhưng chưa cải thiện cuối nhất quán ở cap 20.000; tín hiệu HV trên ZDT6 không còn đạt ngưỡng sau Holm trên cả 10 endpoint.
 
 Option mới: [ablation xác suất DE theo thành công](docs/protocols/probability_ablation.md), so sánh fixed / success-rate; mặc định hiện tại là success-rate, đã bỏ generated-share. Các bảng lịch sử bên dưới giữ nguyên phiên bản thuật toán đã đo, chưa xác nhận mặc định mới.
 

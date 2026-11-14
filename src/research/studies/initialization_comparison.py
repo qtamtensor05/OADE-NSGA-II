@@ -76,12 +76,12 @@ def run_task(cfg,candidate,problem_cfg,seed):
             'convergence':list(outcome.convergence),**observed}
 
 
-def write_outputs(directory,manifest,cfg,candidates):
+def write_measurements(directory,manifest,cfg,candidates,*,require_same_initial=False):
     rows = base.engine.load_records(directory,manifest)
     base.engine.validate_records(cfg,candidates,rows,complete=True)
     # Same seeds, intentionally different initial populations: do not use the
     # equal-initial-X condition of restart/probability controlled ablations.
-    paired = base.comparisons(cfg,candidates,rows,require_same_initial=False)
+    paired = base.comparisons(cfg,candidates,rows,require_same_initial=require_same_initial)
     derived = directory/'derived'
     derived.mkdir(exist_ok=True)
     scalar = [{k:v for k,v in r.items() if not isinstance(v,(dict,list))}|r['telemetry'] for r in rows]
@@ -95,6 +95,9 @@ def write_outputs(directory,manifest,cfg,candidates):
             s={'problem':p['name'],'method':c['id'],'runs':len(group),'valid_runs':len(valid),
                'restart_attempts':sum(r['telemetry']['restart_attempts'] for r in group),
                'initialization_evaluations':group[0]['initialization_evaluations']}
+            for key in ('injection_attempts','injection_completed','injection_budget_blocked',
+                        'injection_candidates','injection_evaluations','injection_retained'):
+                s[key]=sum(r['telemetry'].get(key,0) for r in group)
             for metric in ('IGD','HV','initial_IGD','initial_HV','runtime_seconds','n_eval','final_prob_de'):
                 values=[r[metric] for r in (valid if metric in {'IGD','HV'} else group)]
                 for label,fn in [('mean',np.mean),('median',np.median),('q25',lambda x:np.quantile(x,.25)),
@@ -107,6 +110,12 @@ def write_outputs(directory,manifest,cfg,candidates):
         ('convergence','convergence.csv',['candidate','problem','seed','checkpoint_fraction','target_evaluations','n_eval','IGD','HV'])]:
         trace=[{k:r[k] for k in ('candidate','problem','seed')}|t for r in rows for t in r[key]]
         write_csv(derived/name,trace,fields)
+    return rows,summaries,paired
+
+
+def write_outputs(directory,manifest,cfg,candidates):
+    rows,summaries,paired=write_measurements(directory,manifest,cfg,candidates)
+    derived=directory/'derived'
     text=['# Đối chứng khởi tạo Uniform và Sobol–OBL','',
           '**SMOKE: chỉ kiểm tra pipeline, không dùng làm bằng chứng cải thiện.**' if cfg.get('smoke') else 'Thí nghiệm ghép seed trên ZDT.',
           f"Tổng số run: **{len(rows)}**; hợp lệ: **{sum(r['valid'] for r in rows)}**.",'',

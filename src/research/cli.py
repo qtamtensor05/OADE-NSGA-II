@@ -16,12 +16,14 @@ from research.benchmarking.reuse import run_benchmark_v2
 from research.studies import restart_comparison
 from research.studies import probability_ablation
 from research.studies import initialization_comparison
+from research.studies import diversity_injection
 
 
 Command = Callable[[list[str] | None], None]
 
 
 COMMANDS: dict[str, Command] = {
+    "ablation-diversity": diversity_injection.main,
     "compare-initialization": initialization_comparison.main,
     "ablation-probability": probability_ablation.main,
     "restart-comparison": restart_comparison.main,

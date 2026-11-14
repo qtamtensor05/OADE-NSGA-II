@@ -48,3 +48,7 @@ Cấu hình: `config/studies/initialization_comparison.yaml`. Output: `results/e
 Đơn vị phân tích: cặp run cùng seed/bài, $n=30$. Wilcoxon signed-rank hai phía, bỏ zero, xấp xỉ chuẩn; toàn delta zero đặt $p=1$. Holm theo cặp/bài/metric, chỉ một cặp nên $p$ hiệu chỉnh bằng $p$ thô, $\alpha=0.05$. Run invalid được giữ lại và đếm nhưng loại khỏi cặp chất lượng. Không phát hiện khác biệt không chứng minh tương đương; nếu khẳng định chung qua 10 endpoint, cần xem thêm hiệu chỉnh đa kiểm định.
 
 Chỉ kết luận lợi ích từ chất lượng **cuối run ở cùng cap** cùng độ dao động và kiểm định. Chất lượng ban đầu tốt hơn chưa bảo đảm cải thiện cuối. Runtime bao gồm khởi tạo và instrumentation, phụ thuộc số worker/tải máy. Tác động hạ nguồn qua restart hoặc success-rate là một phần của hiệu quả thay đổi khởi tạo, không phải các cơ chế được thay đổi thêm trong thiết kế.
+
+## Kết quả đã thu
+
+Đã hoàn tất và xác minh 300 run. Xem [báo cáo đối chứng](../reports/initialization_uniform_vs_sobol_obl_zdt_report.md) để phân biệt lợi thế khởi tạo với chất lượng cuối cùng và phạm vi kiểm định.

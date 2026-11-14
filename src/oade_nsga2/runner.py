@@ -63,5 +63,6 @@ def run_instrumented(spec, problem, pop_size, budget, initial_x, seed, recorder,
                      "restart_events": solver.restart_events,
                      "probability_trace": probability_trace,
                      "initialization_evidence": solver.initialization_evidence,
+                     "diversity_events": solver.diversity_events,
                      "final_mean_F": float(solver.mean_F), "final_mean_CR": float(solver.mean_CR),
                      "final_prob_de": float(solver.prob_de)}

@@ -6,7 +6,9 @@ This project evaluates adaptive differential evolution and opposition-based lear
 
 ## Study design and reading guide
 
-Initialization study: [uniform versus Sobol–OBL](docs/protocols/initialization_comparison.md), with adaptive restart and success-rate held constant. Both initialization and search objective calls count toward the same cap; 300 runs planned, no results claimed yet.
+Periodic diversity ablation: [OBL injection on/off](docs/protocols/diversity_injection.md), with common uniform initialization, adaptive restart and success-rate. Includes injection events, evaluation costs, retention after selection and a planned Holm correction across 10 ZDT endpoints.
+
+Initialization study: [protocol](docs/protocols/initialization_comparison.md) and [300-run results](docs/reports/initialization_uniform_vs_sobol_obl_zdt_report.md). Sobol–OBL improves initial median IGD; final benefits are not consistent at the 20,000-evaluation cap. The isolated ZDT6 HV signal does not survive Holm correction across all 10 endpoints.
 
 Optional success-rate operator adaptation: [probability ablation](docs/protocols/probability_ablation.md) compares fixed and success-rate pDE. The current default is success-rate; generated-share has been removed. Historical tables below retain their original algorithm and do not validate this new default.
 
