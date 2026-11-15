@@ -11,11 +11,11 @@ from . import NSGAIISDROLS, ProblemAdapter as SDROLSProblemAdapter
 def run(spec, problem, pop_size, budget, initial_x, seed, recorder) -> RunOutcome:
     budgeted = BudgetedProblem(problem, budget)
     params = dict(spec.params)
-    factor = params.pop("local_search_max_neighbors_factor", None)
-    max_neighbors = None if factor is None else int(factor) * pop_size
+    if "local_search_max_neighbors_factor" in params or "local_search_max_neighbors" in params:
+        raise ValueError("The paper-based baseline requires uncapped local search")
     solver = NSGAIISDROLS(
         SDROLSProblemAdapter(budgeted), pop_size=pop_size, n_gen=budget, seed=seed,
-        local_search_max_neighbors=max_neighbors, **params,
+        **params,
     )
     start = time.perf_counter()
     try:

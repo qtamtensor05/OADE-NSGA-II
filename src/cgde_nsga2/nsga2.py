@@ -77,7 +77,7 @@ def rank_and_crowding(F: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[list[
     return ranks, crowding, fronts
 
 
-def environmental_selection(P: np.ndarray, F: np.ndarray, target_size: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def environmental_selection(P: np.ndarray, F: np.ndarray, target_size: int, *, return_indices=False):
     ranks, crowding, fronts = rank_and_crowding(F)
     selected: list[int] = []
     for front in fronts:
@@ -95,5 +95,6 @@ def environmental_selection(P: np.ndarray, F: np.ndarray, target_size: int) -> t
     next_P = P[idx].copy()
     next_F = F[idx].copy()
     next_ranks, next_crowding, _ = rank_and_crowding(next_F)
-    return next_P, next_F, next_ranks, next_crowding
+    result = (next_P, next_F, next_ranks, next_crowding)
+    return (*result, idx) if return_indices else result
 

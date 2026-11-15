@@ -1,0 +1,54 @@
+{
+  "manifest_sha256": "c4d6fe07c668b1866b68b944b74067161475a3aee90990793a82dd63686f5f4c",
+  "records": 1050,
+  "valid_runs": 1049,
+  "validity_counts": {
+    "ok": 1049,
+    "invalid_collapsed_front": 1
+  },
+  "source_files_verified": 106,
+  "artifact_checksums_verified": 1050,
+  "max_objective_recalculation_error": 0.0,
+  "max_metric_recalculation_error": 0.0,
+  "comparison_rows_verified": 60,
+  "summary_rows_verified": 35,
+  "bootstrap": {
+    "seed": 20261115,
+    "resamples": 20000,
+    "unit": "paired seed within problem",
+    "interval": "percentile 95%; marginal, not multiplicity-adjusted"
+  },
+  "results": {
+    "oade_better": 56,
+    "no_significant_difference": 4
+  },
+  "environment": {
+    "packages": {
+      "PyYAML": "6.0.3",
+      "numpy": "2.5.4",
+      "pymoo": "0.6.2",
+      "scipy": "1.18.1"
+    },
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.14.7",
+    "threads": {
+      "MKL_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "collapsed_front_sensitivity": [
+    {
+      "metric": "IGD",
+      "n_pairs": 30,
+      "p_value": 1.862645149230957e-09,
+      "oade_wins": 30
+    },
+    {
+      "metric": "HV",
+      "n_pairs": 30,
+      "p_value": 1.862645149230957e-09,
+      "oade_wins": 30
+    }
+  ]
+}

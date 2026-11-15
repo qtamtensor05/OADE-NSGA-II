@@ -13,6 +13,7 @@ from research.plotting import all_problems, parameter_sensitivity, wilcoxon_resu
 from research.studies import ablation, parameter_analysis, zdt_sensitivity, dtlz_sensitivity
 from research.maintenance import tmp_sessions, inventory, check_structure
 from research.benchmarking.reuse import run_benchmark_v2
+from research.benchmarking import zdt_seven
 from research.studies import restart_comparison
 from research.studies import probability_ablation
 from research.studies import initialization_comparison
@@ -23,6 +24,7 @@ Command = Callable[[list[str] | None], None]
 
 
 COMMANDS: dict[str, Command] = {
+    "benchmark-zdt-seven": zdt_seven.main,
     "ablation-diversity": diversity_injection.main,
     "compare-initialization": initialization_comparison.main,
     "ablation-probability": probability_ablation.main,

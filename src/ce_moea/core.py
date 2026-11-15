@@ -78,7 +78,7 @@ class AttributedNetworkProblem:
         self,
         network: AttributedNetwork,
         attribute_mode: AttributeMode = "auto",
-        multi_attribute_mode: MultiAttributeMode = "distance",
+        multi_attribute_mode: MultiAttributeMode = "paper_cosine",
     ) -> None:
         self.network = network
         self.attribute_mode = self._resolve_attribute_mode(attribute_mode)

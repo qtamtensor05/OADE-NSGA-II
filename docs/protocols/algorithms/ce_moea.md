@@ -4,6 +4,8 @@ Standalone implementation of Continuous Encoding MOEA from:
 
 Sun, J.; Zheng, W.; Zhang, Q.; Xu, Z. "Graph Neural Network Encoding for Community Detection in Attribute Networks." arXiv:2006.03996v2.
 
+[Primary full text](https://arxiv.org/html/2006.03996v2). PM now follows the printed exponent eta, not eta+1. See [corrections and interpretation limits](../baseline_paper_corrections.md). On ZDT the benchmark measures the continuous search core, not the graph method in full.
+
 ## Included
 
 - Graph neural network encoding: sigmoid, softmax, argmax, then locus-style decoding into communities.
@@ -17,7 +19,7 @@ Sun, J.; Zheng, W.; Zhang, Q.; Xu, Z. "Graph Neural Network Encoding for Communi
 ```python
 import numpy as np
 
-from algorithms.ce_moea import AttributedNetwork, AttributedNetworkProblem, CEMOEA
+from ce_moea import AttributedNetwork, AttributedNetworkProblem, CEMOEA
 
 edges = [(0, 1), (1, 2), (3, 4), (4, 5), (2, 3)]
 attributes = np.array([0.0, 0.1, 0.2, 1.0, 1.1, 1.2])
@@ -30,5 +32,5 @@ PS, PF = solver.run()
 partitions = solver.decoded_partitions()
 ```
 
-For multi-attribute data, pass an attribute matrix with shape `(n_nodes, n_attributes)`. The default `multi_attribute_mode="distance"` minimizes `1 - cosine` so smaller values mean better homogeneity. Use `multi_attribute_mode="paper_cosine"` if you want the literal cosine summation printed in the paper.
+For multi-attribute data, pass an attribute matrix with shape `(n_nodes, n_attributes)`. The default `multi_attribute_mode="paper_cosine"` follows the cosine summation printed in the paper. The optional `distance` mode uses `1-cosine` and is an explicit modification. The paper's stated interpretation of minimized cosine is ambiguous; it is not silently corrected here.
 

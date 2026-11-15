@@ -37,7 +37,7 @@ def attribute_objective(
     attributes: np.ndarray,
     labels: np.ndarray,
     mode: Literal["single", "multi"],
-    multi_attribute_mode: Literal["distance", "paper_cosine"] = "distance",
+    multi_attribute_mode: Literal["distance", "paper_cosine"] = "paper_cosine",
 ) -> float:
     if mode == "single":
         return single_attribute_distance(attributes, labels)
@@ -69,7 +69,7 @@ def single_attribute_distance(attributes: np.ndarray, labels: np.ndarray) -> flo
 def multi_attribute_distance(
     attributes: np.ndarray,
     labels: np.ndarray,
-    mode: Literal["distance", "paper_cosine"] = "distance",
+    mode: Literal["distance", "paper_cosine"] = "paper_cosine",
 ) -> float:
     values = np.asarray(attributes, dtype=float)
     if values.ndim == 1:

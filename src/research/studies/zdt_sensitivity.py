@@ -163,11 +163,15 @@ def validate_records(cfg, candidates, rows, complete=False):
         raise ValueError(f"Incomplete OFAT study: {len(seen)}/{len(expected)} tasks")
 
 
-def execute(directory, manifest, cfg, candidates, jobs, *, task_runner=None):
+def execute(directory, manifest, cfg, candidates, jobs, *, task_runner=None, order_seed=None, progress_label="OFAT"):
     worker = task_runner or run_task
     expected = tasks(cfg, candidates)
     validate_records(cfg, candidates, load_records(directory, manifest))
     pending = {key: value for key, value in expected.items() if f"primary/{key}.json" not in manifest["artifacts"]}
+    if order_seed is not None:
+        keys=list(pending)
+        np.random.default_rng(order_seed).shuffle(keys)
+        pending={key:pending[key] for key in keys}
 
     def checkpoint(key, row):
         c, p, seed = expected[key]
@@ -178,7 +182,7 @@ def execute(directory, manifest, cfg, candidates, jobs, *, task_runner=None):
         atomic_json(directory / filename, row)
         manifest["artifacts"][filename] = file_hash(directory / filename)
         atomic_json(directory / "study_manifest.json", manifest)
-        print(f"[OFAT] {len(manifest['artifacts'])}/{len(expected)}: {row['parameter']}={row['level']} {row['problem']} seed={seed}", flush=True)
+        print(f"[{progress_label}] {len(manifest['artifacts'])}/{len(expected)}: {row['parameter']}={row['level']} {row['problem']} seed={seed}", flush=True)
 
     if jobs == 1:
         for key, (candidate, problem, seed) in pending.items():

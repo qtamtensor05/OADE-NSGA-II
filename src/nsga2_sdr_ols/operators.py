@@ -66,6 +66,12 @@ def local_search(
             if len(neighbors) < budget:
                 neighbors.append(make_individual(np.clip(x_minus, problem.xl, problem.xu), source="ls", parent=i, variable=int(k)))
 
+    # A hard FE cap may interrupt the final neighborhood. Sample the remainder
+    # across the full neighborhood, avoiding a privileged prefix of parents.
+    remaining = problem.remaining_evaluations
+    if remaining < len(neighbors):
+        indices = rng.choice(len(neighbors), size=int(remaining), replace=False)
+        neighbors = [neighbors[int(i)] for i in indices]
     evaluate_unevaluated(problem, neighbors)
     return neighbors
 
@@ -132,7 +138,15 @@ def sbx_crossover(
         else:
             betaq = (1.0 / (2.0 - rand * alpha)) ** (1.0 / (eta_c + 1.0))
 
-        child[j] = 0.5 * ((y1 + y2) - betaq * (y2 - y1))
+        lower_child = 0.5 * ((y1 + y2) - betaq * (y2 - y1))
+        beta = 1.0 + 2.0 * (xu[j] - y2) / (y2 - y1)
+        alpha = 2.0 - beta ** (-(eta_c + 1.0))
+        if rand <= 1.0 / alpha:
+            betaq = (rand * alpha) ** (1.0 / (eta_c + 1.0))
+        else:
+            betaq = (1.0 / (2.0 - rand * alpha)) ** (1.0 / (eta_c + 1.0))
+        upper_child = 0.5 * ((y1 + y2) + betaq * (y2 - y1))
+        child[j] = lower_child if rng.random() < 0.5 else upper_child
 
     return np.clip(child, xl, xu)
 

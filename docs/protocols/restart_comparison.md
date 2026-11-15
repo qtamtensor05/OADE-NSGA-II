@@ -1,6 +1,6 @@
 # Pipeline so sánh restart có telemetry
 
-**Triển khai nghiên cứu:** pipeline này dùng `research.oade_nsga2` và runner `local_oade_research`; bản chính `oade_nsga2` chỉ có một cấu hình. Xem [phân tách hai bản](oade_implementations.md). Dữ liệu execution cũ giữ nguyên provenance, không resume sau đổi layout mã nguồn.
+**Triển khai nghiên cứu:** pipeline này dùng `research.oade_nsga2` và runner `local_oade_research`; bản chính `oade_nsga2` chỉ có một cấu hình. Xem [phân tách hai bản](oade_implementations.md). Dữ liệu và báo cáo cũ đã được xóa khi đặt lại mốc nghiên cứu; cần chạy mới, không dùng resume từ bộ cũ.
 
 Pipeline mới chạy ba cấu hình độc lập trên chung lõi OADE: `classic`, `adaptive`, `no_restart`. Mặc định: ZDT1/2/3/4/6, 30 seed ghép cặp 1000–1029, population 100, cap 20.000 objective evaluations/run, tổng 450 run. Cùng khởi tạo uniform, bật OBL định kỳ, adaptation F/CR và neighborhood; cập nhật xác suất DE bằng **success-rate** ở cả ba nhánh. Không nhập lại số liệu lịch sử thiếu telemetry hoặc dùng công thức xác suất cũ.
 
@@ -63,6 +63,6 @@ Nếu diversity khỏe, adaptive đưa counter về patience//2. No-restart vẫ
 
 Writer đã có retry hữu hạn khi Windows tạm chặn thay file manifest; nếu lỗi kéo dài giữ nguyên cả primary và file tạm để phục hồi, không xóa dữ liệu.
 
-## Kết quả đã thu
+## Trạng thái kết quả
 
-Đã hoàn tất và xác minh 450 run của cấu hình success-rate hiện tại. Xem [báo cáo đối chứng](../reports/restart_no_classic_adaptive_zdt_report.md) để phân biệt tác động bất lợi của classic với lợi ích chưa được xác lập của adaptive so với không restart.
+Bộ kết quả và báo cáo trước đây đã được xóa. Đây là giao thức có thể chạy lại, chưa có kết quả nghiên cứu thành phần được giữ tại mốc mới.

@@ -13,7 +13,7 @@ from .operators import (
     opposition_based_learning,
     random_population,
 )
-from .sdr import environmental_selection_sdr, fast_non_dominated_sort_sdr
+from .sdr import environmental_selection_sdr, fast_non_dominated_sort_sdr, calculate_crowding_distance
 
 
 class NSGAIISDROLS:
@@ -66,6 +66,8 @@ class NSGAIISDROLS:
         self.history.clear()
 
         for gen in range(self.n_gen):
+            if self.problem.remaining_evaluations == 0:
+                break
             search_neighbors = local_search(
                 self.problem,
                 self.population,
@@ -76,12 +78,15 @@ class NSGAIISDROLS:
             )
 
             combined = self.population + search_neighbors
-            combined = environmental_selection_sdr(combined, max(self.pop_size, len(self.population)), self.problem.n_obj)
+            # Section 4.3: GA operates on R = P + S without pre-truncating R.
+            for front in fast_non_dominated_sort_sdr(combined):
+                calculate_crowding_distance(front, self.problem.n_obj)
 
             offspring = make_ga_offspring(
                 self.problem,
                 combined,
-                self.pop_size,
+                min(self.pop_size, int(self.problem.remaining_evaluations))
+                if np.isfinite(self.problem.remaining_evaluations) else self.pop_size,
                 self.rng,
                 crossover_prob=self.crossover_prob,
                 mutation_prob=self.mutation_prob,

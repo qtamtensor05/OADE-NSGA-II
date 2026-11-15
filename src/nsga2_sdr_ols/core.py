@@ -48,6 +48,10 @@ class ProblemAdapter:
             values = values.reshape(1, -1)
         return values
 
+    @property
+    def remaining_evaluations(self):
+        return getattr(self.problem, "remaining_evaluations", np.inf)
+
 
 def make_individual(x: np.ndarray, f: np.ndarray | None = None, **metadata: Any) -> Individual:
     ind = Individual(np.asarray(x, dtype=float).copy())

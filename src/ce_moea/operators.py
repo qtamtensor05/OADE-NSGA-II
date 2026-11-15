@@ -38,6 +38,9 @@ def polynomial_mutation(
     eta_m: float,
     rng: np.random.Generator,
 ) -> np.ndarray:
+    # Algorithm 4, arXiv:2006.03996v2 uses eta, not Deb's eta + 1.
+    if eta_m <= 0:
+        raise ValueError("eta_m must be positive")
     y = np.asarray(x, dtype=float).copy()
     xl = np.asarray(xl, dtype=float)
     xu = np.asarray(xu, dtype=float)
@@ -49,15 +52,15 @@ def polynomial_mutation(
         delta1 = (y[i] - xl[i]) / (xu[i] - xl[i])
         delta2 = (xu[i] - y[i]) / (xu[i] - xl[i])
         rand = rng.random()
-        mut_pow = 1.0 / (eta_m + 1.0)
+        mut_pow = 1.0 / eta_m
 
         if rand < 0.5:
             xy = 1.0 - delta1
-            val = 2.0 * rand + (1.0 - 2.0 * rand) * (xy ** (eta_m + 1.0))
+            val = 2.0 * rand + (1.0 - 2.0 * rand) * (xy ** eta_m)
             delta_q = val ** mut_pow - 1.0
         else:
             xy = 1.0 - delta2
-            val = 2.0 * (1.0 - rand) + 2.0 * (rand - 0.5) * (xy ** (eta_m + 1.0))
+            val = 2.0 * (1.0 - rand) + 2.0 * (rand - 0.5) * (xy ** eta_m)
             delta_q = 1.0 - val ** mut_pow
 
         y[i] += delta_q * (xu[i] - xl[i])
