@@ -1,0 +1,72 @@
+{
+  "pdf": "docs\\reports\\figures\\zdt_v2\\paired_effects.pdf",
+  "auditable": true,
+  "verdict": "REVIEW REQUIRED",
+  "page_count": 1,
+  "visible_text_box_count": 36,
+  "text_trace_count": 36,
+  "stroke_path_count": 71,
+  "filled_region_count": 63,
+  "image_region_count": 1,
+  "summary": {
+    "fail": 0,
+    "warn": 2,
+    "contained_fill_overlays": 8,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": [
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "−1.0",
+      "text_bbox": [
+        164.8000030517578,
+        245.01329040527344,
+        178.6179962158203,
+        252.01329040527344
+      ],
+      "other_text": null,
+      "other_bbox": [
+        167.3699951171875,
+        218.42999267578125,
+        387.94000244140625,
+        256.010009765625
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        62000
+      ]
+    },
+    {
+      "severity": "WARN",
+      "kind": "text-fill-edge",
+      "page": 1,
+      "message": "Text partially overlaps the edge of 1 filled region(s)",
+      "text": "1.0",
+      "text_bbox": [
+        378.7300109863281,
+        245.01329040527344,
+        388.46002197265625,
+        252.01329040527344
+      ],
+      "other_text": null,
+      "other_bbox": [
+        167.3699951171875,
+        218.42999267578125,
+        387.94000244140625,
+        256.010009765625
+      ],
+      "object_count": 1,
+      "object_indexes": [
+        62000
+      ]
+    }
+  ]
+}

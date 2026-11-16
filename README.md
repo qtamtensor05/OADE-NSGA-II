@@ -101,7 +101,30 @@ Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** ov
 | NSGAII_SDR_OLS | 30/30 | 5.257007 ± 0.3926272 | 0 ± 0 | 15.004 |
 | CE_MOEA | 30/30 | 0.004887331 ± 0.0003339747 | 0.4378238 ± 0.0003542558 | 138.853 |
 
+## Visual comparison (R)
+
+The figures use the audited ZDT v2 data. Blue highlights OADE; grey shows the baselines. All valid quality observations are retained, including the ZDT4 tails. See the [Vietnamese report and figure legends](docs/reports/zdt_seven_fixed_oade_v2_report.md#biểu-đồ-so-sánh-bằng-r) for interpretation and reproduction.
+
+![Paired effects across all 60 comparisons](docs/reports/figures/zdt_v2/paired_effects.png)
+
+Positive rank-biserial effects favour OADE. **NS** marks the four endpoints with Holm-adjusted p ≥ 0.05 across the full 60-test family; nonsignificance does not establish equivalence. Colour represents paired effect size, not improvement percentage.
+
+| Quality distributions | Measured cost |
+|---|---|
+| [IGD: all valid runs](docs/reports/figures/zdt_v2/igd_distribution.png) · [PDF](docs/reports/figures/zdt_v2/igd_distribution.pdf) | [Runtime: all completed runs](docs/reports/figures/zdt_v2/runtime_distribution.png) · [PDF](docs/reports/figures/zdt_v2/runtime_distribution.pdf) |
+| [HV: all valid runs](docs/reports/figures/zdt_v2/hv_distribution.png) · [PDF](docs/reports/figures/zdt_v2/hv_distribution.pdf) | Runtime reflects the measured four-worker environment. |
+
 ## Effect sizes and limitations
+
+### IGD on a log scale and HV bars
+
+![IGD median and IQR on a log10 scale for all seven algorithms](docs/reports/figures/zdt_v2/igd_log_comparison.png)
+
+![HV mean and SD for all seven algorithms](docs/reports/figures/zdt_v2/hv_bars.png)
+
+IGD points show **median**, with lines spanning Q1–Q3 on a shared log10 axis across all five problems. Smaller IGD remains visible alongside values several orders of magnitude larger; no constant is added. HV bars show mean ± SD on linear axes starting at zero. Lower IGD and higher HV are better. For mean-based detail with NSGA2/DNSGA2, see the [labelled IGD bars](docs/reports/figures/zdt_v2/igd_bars_focus.png) and [labelled HV bars](docs/reports/figures/zdt_v2/hv_bars_focus.png). These summaries do not replace the paired tests or the full distributions.
+
+### Interpretation
 
 Relative to NSGA2, OADE median IGD decreases by 12.59% on ZDT1, 11.64% on ZDT2, 7.69% on ZDT3, 22.63% on ZDT4 and 75.92% on ZDT6. The ZDT4 difference is not statistically significant. Percentages compare group medians, not the median of paired percentage changes.
 

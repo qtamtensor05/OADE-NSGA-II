@@ -1,0 +1,30 @@
+{
+  "runs": 2,
+  "seed_base": 42,
+  "population": 10,
+  "budget": 300,
+  "variants": [
+    "full",
+    "no_obl",
+    "no_restart",
+    "fixed_f_cr",
+    "fixed_pde",
+    "global_neighborhood",
+    "sbx_only",
+    "de_only"
+  ],
+  "problems": [
+    "zdt4",
+    "zdt6"
+  ],
+  "sources": {
+    "mechanism_impact.py": "20141b8fd3e32ffa7eced897f8fc4a6005b3fb2c10a876d826fe924c1a8d2357",
+    "algorithm.py": "be3b25e36b789e6dc9538cdd41c9ce0339ebb5681306a925d67e87205b5eca2c",
+    "configuration.py": "b08615899eb67977379212531fc04b366c12d8b9acbf24672c3a26aad920e4ee",
+    "core.py": "7a3af86abc19ac6e9b5fdb67c1f09625002dc24b524ee987cb400e6fd7f7acd2",
+    "operators.py": "188b04b544c851e95abeb49c1805d65793d7b9b70bc6542adf8b63fc6b908a0f",
+    "runner.py": "d713e0ccd1a6b6a7832713585e84714ebcc2aa42e1d50d89778d15680c167ce1",
+    "selection.py": "bbf9e1eeb4d9e6ee4c4755c26b7bb64fa2b852ce2ce6acf458b5203536d41129",
+    "__init__.py": "57117b6c3fabb0f4c5d6e5d6447e5b8d6f6fd913116904f349da381ae3d0ede0"
+  }
+}

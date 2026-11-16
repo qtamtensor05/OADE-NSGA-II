@@ -141,7 +141,65 @@ Convergence lưu ở thời điểm callback sau batch: SDR-OLS ZDT1 có các ta
 
 Có thể kết luận: **trong năm bài ZDT và ngân sách đã đo, OADE bản thống nhất cải thiện nhiều chỉ số chất lượng so với các cấu hình đối chứng cụ thể, nhưng độ ổn định ZDT4 chưa tốt hơn NSGA2/DNSGA2 và runtime cao hơn NSGA2**. Không dùng benchmark này để quy lợi ích riêng cho restart, OBL hay success_rate; việc đó cần các ablation đã ghép điều kiện. Không suy ra kết quả khác trước sửa baseline là tác động riêng của một thay đổi: nhiều cơ chế/code đã đổi đồng thời.
 
-## Dữ liệu đối chiếu
+## Biểu đồ so sánh bằng R
+
+Các hình dưới đây được tạo từ dữ liệu ZDT v2 hiện có, không chạy lại tối ưu. Bố cục nền trắng, chữ sans-serif, màu xanh nhấn OADE và màu xám cho đối chứng giúp đọc khi thu nhỏ; PDF/SVG giữ chữ và hình vector. Đây là cách trình bày theo hướng Nature, chưa phải xác nhận đáp ứng quy cách của một tạp chí cụ thể.
+
+### Hình 1 | Mức độ nhất quán của lợi thế theo cặp seed
+
+![Hiệu ứng theo cặp của 60 so sánh](figures/zdt_v2/paired_effects.png)
+
+Mỗi ô là rank-biserial effect từ so sánh OADE với đối chứng trên cùng seed, theo từng bài và chỉ số. Giá trị dương thiên về OADE; màu thể hiện effect size, không phải phần trăm cải thiện hay p-value. **NS** đánh dấu p Holm ≥ 0,05 trong họ chung 60 endpoint. Có 56 endpoint phát hiện OADE tốt hơn và 4 endpoint NS trên ZDT4 với NSGA2/DNSGA2; NS không chứng minh tương đương. Mỗi so sánh dùng 30 cặp, riêng CGDE ZDT4 dùng 29. Hiệu ứng thứ hạng có thể lớn khi chênh lệch tuyệt đối nhỏ: HV ZDT6 với CGDE chỉ tăng khoảng 0,0256% theo median nhóm. [PDF](figures/zdt_v2/paired_effects.pdf) · [SVG](figures/zdt_v2/paired_effects.svg).
+
+### Hình 2 | Phân bố IGD và rủi ro ở đuôi
+
+![Phân bố IGD của bảy thuật toán](figures/zdt_v2/igd_distribution.png)
+
+Các phần a–e lần lượt là ZDT1, ZDT2, ZDT3, ZDT4 và ZDT6; IGD thấp hơn tốt hơn. Trục log giúp hiển thị đồng thời các nhóm chênh lệch nhiều bậc độ lớn. Mỗi điểm là một run; dịch điểm theo chiều dọc chỉ để giảm che khuất. Hộp là Q1–Q3, vạch giữa là median, râu đến quan sát xa nhất trong 1,5 IQR; các điểm ngoài râu vẫn hiển thị. Mỗi nhóm có 30 run hợp lệ, riêng CGDE ZDT4 có 29. Giữ đủ 1.049 run hợp lệ; chỉ loại collapsed front đã định trước (CGDE ZDT4 seed 63). Các trục dùng phạm vi riêng theo bài, không gộp IGD giữa bài. Đuôi IGD lớn của OADE trên ZDT4 giải thích vì sao median tốt không đồng nghĩa độ ổn định tốt hơn NSGA2/DNSGA2. [PDF](figures/zdt_v2/igd_distribution.pdf) · [SVG](figures/zdt_v2/igd_distribution.svg).
+
+### Hình 3 | Hypervolume trên toàn front
+
+![Phân bố HV của bảy thuật toán](figures/zdt_v2/hv_distribution.png)
+
+HV cao hơn tốt hơn; các phần, điểm, hộp và quy tắc loại như Hình 2. Trục tuyến tính bắt đầu từ 0 và có phạm vi riêng theo bài; giữ nguyên các HV bằng 0. Hình này cho thấy mức bao phủ toàn front và các nhóm chất lượng thấp; các khác biệt HV nhỏ giữa nhóm tốt nhất cần đọc cùng số liệu bảng và Hình 1. Không dùng độ cao HV giữa các bài để xếp hạng thuật toán. [PDF](figures/zdt_v2/hv_distribution.pdf) · [SVG](figures/zdt_v2/hv_distribution.svg).
+
+### Hình 4 | Chi phí runtime quan sát được
+
+![Phân bố runtime của bảy thuật toán](figures/zdt_v2/runtime_distribution.png)
+
+Runtime tính bằng giây/run, trục log; các phần và định nghĩa hộp như Hình 2. Dùng đủ 1.050 run hoàn tất, kể cả run có front không hợp lệ, vì runtime của run đó vẫn được đo. OADE có runtime median cao hơn NSGA2 khoảng 1,95–2,84 lần tùy bài. Số đo thuộc môi trường bốn worker và các triển khai khác nhau; không suy ra độ phức tạp hay tốc độ hội tụ tại cùng FE từ hình này. [PDF](figures/zdt_v2/runtime_distribution.pdf) · [SVG](figures/zdt_v2/runtime_distribution.svg).
+
+### Hình 5 | IGD trên trục log₁₀
+
+![IGD median và IQR trên trục log của bảy thuật toán](figures/zdt_v2/igd_log_comparison.png)
+
+Điểm là **median**, đoạn ngang là **Q1–Q3 (IQR)**, không phải SD hay CI. Dùng chung phạm vi trục log₁₀ cho cả năm bài: khoảng cách biểu diễn tỷ lệ, chẳng hạn 0,01 → 0,1 và 0,1 → 1 đều là tăng 10 lần. Nhờ đó các nhóm IGD nhỏ vẫn nhìn rõ bên cạnh nhóm IGD lớn; không cộng hằng số hay cắt cột. Mỗi nhóm có 30 run hợp lệ, riêng CGDE ZDT4 có 29; không loại thêm seed. Median/IQR không mô tả toàn bộ đuôi: các sai số lớn trên ZDT4 vẫn giữ ở Hình 2 và bảng mean ± SD. [PDF](figures/zdt_v2/igd_log_comparison.pdf) · [SVG](figures/zdt_v2/igd_log_comparison.svg).
+
+### Hình 6 | Biểu đồ cột HV và đối chiếu mean
+
+![Cột HV trung bình của bảy thuật toán](figures/zdt_v2/hv_bars.png)
+
+Chiều cao cột là **mean**, râu sai số là **mean ± 1 SD**, không phải CI hay kiểm định khác biệt. Các phần a–e là ZDT1/2/3/4/6; mỗi phần dùng trục tuyến tính riêng bắt đầu từ 0. Mỗi nhóm có 30 run hợp lệ, riêng CGDE ZDT4 có 29. Nếu mean − SD âm, chỉ đầu râu hiển thị được chặn tại 0 vì IGD/HV không âm; dữ liệu và SD vẫn giữ nguyên. OADE màu xanh, đối chứng màu xám. IGD thấp tốt, HV cao tốt. [HV PDF](figures/zdt_v2/hv_bars.pdf).
+
+Chênh lệch lớn khiến cột IGD của nhóm tốt khó phân biệt trong hình đủ bảy thuật toán. Hai hình bổ sung chỉ tập trung **OADE, NSGA2 và DNSGA2**, giữ trục từ 0 và mean ± SD; số trên cột là mean làm tròn 5 chữ số thập phân. Chọn nhóm theo danh tính đối chứng, giữ toàn bộ seed hợp lệ của từng nhóm. Với HV, các chênh lệch nhỏ đọc bằng nhãn số, không cắt trục để phóng đại.
+
+![Cột IGD tập trung OADE, NSGA2 và DNSGA2](figures/zdt_v2/igd_bars_focus.png)
+
+![Cột HV tập trung OADE, NSGA2 và DNSGA2](figures/zdt_v2/hv_bars_focus.png)
+
+Trên ZDT4, mean IGD của OADE cao hơn và mean HV thấp hơn NSGA2/DNSGA2 do các seed sai số lớn, dù median có thể tốt hơn. Không suy ra ý nghĩa thống kê từ độ cao cột hay râu chồng nhau: kết luận theo cặp seed và Holm vẫn ở Hình 1. [IGD tập trung PDF](figures/zdt_v2/igd_bars_focus.pdf) · [HV tập trung PDF](figures/zdt_v2/hv_bars_focus.pdf).
+
+### Tái tạo hình
+
+Từ thư mục gốc repository, với R 4.6.2 và các gói trong `renv.lock`:
+
+```powershell
+& 'C:/Program Files/R/R-4.6.2/bin/Rscript.exe' --vanilla analysis/plot_zdt_comparison.R
+```
+
+Mã nguồn: [script R](../../analysis/plot_zdt_comparison.R), [đo viewport R](../../analysis/measure_r_panels.R). Script dùng thư viện dự án hiện có, không tự cài gói. Thư mục hình chứa dữ liệu nguồn từng hình (`*.source.csv`), checksum đầu vào, phiên bản R/gói và kết quả kiểm tra căn chỉnh. PDF dành cho báo cáo/in, SVG để chỉnh vector, PNG 300 dpi để đọc trên README. Không thay đổi primary data, manifest hoặc kiểm định đã audit.
+
+## Tệp dữ liệu đối chiếu
 
 - [Manifest](../../results/experiments/zdt_seven_fixed_oade_v2/study_manifest.json)
 - [Audit JSON](../../results/experiments/zdt_seven_fixed_oade_v2/derived/audit.json)

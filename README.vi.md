@@ -12,6 +12,16 @@ OADE-NSGA-II kết hợp sinh offspring bằng DE/SBX, cập nhật F/CR, bơm �
 
 ## Thiết kế và cấu hình
 
+Xem [bộ biểu đồ R và chú thích trong báo cáo](docs/reports/zdt_seven_fixed_oade_v2_report.md#biểu-đồ-so-sánh-bằng-r): phân bố IGD/HV, hiệu ứng theo cặp seed và runtime của đủ bảy thuật toán.
+
+![Hiệu ứng theo cặp seed; NS là chưa phát hiện khác biệt sau Holm](docs/reports/figures/zdt_v2/paired_effects.png)
+
+Màu dương thiên về OADE; màu thể hiện rank-biserial effect, không phải phần trăm cải thiện. Bốn ô NS thuộc ZDT4 so với NSGA2/DNSGA2. [IGD](docs/reports/figures/zdt_v2/igd_distribution.png) · [HV](docs/reports/figures/zdt_v2/hv_distribution.png) · [Runtime](docs/reports/figures/zdt_v2/runtime_distribution.png).
+
+### Cấu hình thí nghiệm
+
+Biểu đồ [IGD đủ 7 thuật toán với trục log₁₀](docs/reports/figures/zdt_v2/igd_log_comparison.png) dùng điểm median và đoạn Q1–Q3 để nhìn rõ các nhóm chênh lệch nhiều bậc độ lớn. [HV](docs/reports/figures/zdt_v2/hv_bars.png) giữ cột mean ± SD từ 0. Bản cột tập trung OADE/NSGA2/DNSGA2 có nhãn số: [IGD](docs/reports/figures/zdt_v2/igd_bars_focus.png) · [HV](docs/reports/figures/zdt_v2/hv_bars_focus.png). Xem định nghĩa và giới hạn trong báo cáo.
+
 | Thành phần | Thiết lập |
 |---|---|
 | Bài toán | ZDT1/2/3: D=30; ZDT4/6: D=10; M=2 |
