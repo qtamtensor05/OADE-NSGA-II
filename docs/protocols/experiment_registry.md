@@ -13,7 +13,7 @@ Previous benchmark result directories and reports have been removed. DTLZ/WFG ha
 
 ## Separate OADE component studies
 
-Earlier component-study results have been removed. Their source/configurations remain available as research pipelines; no component-result dataset is retained at this starting point. New executions are required before making component-effect claims.
+Earlier component-study results have been removed. A subsequent 480-run mechanism study on ZDT4/ZDT6 is retained in `results/experiments/oade_mechanism_zdt46/`. Its [audited report](../reports/mechanism_zdt46_report.md) documents 28 Holm-corrected comparisons and provenance limitations. Other component pipelines below require new evidence before effect claims.
 
 | Study | Protocol |
 |---|---|

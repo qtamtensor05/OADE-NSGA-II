@@ -163,7 +163,7 @@ Add `--resume` to continue the same interrupted execution. The `-m research` ent
 
 ## Component studies and documentation
 
-Component-study code and protocols remain available. All earlier component results have been removed; new executions are required before reporting their effects. Only the ZDT v2 benchmark above is retained.
+Component-study code and protocols remain available. Earlier component results were removed. A subsequent 480-run ZDT4/ZDT6 mechanism study now has an [audited report and R figures](docs/reports/mechanism_zdt46_report.md), with explicit provenance limitations: full OADE wins 6 endpoints, interventions win 4, and 18 are nonsignificant after Holm across 28 endpoints.
 
 - [Fixed and research OADE implementations](docs/protocols/oade_implementations.md)
 - [Restart ablation](docs/protocols/restart_comparison.md)

@@ -1,0 +1,37 @@
+Nature Figure Static Preflight
+source: analysis\plot_mechanism_zdt46.R
+backend: r
+
+[WARN] SOURCE-SYNTAX: Basic R delimiter check passed; run Rscript parse() when R is available
+[PASS] FONT-FAMILY: A publication-safe sans-serif family is configured
+  - Helvetica
+  - base_family="sans"
+[PASS] FONT-SIZE: All detected text sizes are at least 5 pt (minimum 7 pt)
+[PASS] FONT-GLYPH-FLOOR: Python mathtext superscript scaling is not applicable
+[PASS] LEGEND-LABEL-CASE: No auditable literal legend labels detected
+[PASS] COLOR-MAP: No rainbow/jet/hsv color mapping detected
+[FAIL] EDITABLE-TEXT: Missing preferred editable-vector devices
+  - cairo_pdf
+[PASS] EXPORT-VECTOR: Both SVG and PDF exports are present
+[WARN] EXPORT-RASTER: PNG preview is present but no TIFF submission raster was found
+[WARN] RASTER-DPI: Raster export meets the 300 dpi floor but not the 600 dpi default
+  - 300
+[WARN] FINAL-WIDTH: No static final width detected; verify the target journal's current specification
+[PASS] DATA-SAMPLING: No high-confidence row-sampling operation detected
+[PASS] DATA-EXCLUSION: No high-confidence missing-data exclusion detected
+[PASS] DEMO-DATA: No obvious simulated-data generator detected
+[PASS] LOG-GUARD: No logarithmic transform or axis detected
+[PASS] INTERP-MONOTONIC: No NumPy interpolation requiring an increasing x-grid detected
+[WARN] UNCERTAINTY-ENCODING: Seed/fold/split aggregates are present without an obvious error bar or uncertainty band
+  - seeds
+  - median
+[PASS] ROTATION-ANCHOR: Matplotlib rotation anchoring is not applicable
+[PASS] ANNOTATION-WORKAROUND: No Matplotlib annotation workaround audit required
+[PASS] PANEL-ALIGNMENT-GATE: Render-time panel-alignment gate is wired into the plotting source
+  - require_patchwork_panel_alignment(
+  - audit_panel_alignment.py
+[PASS] BACKEND-EXCLUSIVE: No obvious cross-backend plotting reference found for r
+
+summary: 15 pass, 5 warn, 1 fail
+verdict: FIX BEFORE DELIVERY
+note: static preflight does not validate statistics, source-data truth, or rendered appearance

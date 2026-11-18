@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "backend": "r-patchwork",
+  "figure": {
+    "width_pt": 518.740157480315,
+    "height_pt": 496.062992125984
+  },
+  "panels": [
+    {
+      "id": "a",
+      "bbox_pt": [70.4472465753425, 274.622926525529, 500.067247820672, 469.625247820672],
+      "grid_id": "patchwork-grid-1",
+      "row_start": 10,
+      "row_stop": 11,
+      "col_start": 8,
+      "col_stop": 9
+    },
+    {
+      "id": "b",
+      "bbox_pt": [70.4472465753425, 33.5967745952678, 500.067247820672, 228.599095890411],
+      "grid_id": "patchwork-grid-1",
+      "row_start": 28,
+      "row_stop": 29,
+      "col_start": 8,
+      "col_stop": 9
+    }
+  ],
+  "exemptions": []
+}

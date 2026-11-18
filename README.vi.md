@@ -150,7 +150,7 @@ Thêm `--resume` để tiếp tục đúng lần chạy bị gián đoạn. Lệ
 
 ## Nghiên cứu thành phần và tài liệu
 
-Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Toàn bộ kết quả thành phần cũ đã được xóa; cần chạy mới trước khi báo cáo hiệu quả của chúng. Chỉ bộ đối chứng ZDT v2 phía trên được giữ.
+Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả thành phần cũ đã được xóa. Bộ chạy mới 480 lượt trên ZDT4/ZDT6 đã có [báo cáo, biểu đồ và kiểm chứng độc lập](docs/reports/mechanism_zdt46_report.md): 6 endpoint thiên về bản đầy đủ, 4 thiên về biến thể và 18 chưa phát hiện khác biệt sau Holm chung 28 endpoint. Báo cáo nêu rõ giới hạn provenance và số lần restart kích hoạt thấp.
 
 - [OADE bản thống nhất và bản nghiên cứu](docs/protocols/oade_implementations.md)
 - [Ablation restart](docs/protocols/restart_comparison.md)
