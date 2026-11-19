@@ -49,69 +49,35 @@ Trong bảng dưới, “+/+” nghĩa là OADE tốt hơn ở cả IGD/HV; “N
 | ZDT4 | NS/NS | +/+ | NS/NS | +/+ | +/+ | +/+ |
 | ZDT6 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
 
-IGD giảm tốt, HV tăng tốt. Ô chất lượng dùng **mean (best run)** trên run hợp lệ; runtime là median giây/run. Trong ngoặc là IGD nhỏ nhất hoặc HV lớn nhất của 30 lượt (CGDE ZDT4 chỉ có 29 lượt hợp lệ); hai cực trị có thể thuộc hai seed khác nhau. Không hiển thị SD bên cạnh, vẫn giữ SD trong CSV nguồn. Giữ bảy thuật toán trên từng bài, không gộp chỉ số giữa các bài có thang đo khác nhau.
+IGD giảm tốt, HV tăng tốt. Ô chất lượng dùng **mean (best run)** trên run hợp lệ. Bỏ cột Valid và Runtime khỏi hai bảng chất lượng; số liệu đầy đủ vẫn giữ trong CSV nguồn. Trong ngoặc là IGD nhỏ nhất hoặc HV lớn nhất của 30 lượt (CGDE ZDT4 chỉ có 29 lượt hợp lệ); hai cực trị có thể thuộc hai seed khác nhau. Không hiển thị SD bên cạnh, vẫn giữ SD trong CSV nguồn. Giữ bảy thuật toán trên từng bài, không gộp chỉ số giữa các bài có thang đo khác nhau.
 
-In đậm giá trị trung tâm và best-run tốt nhất riêng trong cùng bài/bảng: IGD/runtime nhỏ nhất, HV lớn nhất. Trong ô mốc → mức thử, so riêng hai giá trị trung tâm và hai best-run. Xác định đồng hạng trên số liệu chưa làm tròn; hiển thị 4 chữ số có nghĩa, ví dụ `4.47e-3`, nên số nhìn bằng nhau chưa chắc đồng hạng. In đậm chỉ mô tả số học, không biểu thị ý nghĩa thống kê; không xếp hạng khoảng tin cậy hoặc p-value.
+In đậm giá trị trung tâm và best-run tốt nhất riêng trong cùng bài/bảng: IGD nhỏ nhất, HV lớn nhất. Trong ô mốc → mức thử, so riêng hai giá trị trung tâm và hai best-run. Xác định đồng hạng trên số liệu chưa làm tròn; hiển thị 4 chữ số có nghĩa, ví dụ `4.47e-3`, nên số nhìn bằng nhau chưa chắc đồng hạng. In đậm chỉ mô tả số học, không biểu thị ý nghĩa thống kê; không xếp hạng khoảng tin cậy hoặc p-value.
 
-### ZDT1
+### Bảng 1. Giá trị IGD
 
-| Thuật toán | Hợp lệ | IGD ↓ mean (best) | HV ↑ mean (best) | Runtime median (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.47e-3** (**3.952e-3**) | **8.708e-1** (**8.713e-1**) | 7.398 |
-| NSGA2 | 30/30 | 5.175e-3 (4.417e-3) | 8.681e-1 (8.686e-1) | 3.484 |
-| RNSGA2 | 30/30 | 6.33e-1 (4.845e-1) | 3.481e-1 (4.932e-1) | 3.610 |
-| DNSGA2 | 30/30 | 5.633e-3 (4.97e-3) | 8.671e-1 (8.683e-1) | **3.257** |
-| CGDE_NSGAII | 30/30 | 5.202e-3 (4.584e-3) | 8.699e-1 (8.706e-1) | 118.025 |
-| NSGAII_SDR_OLS | 30/30 | 1.845e0 (1.493e0) | 0 (0) | 38.268 |
-| CE_MOEA | 30/30 | 6.8e-3 (5.543e-3) | 8.646e-1 (8.67e-1) | 178.953 |
+| Bài toán | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 5.175e-3 (4.417e-3) | 6.33e-1 (4.845e-1) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 1.845e0 (1.493e0) | 6.8e-3 (5.543e-3) | **4.47e-3** (**3.952e-3**) |
+| ZDT2 | 5.405e-3 (4.938e-3) | 5.235e-1 (4.467e-1) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 3.042e0 (2.344e0) | 7.8e-3 (5.356e-3) | **4.71e-3** (**4.149e-3**) |
+| ZDT3 | 7.191e-3 (4.695e-3) | 7.406e-1 (5.024e-1) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 1.575e0 (1.128e0) | 8.813e-3 (6.121e-3) | **4.998e-3** (**4.453e-3**) |
+| ZDT4 | **9.953e-3** (4.767e-3) | 6.206e-1 (2.416e-1) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 2.384e1 (1.233e1) | 2.884e-1 (1.337e-2) | 3.979e-2 (4.636e-3) |
+| ZDT6 | 1.637e-2 (1.299e-2) | 1.858e-1 (2.775e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 5.257e0 (4.394e0) | 4.887e-3 (4.268e-3) | **3.881e-3** (**3.461e-3**) |
 
-### ZDT2
+### Bảng 2. Giá trị HV
 
-| Thuật toán | Hợp lệ | IGD ↓ mean (best) | HV ↑ mean (best) | Runtime median (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.71e-3** (**4.149e-3**) | **5.377e-1** (**5.38e-1**) | 7.897 |
-| NSGA2 | 30/30 | 5.405e-3 (4.938e-3) | 5.341e-1 (5.349e-1) | **2.778** |
-| RNSGA2 | 30/30 | 5.235e-1 (4.467e-1) | 1.209e-1 (1.46e-1) | 3.858 |
-| DNSGA2 | 30/30 | 5.881e-3 (5.189e-3) | 5.327e-1 (5.345e-1) | 3.399 |
-| CGDE_NSGAII | 30/30 | 5.539e-3 (4.774e-3) | 5.365e-1 (5.373e-1) | 156.693 |
-| NSGAII_SDR_OLS | 30/30 | 3.042e0 (2.344e0) | 0 (0) | 41.547 |
-| CE_MOEA | 30/30 | 7.8e-3 (5.356e-3) | 5.293e-1 (5.338e-1) | 180.302 |
+| Bài toán | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 8.681e-1 (8.686e-1) | 3.481e-1 (4.932e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 0 (0) | 8.646e-1 (8.67e-1) | **8.708e-1** (**8.713e-1**) |
+| ZDT2 | 5.341e-1 (5.349e-1) | 1.209e-1 (1.46e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 0 (0) | 5.293e-1 (5.338e-1) | **5.377e-1** (**5.38e-1**) |
+| ZDT3 | 1.047e0 (1.049e0) | 4.01e-1 (6.188e-1) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 8.119e-4 (1.219e-2) | 1.034e0 (1.045e0) | **1.051e0** (**1.052e0**) |
+| ZDT4 | **8.594e-1** (8.686e-1) | 3.511e-1 (6.767e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 4.653e-1 (8.518e-1) | 8.139e-1 (**8.693e-1**) |
+| ZDT6 | 4.179e-1 (4.226e-1) | 2.676e-1 (3.977e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 0 (0) | 4.378e-1 (4.385e-1) | **4.381e-1** (**4.385e-1**) |
 
-### ZDT3
+## Nghiệm OADE trên Pareto front chuẩn
 
-| Thuật toán | Hợp lệ | IGD ↓ mean (best) | HV ↑ mean (best) | Runtime median (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.998e-3** (**4.453e-3**) | **1.051e0** (**1.052e0**) | 7.426 |
-| NSGA2 | 30/30 | 7.191e-3 (4.695e-3) | 1.047e0 (1.049e0) | 3.804 |
-| RNSGA2 | 30/30 | 7.406e-1 (5.024e-1) | 4.01e-1 (6.188e-1) | 5.867 |
-| DNSGA2 | 30/30 | 5.568e-3 (5.049e-3) | 1.047e0 (1.048e0) | **2.980** |
-| CGDE_NSGAII | 30/30 | 6.126e-3 (5.246e-3) | 1.051e0 (1.051e0) | 178.629 |
-| NSGAII_SDR_OLS | 30/30 | 1.575e0 (1.128e0) | 8.119e-4 (1.219e-2) | 40.696 |
-| CE_MOEA | 30/30 | 8.813e-3 (6.121e-3) | 1.034e0 (1.045e0) | 117.514 |
+![Các lượt OADE có IGD tốt nhất trên Pareto front ZDT](docs/reports/figures/oade_zdt_best_fronts/oade_zdt_best_fronts.png)
 
-### ZDT4
-
-| Thuật toán | Hợp lệ | IGD ↓ mean (best) | HV ↑ mean (best) | Runtime median (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 3.979e-2 (4.636e-3) | 8.139e-1 (**8.693e-1**) | 9.062 |
-| NSGA2 | 30/30 | **9.953e-3** (4.767e-3) | **8.594e-1** (8.686e-1) | **3.273** |
-| RNSGA2 | 30/30 | 6.206e-1 (2.416e-1) | 3.511e-1 (6.767e-1) | 5.031 |
-| DNSGA2 | 30/30 | 1.997e-2 (**4.574e-3**) | 8.467e-1 (8.688e-1) | 3.765 |
-| CGDE_NSGAII | 29/30 | 2.32e0 (4.666e-1) | 1.647e-2 (2.453e-1) | 118.540 |
-| NSGAII_SDR_OLS | 30/30 | 2.384e1 (1.233e1) | 0 (0) | 15.735 |
-| CE_MOEA | 30/30 | 2.884e-1 (1.337e-2) | 4.653e-1 (8.518e-1) | 206.108 |
-
-### ZDT6
-
-| Thuật toán | Hợp lệ | IGD ↓ mean (best) | HV ↑ mean (best) | Runtime median (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **3.881e-3** (**3.461e-3**) | **4.381e-1** (**4.385e-1**) | 7.923 |
-| NSGA2 | 30/30 | 1.637e-2 (1.299e-2) | 4.179e-1 (4.226e-1) | 3.054 |
-| RNSGA2 | 30/30 | 1.858e-1 (2.775e-2) | 2.676e-1 (3.977e-1) | 5.488 |
-| DNSGA2 | 30/30 | 2.259e-2 (1.699e-2) | 4.089e-1 (4.17e-1) | **2.542** |
-| CGDE_NSGAII | 30/30 | 4.828e-3 (4.24e-3) | 4.379e-1 (4.385e-1) | 114.378 |
-| NSGAII_SDR_OLS | 30/30 | 5.257e0 (4.394e0) | 0 (0) | 15.004 |
-| CE_MOEA | 30/30 | 4.887e-3 (4.268e-3) | 4.378e-1 (4.385e-1) | 138.853 |
+Hồng là PF chuẩn, dấu cộng xanh là 100 nghiệm cuối của OADE trong mỗi panel. Chọn seed có IGD nhỏ nhất trong 30 lượt mỗi bài: ZDT1=48, ZDT2=69, ZDT3=65, ZDT4=44, ZDT6=65. Đây là best-case theo IGD, không phải kết quả điển hình hoặc nhất thiết tốt nhất theo HV. [Hình riêng, dữ liệu và quy tắc chọn](docs/reports/oade_zdt_pareto_fronts.md).
 
 ## Mức cải thiện và giới hạn
 

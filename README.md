@@ -39,71 +39,39 @@ In the table, “+/+” means OADE is better on both IGD/HV; “NS/NS” means n
 | ZDT4 | NS/NS | +/+ | NS/NS | +/+ | +/+ | +/+ |
 | ZDT6 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
 
-Lower IGD and higher HV indicate better quality. Quality cells show **mean (best run)** over valid runs; runtime is median seconds/run. Best means minimum IGD or maximum HV among the 30 runs (29 valid runs for CGDE ZDT4); these extrema may come from different seeds. SD remains in the source CSV, but is omitted from the tables. All seven solvers are shown per problem, without pooling metrics across differently scaled problems.
+Lower IGD and higher HV indicate better quality. Quality cells show **mean (best run)** over valid runs. Valid and runtime columns are omitted from the quality matrices; complete measurements remain in the source CSV. Best means minimum IGD or maximum HV among the 30 runs (29 valid runs for CGDE ZDT4); these extrema may come from different seeds. SD remains in the source CSV, but is omitted from the tables. All seven solvers are shown per problem, without pooling metrics across differently scaled problems.
 
-Bold numbers mark the best central and best-run values separately within each problem/table: minimum IGD/runtime and maximum HV. In reference → tested-level cells, compare the two centers and two best-run values separately. Winners and ties use unrounded source values; display uses four significant digits (e.g. `4.47e-3`), so equal-looking rounded values need not be ties. Emphasis is descriptive, not a statistical test; intervals and p-values are not ranked.
+Bold numbers mark the best central and best-run values separately within each problem/table: minimum IGD and maximum HV. In reference → tested-level cells, compare the two centers and two best-run values separately. Winners and ties use unrounded source values; display uses four significant digits (e.g. `4.47e-3`), so equal-looking rounded values need not be ties. Emphasis is descriptive, not a statistical test; intervals and p-values are not ranked.
 
-### ZDT1
+### Table 1. IGD values
 
-| Algorithm | Valid | IGD ↓ mean (best) | HV ↑ mean (best) | Median runtime (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.47e-3** (**3.952e-3**) | **8.708e-1** (**8.713e-1**) | 7.398 |
-| NSGA2 | 30/30 | 5.175e-3 (4.417e-3) | 8.681e-1 (8.686e-1) | 3.484 |
-| RNSGA2 | 30/30 | 6.33e-1 (4.845e-1) | 3.481e-1 (4.932e-1) | 3.610 |
-| DNSGA2 | 30/30 | 5.633e-3 (4.97e-3) | 8.671e-1 (8.683e-1) | **3.257** |
-| CGDE_NSGAII | 30/30 | 5.202e-3 (4.584e-3) | 8.699e-1 (8.706e-1) | 118.025 |
-| NSGAII_SDR_OLS | 30/30 | 1.845e0 (1.493e0) | 0 (0) | 38.268 |
-| CE_MOEA | 30/30 | 6.8e-3 (5.543e-3) | 8.646e-1 (8.67e-1) | 178.953 |
+| Problem | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 5.175e-3 (4.417e-3) | 6.33e-1 (4.845e-1) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 1.845e0 (1.493e0) | 6.8e-3 (5.543e-3) | **4.47e-3** (**3.952e-3**) |
+| ZDT2 | 5.405e-3 (4.938e-3) | 5.235e-1 (4.467e-1) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 3.042e0 (2.344e0) | 7.8e-3 (5.356e-3) | **4.71e-3** (**4.149e-3**) |
+| ZDT3 | 7.191e-3 (4.695e-3) | 7.406e-1 (5.024e-1) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 1.575e0 (1.128e0) | 8.813e-3 (6.121e-3) | **4.998e-3** (**4.453e-3**) |
+| ZDT4 | **9.953e-3** (4.767e-3) | 6.206e-1 (2.416e-1) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 2.384e1 (1.233e1) | 2.884e-1 (1.337e-2) | 3.979e-2 (4.636e-3) |
+| ZDT6 | 1.637e-2 (1.299e-2) | 1.858e-1 (2.775e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 5.257e0 (4.394e0) | 4.887e-3 (4.268e-3) | **3.881e-3** (**3.461e-3**) |
 
-### ZDT2
+### Table 2. HV values
 
-| Algorithm | Valid | IGD ↓ mean (best) | HV ↑ mean (best) | Median runtime (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.71e-3** (**4.149e-3**) | **5.377e-1** (**5.38e-1**) | 7.897 |
-| NSGA2 | 30/30 | 5.405e-3 (4.938e-3) | 5.341e-1 (5.349e-1) | **2.778** |
-| RNSGA2 | 30/30 | 5.235e-1 (4.467e-1) | 1.209e-1 (1.46e-1) | 3.858 |
-| DNSGA2 | 30/30 | 5.881e-3 (5.189e-3) | 5.327e-1 (5.345e-1) | 3.399 |
-| CGDE_NSGAII | 30/30 | 5.539e-3 (4.774e-3) | 5.365e-1 (5.373e-1) | 156.693 |
-| NSGAII_SDR_OLS | 30/30 | 3.042e0 (2.344e0) | 0 (0) | 41.547 |
-| CE_MOEA | 30/30 | 7.8e-3 (5.356e-3) | 5.293e-1 (5.338e-1) | 180.302 |
-
-### ZDT3
-
-| Algorithm | Valid | IGD ↓ mean (best) | HV ↑ mean (best) | Median runtime (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **4.998e-3** (**4.453e-3**) | **1.051e0** (**1.052e0**) | 7.426 |
-| NSGA2 | 30/30 | 7.191e-3 (4.695e-3) | 1.047e0 (1.049e0) | 3.804 |
-| RNSGA2 | 30/30 | 7.406e-1 (5.024e-1) | 4.01e-1 (6.188e-1) | 5.867 |
-| DNSGA2 | 30/30 | 5.568e-3 (5.049e-3) | 1.047e0 (1.048e0) | **2.980** |
-| CGDE_NSGAII | 30/30 | 6.126e-3 (5.246e-3) | 1.051e0 (1.051e0) | 178.629 |
-| NSGAII_SDR_OLS | 30/30 | 1.575e0 (1.128e0) | 8.119e-4 (1.219e-2) | 40.696 |
-| CE_MOEA | 30/30 | 8.813e-3 (6.121e-3) | 1.034e0 (1.045e0) | 117.514 |
-
-### ZDT4
-
-| Algorithm | Valid | IGD ↓ mean (best) | HV ↑ mean (best) | Median runtime (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 3.979e-2 (4.636e-3) | 8.139e-1 (**8.693e-1**) | 9.062 |
-| NSGA2 | 30/30 | **9.953e-3** (4.767e-3) | **8.594e-1** (8.686e-1) | **3.273** |
-| RNSGA2 | 30/30 | 6.206e-1 (2.416e-1) | 3.511e-1 (6.767e-1) | 5.031 |
-| DNSGA2 | 30/30 | 1.997e-2 (**4.574e-3**) | 8.467e-1 (8.688e-1) | 3.765 |
-| CGDE_NSGAII | 29/30 | 2.32e0 (4.666e-1) | 1.647e-2 (2.453e-1) | 118.540 |
-| NSGAII_SDR_OLS | 30/30 | 2.384e1 (1.233e1) | 0 (0) | 15.735 |
-| CE_MOEA | 30/30 | 2.884e-1 (1.337e-2) | 4.653e-1 (8.518e-1) | 206.108 |
-
-### ZDT6
-
-| Algorithm | Valid | IGD ↓ mean (best) | HV ↑ mean (best) | Median runtime (s) |
-|---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | **3.881e-3** (**3.461e-3**) | **4.381e-1** (**4.385e-1**) | 7.923 |
-| NSGA2 | 30/30 | 1.637e-2 (1.299e-2) | 4.179e-1 (4.226e-1) | 3.054 |
-| RNSGA2 | 30/30 | 1.858e-1 (2.775e-2) | 2.676e-1 (3.977e-1) | 5.488 |
-| DNSGA2 | 30/30 | 2.259e-2 (1.699e-2) | 4.089e-1 (4.17e-1) | **2.542** |
-| CGDE_NSGAII | 30/30 | 4.828e-3 (4.24e-3) | 4.379e-1 (4.385e-1) | 114.378 |
-| NSGAII_SDR_OLS | 30/30 | 5.257e0 (4.394e0) | 0 (0) | 15.004 |
-| CE_MOEA | 30/30 | 4.887e-3 (4.268e-3) | 4.378e-1 (4.385e-1) | 138.853 |
+| Problem | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 8.681e-1 (8.686e-1) | 3.481e-1 (4.932e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 0 (0) | 8.646e-1 (8.67e-1) | **8.708e-1** (**8.713e-1**) |
+| ZDT2 | 5.341e-1 (5.349e-1) | 1.209e-1 (1.46e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 0 (0) | 5.293e-1 (5.338e-1) | **5.377e-1** (**5.38e-1**) |
+| ZDT3 | 1.047e0 (1.049e0) | 4.01e-1 (6.188e-1) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 8.119e-4 (1.219e-2) | 1.034e0 (1.045e0) | **1.051e0** (**1.052e0**) |
+| ZDT4 | **8.594e-1** (8.686e-1) | 3.511e-1 (6.767e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 4.653e-1 (8.518e-1) | 8.139e-1 (**8.693e-1**) |
+| ZDT6 | 4.179e-1 (4.226e-1) | 2.676e-1 (3.977e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 0 (0) | 4.378e-1 (4.385e-1) | **4.381e-1** (**4.385e-1**) |
 
 ## Visual comparison (R)
+
+### OADE solutions against the true Pareto front
+
+![Best-IGD OADE runs on the true ZDT Pareto fronts](docs/reports/figures/oade_zdt_best_fronts/oade_zdt_best_fronts.png)
+
+Pink is the true PF; blue crosses are the 100 exported final OADE solutions per panel. Select the minimum-IGD seed from 30 runs per problem: ZDT1=48, ZDT2=69, ZDT3=65, ZDT4=44, ZDT6=65. These are best cases by IGD, not typical performance or necessarily best HV. [Individual figures, data and selection details](docs/reports/oade_zdt_pareto_fronts.md).
+
+### Quality distributions and paired comparisons
 
 The figures use the audited ZDT v2 data. Blue highlights OADE; grey shows the baselines. All valid quality observations are retained, including the ZDT4 tails. See the [Vietnamese report and figure legends](docs/reports/zdt_seven_fixed_oade_v2_report.md#biểu-đồ-so-sánh-bằng-r) for interpretation and reproduction.
 

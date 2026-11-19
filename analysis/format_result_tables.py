@@ -31,6 +31,19 @@ def main():
         center_winner=choose(float(r[f'{metric}_{stat}']) for (p,a),r in summaries.items() if p==problem)
         best_winner=choose(v for (p,a,m),v in extrema.items() if p==problem and m==metric)
         return f'{mark(center,center==center_winner)} ({mark(best,best==best_winner)})'
+    order=['NSGA2','RNSGA2','DNSGA2','CGDE_NSGAII','NSGAII_SDR_OLS','CE_MOEA','OADE_NSGAII']
+    labels=['NSGA-II','R-NSGA-II','D-NSGA-II','CGDE','SDR-OLS','CE-MOEA','OADE-NSGA-II']
+    def matrices(english):
+        output=[]
+        for metric in ('IGD','HV'):
+            caption=(f'### Table {1 if metric=="IGD" else 2}. {metric} values' if english else
+                     f'### Bảng {1 if metric=="IGD" else 2}. Giá trị {metric}')
+            output.extend([caption,'','| '+('Problem' if english else 'Bài toán')+' | '+' | '.join(labels)+' |',
+                           '|---|'+'---:|'*len(order)])
+            for p in ('zdt1','zdt2','zdt3','zdt4','zdt6'):
+                output.append('| '+p.upper()+' | '+' | '.join(bench_cell(p,a,metric,'mean') for a in order)+' |')
+            output.append('')
+        return output
     paths=[ROOT/'README.md',ROOT/'README.vi.md',ROOT/'docs/reports/zdt_seven_fixed_oade_v2_report.md',benchmark/'report.md']
     for path in paths:
         lines=path.read_text(encoding='utf-8').splitlines();out=[];problem=None;i=0
@@ -71,7 +84,27 @@ def main():
                 for j in quality_cols:header[j]=header[j].replace('median','median (best)') if '(best)' not in header[j] else header[j]
             out+=['| '+' | '.join(header)+' |',lines[i+1]]+['| '+' | '.join(row)+' |' for row in rows]
             i=end
-        path.write_text('\n'.join(out)+'\n',encoding='utf-8')
+        # Replace per-problem or legacy stacked algorithm tables with two
+        # problem-by-algorithm quality matrices. Regenerate matrices on reruns.
+        compact=[];j=0;inserted=False
+        while j<len(out):
+            if re.match(r'^### ZDT[12346]$',out[j]):
+                j+=1;continue
+            if re.match(r'^### (?:Table [12]\. (?:IGD|HV) values|Bảng [12]\. Giá trị (?:IGD|HV))$',out[j]):
+                j+=1;continue
+            if out[j].startswith('|') and j+1<len(out) and re.match(r'^\|[ :|-]+\|$',out[j+1]):
+                end=j+2
+                while end<len(out) and out[end].startswith('|'):end+=1
+                h=cells(out[j])
+                is_old=any(x in ('Algorithm','Thuật toán') for x in h) and any(x.startswith('IGD') for x in h)
+                is_matrix=len(h)==8 and h[1:]==labels
+                if is_old or is_matrix:
+                    if not inserted:
+                        compact.extend(matrices(path.name=='README.md'));inserted=True
+                    j=end;continue
+            compact.append(out[j]);j+=1
+        rendered=re.sub(r'\n{3,}','\n\n','\n'.join(compact)+'\n')
+        path.write_text(rendered,encoding='utf-8')
         print(path.relative_to(ROOT))
 
 

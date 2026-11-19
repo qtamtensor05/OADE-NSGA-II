@@ -1,0 +1,14 @@
+{
+  "study": "zdt_seven_fixed_oade_v2",
+  "selection_rule": "Minimum final IGD among all 30 OADE runs per problem; tie broken by smallest seed",
+  "selected_primary_hashes": {
+    "primary/506be78f6d4f4c770e990dab76b666dcbc155182df2e875af42ec235bf5b61e9.json": "d28d7281e60f124b5e12a1677e22f85760f7cf71a761d484d6fc3f25c7fefcc2",
+    "primary/eae2424f8bd9242c88ede758cea62528a4eefede8634c5ab181e3dda2774c96a.json": "324d6ef595b529e75c0a77f205630083b5b018871987e6669880f8b5278d492e",
+    "primary/153f4e23d49c548cbcfa42e5b82cd801bc8cce6f0b99907db540b28df173abc3.json": "1d4512db2335f8b4a4edc4abb55e171d2623b2956302bb2e8c940d2db481290a",
+    "primary/c75a9ffb9fc6084e379c99e6496078510121ab6a8fc94cafca9057857ba6f1da.json": "35509b99154224e7f77f6432633f2c2954e1c7fbe6351702fb2e70028b459ad4",
+    "primary/ef02a0cb4aa22740bcaab09e9c628395afe1a43bd24386e147f7fb8d04837f08.json": "3bdd8e129b1a9d0fcb974bba227ae072715c0e56f071f278566701449ec72afb"
+  },
+  "reference_sha256": "adfc6bcb22fc62a9f55068a56ac4d5fde473de30c9419fe82259ee9cd31409a0",
+  "points": 500,
+  "caveat": "Best-case selection requested by user, not a typical run. Best IGD need not mean best HV. Stored final nondominated solution set, not unexported dominated population members. One run per panel, not 30-run uncertainty."
+}

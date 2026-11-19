@@ -1,0 +1,10 @@
+Nature Figure Rendered Collision Audit
+pdf: docs\reports\figures\oade_zdt_best_fronts\oade_zdt_best_fronts.pdf
+pages: 1
+visible text boxes: 74
+stroke paths: 1572
+
+
+summary: 0 fail, 0 warn, 72 contained fill overlays, 0 contained image overlays
+verdict: PASS
+note: contained overlays can be intentional; WARN findings need final-size visual review

@@ -1,0 +1,10 @@
+{
+  "pdf": "docs\\reports\\figures\\oade_zdt_best_fronts\\oade_zdt_best_fronts.pdf",
+  "auditable": true,
+  "minimum_required_pt": 5.0,
+  "minimum_found_pt": 6.0,
+  "text_run_count": 36,
+  "below_minimum_count": 0,
+  "below_minimum": [],
+  "warnings": []
+}

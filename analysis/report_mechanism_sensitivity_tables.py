@@ -34,12 +34,19 @@ def main():
     for r in comparisons:
         result={'not_significant':'NS','reference_better':'Mốc tốt hơn','level_better':'Mức thử tốt hơn'}[r['result']]
         lines.append(f'| {r["problem"]} | {r["parameter"]} | {r["mode"]} | {r["level"]} | {r["metric"]} | {num(r["median_paired_difference"])} [{num(r["ci_low"])}; {num(r["ci_high"])}] | {num(r["statistic"])} | {num(r["p_value"])} | {num(r["p_adjusted_holm"])} | {num(r["rank_biserial_effect"])} | {r["level_wins"]}/{r["reference_wins"]}/{r["ties"]} | {result} |')
-    lines+=['','## Đủ 70 nhóm','',
-        'Mỗi nhóm 30/30 lượt hợp lệ. Ô mean (best) ghi trung bình và giá trị tốt nhất trong 30 run: IGD min, HV max; hai best có thể thuộc hai seed khác nhau. SD không hiển thị, vẫn giữ trong CSV nguồn. Median [Q1; Q3] mô tả phân bố, không phải CI. Full chỉ chạy một lần mỗi bài/seed dù dùng chung trong nhiều contrast. Runtime là median giây/lượt trong môi trường tám worker có telemetry. In đậm giá trị tốt nhất trong 35 cấu hình của cùng bài: IGD/runtime nhỏ nhất, HV lớn nhất; xét riêng mean, median và best-run trên số liệu chưa làm tròn, giữ mọi đồng hạng. Số hiển thị 4 chữ số có nghĩa; số nhìn bằng nhau sau làm tròn không nhất thiết đồng hạng. In đậm không phải kết luận kiểm định hay tham số tối ưu.',
-        '', '| Bài | Algorithm ID | Tham số | Mức | Mode | IGD mean (best) | IGD median [Q1; Q3] | HV mean (best) | HV median [Q1; Q3] | Runtime (s) | FE min–max |',
-        '|---|---|---|---:|---|---:|---:|---:|---:|---:|---:|']
-    for r in summary:
-        lines.append(f'| {r["problem"]} | {r["algorithm"]} | {r["parameter"]} | {r["level"] or "—"} | {r["mode"]} | {value(r,"IGD_mean")} ({value(r,"IGD_min")}) | {value(r,"IGD_median")} [{num(r["IGD_q1"])}; {num(r["IGD_q3"])}] | {value(r,"HV_mean")} ({value(r,"HV_max")}) | {value(r,"HV_median")} [{num(r["HV_q1"])}; {num(r["HV_q3"])}] | {value(r,"runtime_median")} | {r["n_eval_min"]}–{r["n_eval_max"]} |')
+    lines+=['','## Hai bảng chất lượng cho đủ 70 nhóm','',
+        'Mỗi nhóm có 30 run hợp lệ. Ô mean (best) ghi trung bình và giá trị tốt nhất: IGD min, HV max; hai best có thể thuộc hai seed khác nhau. Bỏ Valid, Runtime, FE và SD khỏi bảng trình bày; số liệu đầy đủ vẫn giữ trong CSV nguồn. Full chỉ chạy một lần mỗi bài/seed dù dùng chung trong nhiều contrast. In đậm mean và best-run tốt nhất riêng trong 35 cấu hình của cùng bài, xét số chưa làm tròn và giữ đồng hạng. Hiển thị tối đa 4 chữ số có nghĩa; số nhìn bằng nhau chưa chắc đồng hạng. In đậm không phải kết luận kiểm định hay tham số tối ưu. Mode held chỉ giữ tham số nêu trong dòng; mốc tương ứng ghi trong báo cáo.',
+    ]
+    lookup={(r['algorithm'],r['problem']):r for r in summary}
+    for metric in ('IGD','HV'):
+        lines+=['',f'### {metric} — mean (best), {"thấp hơn tốt hơn" if metric=="IGD" else "cao hơn tốt hơn"}','',
+                '| Tham số | Mức | Mode | ZDT4 | ZDT6 |','|---|---:|---|---:|---:|']
+        for original in [r for r in summary if r['problem']=='zdt4']:
+            scores=[]
+            for problem in ('zdt4','zdt6'):
+                r=lookup[original['algorithm'],problem]
+                scores.append(f'{value(r,metric+"_mean")} ({value(r,metric+("_min" if metric=="IGD" else "_max"))})')
+            lines.append(f'| {original["parameter"]} | {original["level"] or "—"} | {original["mode"]} | '+ ' | '.join(scores)+' |')
     (ROOT/'docs/reports/mechanism_sensitivity_tables.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 

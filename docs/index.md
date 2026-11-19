@@ -6,6 +6,7 @@ The evaluation baseline starts with corrected comparators and fixed OADE on ZDT 
 
 - [Current comparison tables](../README.md)
 - [Audited ZDT v2 report](reports/zdt_seven_fixed_oade_v2_report.md)
+- [OADE final solutions on true ZDT fronts: best-IGD seeds](reports/oade_zdt_pareto_fronts.md)
 - [Audited mechanism study: 480 runs on ZDT4/ZDT6](reports/mechanism_zdt46_report.md)
 - [Audited parameter-level conclusions: 2,100 runs, 124 endpoints](reports/mechanism_sensitivity_report.md)
 - [Parameter-level figures: paired changes and all-seed distributions](reports/mechanism_sensitivity_figures.md)
