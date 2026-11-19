@@ -1,6 +1,7 @@
 """Render complete audited tables as Markdown; no new inference or solver run."""
 import csv
 from pathlib import Path
+from result_display import sci
 
 ROOT=Path(__file__).resolve().parents[1]
 D=ROOT/'results/experiments/mechanism_sensitivity_v1/derived'
@@ -12,13 +13,13 @@ def rows(name):
 
 
 def num(value):
-    return f'{float(value):.7g}'
+    return sci(value)
 
 
 def main():
     comparisons=rows('audited_comparisons.csv');summary=rows('audited_summary.csv')
     assert len(comparisons)==124 and len(summary)==70
-    columns=('IGD_mean','IGD_median','HV_mean','HV_median','runtime_median')
+    columns=('IGD_mean','IGD_median','HV_mean','HV_median','runtime_median','IGD_min','HV_max')
     best={(p,k):(max if k.startswith('HV') else min)(float(r[k]) for r in summary if r['problem']==p)
           for p in {r['problem'] for r in summary} for k in columns}
     def value(r,key):
@@ -34,11 +35,11 @@ def main():
         result={'not_significant':'NS','reference_better':'Mốc tốt hơn','level_better':'Mức thử tốt hơn'}[r['result']]
         lines.append(f'| {r["problem"]} | {r["parameter"]} | {r["mode"]} | {r["level"]} | {r["metric"]} | {num(r["median_paired_difference"])} [{num(r["ci_low"])}; {num(r["ci_high"])}] | {num(r["statistic"])} | {num(r["p_value"])} | {num(r["p_adjusted_holm"])} | {num(r["rank_biserial_effect"])} | {r["level_wins"]}/{r["reference_wins"]}/{r["ties"]} | {result} |')
     lines+=['','## Đủ 70 nhóm','',
-        'Mỗi nhóm 30/30 lượt hợp lệ. Mean ± SD mẫu và median [Q1; Q3] là mô tả phân bố, không phải CI. Full chỉ chạy một lần mỗi bài/seed dù dùng chung trong nhiều contrast. Runtime là median giây/lượt trong môi trường tám worker có telemetry. In đậm giá trị tốt nhất trong 35 cấu hình của cùng bài: IGD/runtime nhỏ nhất, HV lớn nhất; xét riêng mean và median trên số liệu chưa làm tròn, giữ mọi đồng hạng. In đậm là mô tả số học, không phải kết luận kiểm định hay tham số tối ưu.',
-        '', '| Bài | Algorithm ID | Tham số | Mức | Mode | IGD mean ± SD | IGD median [Q1; Q3] | HV mean ± SD | HV median [Q1; Q3] | Runtime (s) | FE min–max |',
+        'Mỗi nhóm 30/30 lượt hợp lệ. Ô mean (best) ghi trung bình và giá trị tốt nhất trong 30 run: IGD min, HV max; hai best có thể thuộc hai seed khác nhau. SD không hiển thị, vẫn giữ trong CSV nguồn. Median [Q1; Q3] mô tả phân bố, không phải CI. Full chỉ chạy một lần mỗi bài/seed dù dùng chung trong nhiều contrast. Runtime là median giây/lượt trong môi trường tám worker có telemetry. In đậm giá trị tốt nhất trong 35 cấu hình của cùng bài: IGD/runtime nhỏ nhất, HV lớn nhất; xét riêng mean, median và best-run trên số liệu chưa làm tròn, giữ mọi đồng hạng. Số hiển thị 4 chữ số có nghĩa; số nhìn bằng nhau sau làm tròn không nhất thiết đồng hạng. In đậm không phải kết luận kiểm định hay tham số tối ưu.',
+        '', '| Bài | Algorithm ID | Tham số | Mức | Mode | IGD mean (best) | IGD median [Q1; Q3] | HV mean (best) | HV median [Q1; Q3] | Runtime (s) | FE min–max |',
         '|---|---|---|---:|---|---:|---:|---:|---:|---:|---:|']
     for r in summary:
-        lines.append(f'| {r["problem"]} | {r["algorithm"]} | {r["parameter"]} | {r["level"] or "—"} | {r["mode"]} | {value(r,"IGD_mean")} ± {num(r["IGD_sd"])} | {value(r,"IGD_median")} [{num(r["IGD_q1"])}; {num(r["IGD_q3"])}] | {value(r,"HV_mean")} ± {num(r["HV_sd"])} | {value(r,"HV_median")} [{num(r["HV_q1"])}; {num(r["HV_q3"])}] | {value(r,"runtime_median")} | {r["n_eval_min"]}–{r["n_eval_max"]} |')
+        lines.append(f'| {r["problem"]} | {r["algorithm"]} | {r["parameter"]} | {r["level"] or "—"} | {r["mode"]} | {value(r,"IGD_mean")} ({value(r,"IGD_min")}) | {value(r,"IGD_median")} [{num(r["IGD_q1"])}; {num(r["IGD_q3"])}] | {value(r,"HV_mean")} ({value(r,"HV_max")}) | {value(r,"HV_median")} [{num(r["HV_q1"])}; {num(r["HV_q3"])}] | {value(r,"runtime_median")} | {r["n_eval_min"]}–{r["n_eval_max"]} |')
     (ROOT/'docs/reports/mechanism_sensitivity_tables.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 

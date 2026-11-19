@@ -69,21 +69,10 @@ def format_table(lines):
 
 
 def main():
-    paths=[ROOT/'README.md',ROOT/'README.vi.md',
-           ROOT/'docs/reports/zdt_seven_fixed_oade_v2_report.md',
-           ROOT/'results/experiments/zdt_seven_fixed_oade_v2/derived/report.md']
-    for path in paths:
-        text=path.read_text(encoding='utf-8');lines=text.splitlines();output=[];i=0
-        while i<len(lines):
-            if lines[i].startswith('|') and i+1<len(lines) and re.match(r'^\|[ :|-]+\|$',lines[i+1]):
-                end=i+2
-                while end<len(lines) and lines[end].startswith('|'):end+=1
-                output.extend(format_table(lines[i:end]));i=end
-            else:output.append(lines[i]);i+=1
-        updated='\n'.join(output)+'\n'
-        if updated!=text:
-            path.write_text(updated,encoding='utf-8')
-            print(path.relative_to(ROOT))
+    # The source-backed formatter preserves unrounded winners after compact
+    # scientific display and adds the requested per-run extrema.
+    from format_result_tables import main as render
+    render()
 
 
 if __name__=='__main__':main()
