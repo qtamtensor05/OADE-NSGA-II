@@ -2,7 +2,7 @@
 
 ## Environment
 
-Install the project in an isolated Python environment. The exact completed-run environment is captured in the [ZDT v2 manifest](../../results/experiments/zdt_seven_fixed_oade_v2/study_manifest.json); the earlier audit snapshot is not its execution environment.
+Install the project in an isolated Python environment. The completed six-solver execution environment is captured in its [manifest](../../results/experiments/zdt_six_fixed_oade_v1/study_manifest.json): Python 3.14.7, numpy 2.5.4, scipy 1.18.1 and pymoo 0.6.2. The historical ZDT v2 environment is separate.
 
 ```powershell
 python -m venv .venv
@@ -11,25 +11,29 @@ python -m venv .venv
 
 ## Current benchmark
 
-Use the [ZDT seven-algorithm protocol](zdt_seven_fixed_oade.md). Fixed OADE and corrected baselines are required. Earlier result reports and benchmark datasets are not the reproduction target.
+Use the [six-algorithm protocol](zdt_six_fixed_oade.md): fixed OADE, NSGA-II, D-NSGA-II, CGDE, GDE3 and NSDE. All 900 runs completed (899 valid); the historical seven-algorithm study is a separate reproduction target. Use a new directory for replication.
 
 ```powershell
 $env:OMP_NUM_THREADS="1"
 $env:OPENBLAS_NUM_THREADS="1"
 $env:MKL_NUM_THREADS="1"
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage plan
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage run --jobs 4 --out-dir results/experiments/zdt_seven_fixed_oade_v2_replication
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage plan
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage run --jobs 8 --out-dir results/experiments/zdt_six_replication
 ```
 
 Add `--resume` only for the same interrupted execution. Never edit a manifest to authorize changed code, configuration or environment. The main OADE solver is `oade_nsga2`; the research entry point only orchestrates the study.
 
+The completed study recorded eight workers but no OMP/BLAS thread-variable limits. Setting the limits above is a recommendation for a new replication, not a description of the original run; do not change environment variables when resuming a strict-identity study.
+
 ## Audit completed results
 
 ```powershell
-.\.venv\Scripts\python.exe analysis/audit_zdt_seven_v2.py
+.\.venv\Scripts\python.exe analysis/audit_zdt_six.py
+& "C:/Program Files/R/R-4.6.2/bin/Rscript.exe" --vanilla analysis/plot_zdt_six_comparison.R
+.\.venv\Scripts\python.exe analysis/report_zdt_six.py
 ```
 
-This verifies primary/source checksums, X/F, indicators and statistics, and writes derived audit tables and the report. It does not rerun solvers. See the [current report](../reports/zdt_seven_fixed_oade_v2_report.md) for exclusions, test definitions and interpretation boundaries.
+This verifies primary/source checksums, X/F, indicators and statistics, then regenerates the figure and report without rerunning solvers. The R script uses the project R library. See the [current audited report](../reports/zdt_six_fixed_oade_report.md) for exclusions, all 50 global-Holm endpoints and interpretation boundaries. The independent calculation path shares the analyst and objective/indicator libraries with the original pipeline; it is not external replication.
 
 ## Component studies and checks
 

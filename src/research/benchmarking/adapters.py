@@ -7,11 +7,15 @@ from ce_moea.runner import run as _run_ce
 from nsga2.runner import run as run_nsga2
 from rnsga2.runner import run as run_rnsga2
 from dnsga2.runner import run as run_dnsga2
+from gde3.runner import run as run_gde3
+from nsde.runner import run as run_nsde
 from shared.pymoo_execution import FixedInitialSampling, PymooConvergenceCallback
 from shared.fronts import non_dominated_xy
 from .convergence import ConvergenceRecorder
 
 PYMOO_RUNNERS = {
+    "pymoo.algorithms.moo.gde3.GDE3": run_gde3,
+    "pymoo.algorithms.moo.nsde.NSDE": run_nsde,
     "pymoo.algorithms.moo.nsga2.NSGA2": run_nsga2,
     "pymoo.algorithms.moo.rnsga2.RNSGA2": run_rnsga2,
     "pymoo.algorithms.moo.dnsga2.DNSGA2": run_dnsga2,

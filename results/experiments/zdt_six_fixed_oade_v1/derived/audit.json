@@ -1,0 +1,33 @@
+{
+  "records": 900,
+  "valid_runs": 899,
+  "validity_counts": {
+    "ok": 899,
+    "invalid_collapsed_front": 1
+  },
+  "primary_checksums_verified": 900,
+  "source_hashes_verified": 113,
+  "summary_rows_verified": 30,
+  "comparison_rows_verified": 50,
+  "paired_initialization_blocks_verified": 150,
+  "max_objective_error": 0.0,
+  "max_metric_error": 0.0,
+  "total_evaluations": 17979322,
+  "manifest_sha256": "c22e2c0fdb544e8cee6339a6d068999d883d2c06253e10ecdb6fef144ab7d93d",
+  "results": {
+    "reference_better": 44,
+    "no_significant_difference": 6
+  },
+  "bootstrap": {
+    "seed": 20261119,
+    "resamples": 20000,
+    "unit": "paired seed within problem and comparison",
+    "interval": "percentile 95%, marginal not multiplicity-adjusted"
+  },
+  "environment": {
+    "python": "3.14.7",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "scope": "Independent calculation path using the same analyst and pymoo objective/indicator libraries; no solver rerun or full transition trace audit."
+}

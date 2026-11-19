@@ -1,0 +1,24 @@
+{
+  "documentation_files": 8,
+  "local_links_checked": 132,
+  "quality_tokens_and_bolding_verified": 360,
+  "renderer_idempotent": true,
+  "manifest_unchanged": true,
+  "svg_editable_text": true,
+  "figure_data_rows_verified": 50,
+  "visual_review": "PNG reviewed: legible labels, all 50 cells, no clipping; signs agree with data.",
+  "pdf_min_font_pt": 7,
+  "pdf_collisions": {
+    "fail": 0,
+    "warn": 0
+  },
+  "alignment": "single panel; not applicable",
+  "static_validator_exception": "Static preferred-device rule flags base PDF rather than cairo_pdf. Actual PDF has editable text, minimum font 7 pt, no collision findings. PNG is a 300 dpi documentation preview, not a TIFF submission asset. Width 183 mm; no target-journal compliance claimed.",
+  "sha256": {
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_comparisons.csv": "0f1704156eb585134658f6dba85f9d6b75292122d637ca4fda89d63174a726ae",
+    "analysis\\plot_zdt_six_comparison.R": "32070cc9ea115d22caa2f24a5249976efebbd60fb7f92f326790c3ba3c67dee5",
+    "docs\\reports\\figures\\zdt_six\\paired_effects.png": "1e56c0c84f19dc381a5e24b2b407dd387a128c785546d397eb07765b4cc99ffc",
+    "docs\\reports\\figures\\zdt_six\\paired_effects.pdf": "18f3aa1c8d5daeeed63faf74eec39f92b90514249f40292e286e25982a05658f",
+    "docs\\reports\\figures\\zdt_six\\paired_effects.svg": "4f8dfa59ec680ada63165382720c7de73fc63441d0e67091c8100021d08d9740"
+  }
+}

@@ -1,0 +1,26 @@
+schema: 1
+smoke: true
+global:
+  runs: 2
+  pop_size: 10
+  evaluation_budget: 300
+  seed_base: 9100
+  jobs: 2
+  out_dir: tmp/smoke/zdt_six_20261119
+problems:
+  - {name: zdt1, n_var: 30}
+  - {name: zdt2, n_var: 30}
+  - {name: zdt3, n_var: 30}
+  - {name: zdt4, n_var: 10}
+  - {name: zdt6, n_var: 10}
+algorithm_configs:
+  - config/algorithms/oade_nsga2.yaml
+  - config/algorithms/nsga2.yaml
+  - config/algorithms/dnsga2.yaml
+  - config/algorithms/cgde_nsga2.yaml
+  - config/algorithms/gde3.yaml
+  - config/algorithms/nsde.yaml
+statistics:
+  alpha: 0.05
+  reference_algorithm: OADE_NSGAII
+execution_order_seed: 20261119

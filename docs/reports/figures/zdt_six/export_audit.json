@@ -1,0 +1,65 @@
+{
+  "figures": [
+    {
+      "figure": "hv_distribution",
+      "pdf_sha256": "29788b6332aca3503abc1c8e2a7ee2343c4255e6cd922fec837221b228ab6b92",
+      "minimum_font_pt": 7.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 44,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "igd_distribution",
+      "pdf_sha256": "5dcbcb36e1048499de1ec76f27ac115e49f3680bae95d93a54909f2c294c552c",
+      "minimum_font_pt": 7.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 43,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "igd_log_comparison",
+      "pdf_sha256": "7c2383cacd4f63a6ed2f8de035fae071d06a4b8731972f9259feffd001422c10",
+      "minimum_font_pt": 7.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 48,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "paired_effects",
+      "pdf_sha256": "18f3aa1c8d5daeeed63faf74eec39f92b90514249f40292e286e25982a05658f",
+      "minimum_font_pt": 7.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 50,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "runtime_distribution",
+      "pdf_sha256": "af321e4aeafa750aeb7f0b27689cefc8809c2a011359bd3246654d60cf7b49d1",
+      "minimum_font_pt": 7.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 40,
+        "contained_image_overlays": 0
+      }
+    }
+  ],
+  "inputs": {
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_comparisons.csv": "0f1704156eb585134658f6dba85f9d6b75292122d637ca4fda89d63174a726ae",
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_raw_runs.csv": "21a9b5e08372cdced20ab758885e23b6699c99a0a7a2ece7b65420a53c74f39d",
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_summary.csv": "4edacb560eebb58bd0ae00ac3946e989ad35c84aab32b45e2b25110e071e6904"
+  },
+  "scope": "PDF text/collision and SVG checks; visual review recorded in QA.md. Base PDF editable text verified; preferred cairo device static exception."
+}

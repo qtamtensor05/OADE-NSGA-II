@@ -12,8 +12,8 @@ from pymoo.indicators.igd import IGD
 from pymoo.indicators.hv import HV
 
 ROOT=Path(__file__).resolve().parents[1]
-D=ROOT/'results/experiments/zdt_seven_fixed_oade_v2'
-OUT=ROOT/'docs/reports/figures/oade_zdt_best_fronts'
+D=ROOT/'results/experiments/zdt_six_fixed_oade_v1'
+OUT=ROOT/'docs/reports/figures/oade_zdt_fronts_latest'
 
 
 def digest(value):
@@ -65,7 +65,7 @@ def main():
             reference.append(dict(problem=p,segment=segment,point=i,f1=v[0],f2=v[1]))
         if p=='zdt3':assert segment==4,'Expected five disconnected ZDT3 components'
     write('solutions.source.csv',points);write('reference.source.csv',reference);write('panels.source.csv',metadata)
-    (OUT/'extraction.json').write_text(json.dumps(dict(study='zdt_seven_fixed_oade_v2',
+    (OUT/'extraction.json').write_text(json.dumps(dict(study='zdt_six_fixed_oade_v1',
         selection_rule='Minimum final IGD among all 30 OADE runs per problem; tie broken by smallest seed',
         selected_primary_hashes=hashes,reference_sha256=m['reference_sha256'],points=len(points),
         caveat='Best-case selection requested by user, not a typical run. Best IGD need not mean best HV. Stored final nondominated solution set, not unexported dominated population members. One run per panel, not 30-run uncertainty.'),indent=2))

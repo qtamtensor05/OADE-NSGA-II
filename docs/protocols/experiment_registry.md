@@ -2,6 +2,10 @@
 
 ## Current algorithm-comparison baseline
 
+**19 November 2026:** the active comparison is now the [six-solver ZDT protocol](zdt_six_fixed_oade.md): OADE, NSGA2, DNSGA2, CGDE, GDE3 and NSDE. New run directory `results/experiments/zdt_six_fixed_oade_v1/`; 900 completed runs (899 valid) and 50 Holm endpoints: 44 favor OADE, 6 nonsignificant. See the [audited report](../reports/zdt_six_fixed_oade_report.md). CE/RNSGA2/SDR-OLS are legacy only. Component-study datasets remain separate and retained.
+
+## Historical algorithm-comparison baseline
+
 As of 15 November 2026, the starting point is `results/experiments/zdt_seven_fixed_oade_v2/`: corrected baselines and fixed OADE, 1,050 newly executed runs, 1,049 valid and one collapsed CGDE ZDT4 front. No previous baseline blocks are reused.
 
 - [Configuration](../../config/suites/zdt_seven_fixed_oade.yaml)

@@ -2,9 +2,11 @@
 
 ## Current results
 
-The evaluation baseline starts with corrected comparators and fixed OADE on ZDT v2. Earlier algorithm-comparison reports have been removed. DTLZ/WFG have not been reevaluated with these corrected implementations.
+The active comparison is the new six-solver ZDT suite (OADE, NSGA2, DNSGA2, CGDE, GDE3, NSDE); 900 runs are complete, 899 valid. Global Holm (50 endpoints): 44 favor OADE and 6 are nonsignificant. Previous seven-solver ZDT v2 results are historical, not results of the new suite. The OADE component studies remain separate. DTLZ/WFG have not been reevaluated with the active set.
 
+- [Audited six-solver results and conclusions](reports/zdt_six_fixed_oade_report.md)
 - [Current comparison tables](../README.md)
+- [Active six-solver protocol, configuration and run commands](protocols/zdt_six_fixed_oade.md)
 - [Audited ZDT v2 report](reports/zdt_seven_fixed_oade_v2_report.md)
 - [OADE final solutions on true ZDT fronts: best-IGD seeds](reports/oade_zdt_pareto_fronts.md)
 - [Audited mechanism study: 480 runs on ZDT4/ZDT6](reports/mechanism_zdt46_report.md)

@@ -1,0 +1,10 @@
+name: GDE3
+runner: pymoo
+class_path: pymoo.algorithms.moo.gde3.GDE3
+sampling: initial_population
+params:
+  variant: DE/rand/1/bin
+  F: 0.5
+  CR: 0.5
+  gamma: 0.0001
+  de_repair: bounce-back

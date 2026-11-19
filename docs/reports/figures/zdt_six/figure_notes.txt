@@ -1,0 +1,4 @@
+Single plotting panel; multipanel alignment: not applicable.
+Input: audited_comparisons.csv; all 50 planned endpoints retained.
+PDF uses base R Helvetica with editable text; cairo_pdf static rule exception follows project workflow.
+Positive rank-biserial favors OADE. +/NS encode global-Holm results, not effect thresholds.

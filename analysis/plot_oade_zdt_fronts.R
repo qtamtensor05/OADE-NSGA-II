@@ -8,7 +8,7 @@ library(patchwork)
 options(device=function(...) grDevices::pdf(file=NULL,...))
 source(".agents/skills/nature-figure/scripts/panel_alignment.R")
 source("analysis/measure_r_panels.R")
-out <- "docs/reports/figures/oade_zdt_best_fronts"
+out <- "docs/reports/figures/oade_zdt_fronts_latest"
 points <- read.csv(file.path(out,"solutions.source.csv"))
 reference <- read.csv(file.path(out,"reference.source.csv"))
 panels <- read.csv(file.path(out,"panels.source.csv"))

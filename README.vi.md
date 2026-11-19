@@ -2,119 +2,103 @@
 
 **Ngôn ngữ:** [English](README.md) | **Tiếng Việt**
 
-OADE-NSGA-II kết hợp sinh offspring bằng DE/SBX, cập nhật F/CR, bơm đa dạng OBL định kỳ và chọn lọc NSGA-II. Bản chính dùng một cấu hình thống nhất; các biến thể nghiên cứu được tách riêng.
+OADE-NSGA-II kết hợp sinh nghiệm DE/SBX, thích nghi F/CR, bơm đa dạng OBL định kỳ, adaptive restart và chọn lọc NSGA-II. Giữ nguyên solver OADE production và CGDE đã triển khai.
 
-## Mốc kết quả hiện tại
+## Baseline so sánh hiện tại — sáu thuật toán
 
-**Từ ngày 15/11/2026, ZDT v2 là mốc bắt đầu cho đối chứng thuật toán.** Các bảng, hình và nhận định từ những lần chạy trước khi sửa baseline đã được gỡ khỏi README này; chúng không được dùng để chứng minh hiệu quả của mã hiện tại. Toàn bộ dữ liệu, báo cáo và bản đóng gói kết quả cũ đã được xóa. Chỉ giữ bộ ZDT v2 đã đối chiếu. DTLZ/WFG chưa được chấm lại với bộ baseline mới nên chưa có kết luận hiện tại cho các tập đó.
+Từ 19/11/2026, nhóm so sánh chính gồm **OADE_NSGAII, NSGA2, DNSGA2, CGDE_NSGAII, GDE3, NSDE**. Bỏ CE-MOEA, R-NSGA-II và SDR-OLS khỏi bộ chạy chính; mã nguồn/cấu hình cũ được giữ để truy xuất lịch sử.
 
-[Báo cáo đã đối chiếu](docs/reports/zdt_seven_fixed_oade_v2_report.md) · [Giao thức](docs/protocols/zdt_seven_fixed_oade.md) · [Baseline và bài báo nguồn](docs/protocols/baselines.md)
+| Thuật toán | Triển khai | Vai trò đối chứng |
+|---|---|---|
+| OADE-NSGA-II | Solver production cục bộ, cấu hình cố định | Thuật toán đề xuất |
+| NSGA-II | pymoo | Mốc nền NSGA-II |
+| D-NSGA-II | pymoo | Phản ứng đa dạng; ở đây đo trên bài tĩnh |
+| CGDE-NSGA-II | Bản tái dựng đã có, giữ nguyên | DE xuyên thế hệ và lân cận |
+| GDE3 | pymoo 0.6.2+ | Cạnh tranh cha–con bằng DE |
+| NSDE | pymoo 0.6.2+ | DE với sorting/survival NSGA-II |
 
-## Thiết kế và cấu hình
+GDE3/NSDE dùng trực tiếp thuật toán trong thư viện: `DE/rand/1/bin`, F=0,5, CR=0,5, gamma=10⁻⁴, bounce-back repair và RankAndCrowding mặc định. Cả sáu nhận cùng khởi tạo uniform theo bài/seed, không dùng LHS mặc định của NSDE. Không dựng lại toán tử tìm kiếm của hai thuật toán mới.
 
-Xem [bộ biểu đồ R và chú thích trong báo cáo](docs/reports/zdt_seven_fixed_oade_v2_report.md#biểu-đồ-so-sánh-bằng-r): phân bố IGD/HV, hiệu ứng theo cặp seed và runtime của đủ bảy thuật toán.
+[Giao thức thực thi](docs/protocols/zdt_six_fixed_oade.md) · [Cấu hình bộ chạy](config/suites/zdt_six_fixed_oade.yaml) · [Danh mục baseline](docs/protocols/baselines.md).
 
-![Hiệu ứng theo cặp seed; NS là chưa phát hiện khác biệt sau Holm](docs/reports/figures/zdt_v2/paired_effects.png)
-
-Màu dương thiên về OADE; màu thể hiện rank-biserial effect, không phải phần trăm cải thiện. Bốn ô NS thuộc ZDT4 so với NSGA2/DNSGA2. [IGD](docs/reports/figures/zdt_v2/igd_distribution.png) · [HV](docs/reports/figures/zdt_v2/hv_distribution.png) · [Runtime](docs/reports/figures/zdt_v2/runtime_distribution.png).
-
-### Cấu hình thí nghiệm
-
-Biểu đồ [IGD đủ 7 thuật toán với trục log₁₀](docs/reports/figures/zdt_v2/igd_log_comparison.png) dùng điểm median và đoạn Q1–Q3 để nhìn rõ các nhóm chênh lệch nhiều bậc độ lớn. [HV](docs/reports/figures/zdt_v2/hv_bars.png) giữ cột mean ± SD từ 0. Bản cột tập trung OADE/NSGA2/DNSGA2 có nhãn số: [IGD](docs/reports/figures/zdt_v2/igd_bars_focus.png) · [HV](docs/reports/figures/zdt_v2/hv_bars_focus.png). Xem định nghĩa và giới hạn trong báo cáo.
+## Cấu hình thí nghiệm và trạng thái kết quả
 
 | Thành phần | Thiết lập |
 |---|---|
-| Bài toán | ZDT1/2/3: D=30; ZDT4/6: D=10; M=2 |
-| Thuật toán | OADE_NSGAII, NSGA2, RNSGA2, DNSGA2, CGDE_NSGAII, NSGAII_SDR_OLS, CE_MOEA |
-| Quần thể / ngân sách | 100 / 20.000 lần đánh giá mục tiêu mỗi run |
-| Seed | 42–71; 30 run mỗi thuật toán/bài; tổng 1.050 |
-| Phiên bản triển khai | `paper_corrections_2026_11_14`; `zdt_seven_fixed_oade_v2` |
-| OADE | `oade_nsga2`, `local_oade`, uniform, adaptive restart, periodic OBL, `success_rate` |
+| Bài toán | ZDT1/2/3: D=30; ZDT4/6: D=10; mọi bài M=2 |
+| Quần thể / ngân sách | 100 / tối đa 20.000 đánh giá mục tiêu mỗi lượt |
+| Seed | 42–71, 30 lượt mỗi thuật toán/bài |
+| Tổng | **900 lượt chạy mới**, tối đa 18 triệu FE solver |
+| Thống kê | OADE so với năm baseline: **50 endpoint**, Holm chung, alpha=0,05 |
+| Chạy song song | Mặc định 8 process; đổi bằng `--jobs` |
+| Output mới | `results/experiments/zdt_six_fixed_oade_v1/` |
 
-OADE khởi đầu với F=0,65, CR=0,5, pDE=0,5; 5 láng giềng; patience 20; tolerance 10⁻⁴; diversity threshold 0,02; elite ratio 0,8; OBL interval 10 và jump rate 0,2. Cấu hình được chụp trong manifest; không chạy bản `research.oade_nsga2`.
+<!-- six-solver-audited-results:start -->
 
-Mỗi bài/seed có cùng uniform input giữa các solver. SDR-OLS vẫn thực hiện OBL khởi tạo riêng; mọi đánh giá OBL, local search và thiết lập aspiration points của RNSGA2 đều nằm trong ngân sách. Batch có thể để dư FE; dùng n_eval thực khi đối chiếu chi phí.
+**Đã hoàn tất 900 lượt, 899 hợp lệ.** Sau Holm chung 50 endpoint: **OADE tốt hơn 44, 6 NS, không có endpoint baseline tốt hơn có ý nghĩa**. Một lượt CGDE–ZDT4 seed 63 có front suy biến; nhóm này dùng 29 lượt hợp lệ, các nhóm khác 30. OADE có mean tốt nhất ở ZDT1/2/3/6; NSGA-II có mean tốt nhất trên ZDT4. [Audited report](docs/reports/zdt_six_fixed_oade_report.md).
 
-## Kết quả đối chứng
+Ô là mean (best run): min IGD/max HV; in đậm hai đại lượng riêng theo số chưa làm tròn. Best hai chỉ số có thể thuộc seed khác nhau; NS không chứng minh tương đương.
 
-**1.050 run đã hoàn tất; 1.049 hợp lệ.** CGDE trên ZDT4, seed 63, có collapsed front. OADE tốt hơn ở **56/60 endpoint** sau Holm chung 60 kiểm định; bốn endpoint chưa phát hiện khác biệt là IGD/HV trên ZDT4 so với NSGA2 và DNSGA2. Không có endpoint nào kết luận baseline tốt hơn OADE theo kiểm định đã định.
+### IGD ↓ — mean (best)
 
-Trong bảng dưới, “+/+” nghĩa là OADE tốt hơn ở cả IGD/HV; “NS/NS” nghĩa là chưa phát hiện khác biệt ở cả hai. Các cặp CGDE ZDT4 dùng n=29, còn lại n=30. Đây là số endpoint, không phải các thí nghiệm độc lập.
+| Problem | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
+|---|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 5.175e-3 (4.417e-3) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 4.961e-3 (4.469e-3) | 4.872e-3 (4.373e-3) | **4.47e-3** (**3.952e-3**) |
+| ZDT2 | 5.405e-3 (4.938e-3) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 8.597e-2 (4.764e-3) | 1.665e-1 (4.535e-3) | **4.71e-3** (**4.149e-3**) |
+| ZDT3 | 7.191e-3 (4.695e-3) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 5.349e-3 (4.917e-3) | 5.186e-3 (4.565e-3) | **4.998e-3** (**4.453e-3**) |
+| ZDT4 | **9.953e-3** (4.767e-3) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 8.542e0 (5.599e0) | 6.938e0 (3.668e0) | 3.979e-2 (4.636e-3) |
+| ZDT6 | 1.637e-2 (1.299e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 1.154e-2 (8.408e-3) | 2.588e-2 (7.242e-3) | **3.881e-3** (**3.461e-3**) |
 
-| Bài | NSGA2 | RNSGA2 | DNSGA2 | CGDE_NSGAII | NSGAII_SDR_OLS | CE_MOEA |
-|---|---|---|---|---|---|---|
-| ZDT1 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT2 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT3 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT4 | NS/NS | +/+ | NS/NS | +/+ | +/+ | +/+ |
-| ZDT6 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
+### HV ↑ — mean (best)
 
-IGD giảm tốt, HV tăng tốt. Ô chất lượng dùng **mean (best run)** trên run hợp lệ. Bỏ cột Valid và Runtime khỏi hai bảng chất lượng; số liệu đầy đủ vẫn giữ trong CSV nguồn. Trong ngoặc là IGD nhỏ nhất hoặc HV lớn nhất của 30 lượt (CGDE ZDT4 chỉ có 29 lượt hợp lệ); hai cực trị có thể thuộc hai seed khác nhau. Không hiển thị SD bên cạnh, vẫn giữ SD trong CSV nguồn. Giữ bảy thuật toán trên từng bài, không gộp chỉ số giữa các bài có thang đo khác nhau.
+| Problem | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
+|---|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 8.681e-1 (8.686e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 8.686e-1 (8.693e-1) | 8.689e-1 (8.695e-1) | **8.708e-1** (**8.713e-1**) |
+| ZDT2 | 5.341e-1 (5.349e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 4.78e-1 (5.356e-1) | 4.218e-1 (5.359e-1) | **5.377e-1** (**5.38e-1**) |
+| ZDT3 | 1.047e0 (1.049e0) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 1.048e0 (1.049e0) | 1.048e0 (1.049e0) | **1.051e0** (**1.052e0**) |
+| ZDT4 | **8.594e-1** (8.686e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 0 (0) | 8.139e-1 (**8.693e-1**) |
+| ZDT6 | 4.179e-1 (4.226e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 4.249e-1 (4.297e-1) | 4.175e-1 (4.315e-1) | **4.381e-1** (**4.385e-1**) |
 
-In đậm giá trị trung tâm và best-run tốt nhất riêng trong cùng bài/bảng: IGD nhỏ nhất, HV lớn nhất. Trong ô mốc → mức thử, so riêng hai giá trị trung tâm và hai best-run. Xác định đồng hạng trên số liệu chưa làm tròn; hiển thị 4 chữ số có nghĩa, ví dụ `4.47e-3`, nên số nhìn bằng nhau chưa chắc đồng hạng. In đậm chỉ mô tả số học, không biểu thị ý nghĩa thống kê; không xếp hạng khoảng tin cậy hoặc p-value.
+Kết quả sau Holm, theo thứ tự **IGD / HV**; +: OADE tốt hơn có ý nghĩa, NS: chưa phát hiện khác biệt.
 
-### Bảng 1. Giá trị IGD
+| Baseline | ZDT1 | ZDT2 | ZDT3 | ZDT4 | ZDT6 | OADE better / 10 |
+|---|---|---|---|---|---|---:|
+| NSGA2 | + / + | + / + | + / + | NS / NS | + / + | 8 |
+| DNSGA2 | + / + | + / + | + / + | NS / NS | + / + | 8 |
+| CGDE_NSGAII | + / + | + / + | + / + | + / + | + / NS | 9 |
+| GDE3 | + / + | + / + | + / + | + / + | + / + | 10 |
+| NSDE | + / + | + / + | NS / + | + / + | + / + | 9 |
 
-| Bài toán | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| ZDT1 | 5.175e-3 (4.417e-3) | 6.33e-1 (4.845e-1) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 1.845e0 (1.493e0) | 6.8e-3 (5.543e-3) | **4.47e-3** (**3.952e-3**) |
-| ZDT2 | 5.405e-3 (4.938e-3) | 5.235e-1 (4.467e-1) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 3.042e0 (2.344e0) | 7.8e-3 (5.356e-3) | **4.71e-3** (**4.149e-3**) |
-| ZDT3 | 7.191e-3 (4.695e-3) | 7.406e-1 (5.024e-1) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 1.575e0 (1.128e0) | 8.813e-3 (6.121e-3) | **4.998e-3** (**4.453e-3**) |
-| ZDT4 | **9.953e-3** (4.767e-3) | 6.206e-1 (2.416e-1) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 2.384e1 (1.233e1) | 2.884e-1 (1.337e-2) | 3.979e-2 (4.636e-3) |
-| ZDT6 | 1.637e-2 (1.299e-2) | 1.858e-1 (2.775e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 5.257e0 (4.394e0) | 4.887e-3 (4.268e-3) | **3.881e-3** (**3.461e-3**) |
+![Paired effects after global Holm](docs/reports/figures/zdt_six/paired_effects.png)
 
-### Bảng 2. Giá trị HV
+Màu là rank-biserial (dương có lợi cho OADE), không phải phần trăm cải thiện. GDE3/NSDE nhanh hơn trong runtime đo được nhưng kém rõ trên ZDT4 (HV=0); NSDE–ZDT3 IGD và CGDE–ZDT6 HV vẫn NS. Audit khớp 900 primary, 30 summary và 50 kiểm định; sai lệch objective/IGD/HV bằng 0. [Dữ liệu kiểm định và giới hạn diễn giải](docs/reports/zdt_six_fixed_oade_report.md).
 
-| Bài toán | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| ZDT1 | 8.681e-1 (8.686e-1) | 3.481e-1 (4.932e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 0 (0) | 8.646e-1 (8.67e-1) | **8.708e-1** (**8.713e-1**) |
-| ZDT2 | 5.341e-1 (5.349e-1) | 1.209e-1 (1.46e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 0 (0) | 5.293e-1 (5.338e-1) | **5.377e-1** (**5.38e-1**) |
-| ZDT3 | 1.047e0 (1.049e0) | 4.01e-1 (6.188e-1) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 8.119e-4 (1.219e-2) | 1.034e0 (1.045e0) | **1.051e0** (**1.052e0**) |
-| ZDT4 | **8.594e-1** (8.686e-1) | 3.511e-1 (6.767e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 4.653e-1 (8.518e-1) | 8.139e-1 (**8.693e-1**) |
-| ZDT6 | 4.179e-1 (4.226e-1) | 2.676e-1 (3.977e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 0 (0) | 4.378e-1 (4.385e-1) | **4.381e-1** (**4.385e-1**) |
+![IGD median and IQR, current six-solver study](docs/reports/figures/zdt_six/igd_log_comparison.png)
 
-## Nghiệm OADE trên Pareto front chuẩn
+Điểm là median, đoạn là Q1–Q3, trục log10 chung; không phải CI. [Phân bố IGD đầy đủ](docs/reports/figures/zdt_six/igd_distribution.png) · [Phân bố HV](docs/reports/figures/zdt_six/hv_distribution.png) · [Runtime](docs/reports/figures/zdt_six/runtime_distribution.png) · [Pareto OADE từ dữ liệu mới](docs/reports/oade_zdt_pareto_fronts.md).
 
-![Các lượt OADE có IGD tốt nhất trên Pareto front ZDT](docs/reports/figures/oade_zdt_best_fronts/oade_zdt_best_fronts.png)
+<!-- six-solver-audited-results:end -->
 
-Hồng là PF chuẩn, dấu cộng xanh là 100 nghiệm cuối của OADE trong mỗi panel. Chọn seed có IGD nhỏ nhất trong 30 lượt mỗi bài: ZDT1=48, ZDT2=69, ZDT3=65, ZDT4=44, ZDT6=65. Đây là best-case theo IGD, không phải kết quả điển hình hoặc nhất thiết tốt nhất theo HV. [Hình riêng, dữ liệu và quy tắc chọn](docs/reports/oade_zdt_pareto_fronts.md).
+Không đổi tên hoặc ghép dữ liệu cũ thành kết quả bộ mới. [Báo cáo ZDT v2 trước đây](docs/reports/zdt_seven_fixed_oade_v2_report.md), dữ liệu gốc được giữ như **bằng chứng lịch sử**, cùng họ 60 endpoint và các giới hạn triển khai ban đầu. Các nghiên cứu chỉ đo OADE ở phần dưới vẫn là bằng chứng riêng, không bị xóa hoặc dùng để điền baseline mới.
 
-## Mức cải thiện và giới hạn
-
-So với NSGA2, IGD median OADE giảm 12,59% trên ZDT1; 11,64% trên ZDT2; 7,69% trên ZDT3; 22,63% trên ZDT4; 75,92% trên ZDT6. Riêng ZDT4 chưa đạt ý nghĩa thống kê. Phần trăm tính từ hai median nhóm, không phải median phần trăm theo cặp.
-
-- **ZDT4 thiếu ổn định:** OADE có IGD median 0,00625933 nhưng mean 0,0397899, kém NSGA2 (mean 0,00995272) và DNSGA2 (mean 0,0199731). Một số seed sai số lớn làm thay đổi kết luận; không loại chúng khỏi phân tích.
-- **HV ZDT6 so với CGDE:** chỉ tăng khoảng 0,0256%, p Holm=0,0465056; cải thiện nhỏ và sát ngưỡng.
-- **Chi phí:** runtime median OADE cao hơn NSGA2 khoảng 1,95–2,84 lần theo từng bài trong môi trường bốn worker đã đo; khác biệt triển khai không cho phép suy ra độ phức tạp thuần túy.
-- **Phạm vi baseline:** RNSGA2 nhắm vùng ưu tiên, DNSGA2 nhắm bài động; CE trên ZDT chỉ là adaptation lõi tìm kiếm. SDR-OLS có 148/150 run HV=0 và local search tiêu tốn nhiều FE. Các bản tự dựng dùng bài báo công khai và quy ước được ghi rõ.
-- **Giới hạn cơ chế:** benchmark này không tách đóng góp của restart, OBL hay success_rate và không chứng minh ưu thế ngoài năm bài ZDT đã đo.
-
-## Thống kê và kiểm chứng
-
-Wilcoxon signed-rank hai phía theo cặp seed, zero_method=wilcox, SciPy method=auto; all-zero p=1. Kết luận chung dùng Holm trên 60 endpoint, alpha=0,05. Chỉ loại cặp invalid theo quy tắc đã định; báo số cặp bị loại. Không phát hiện khác biệt không chứng minh tương đương. Bảng dữ liệu bổ sung có rank-biserial và CI bootstrap 95% của median chênh lệch, chưa hiệu chỉnh đa kiểm định.
-
-Audit xác minh 1.050 checksum primary, 106 hash source/dependency, reference snapshot, uniform input và toàn bộ final X/F. IGD/HV tính lại khớp chính xác; 35 dòng summary và 60 kiểm định được đối chiếu độc lập. Tổng FE thực là 20.979.322. Các checkpoint sau batch phải đọc theo n_eval thực, không coi target danh nghĩa là thời điểm đã đo.
-
-- [Manifest thực thi](results/experiments/zdt_seven_fixed_oade_v2/study_manifest.json)
-- [Biên bản kiểm chứng](results/experiments/zdt_seven_fixed_oade_v2/derived/audit.json)
-- [Bảng tổng hợp đã đối chiếu](results/experiments/zdt_seven_fixed_oade_v2/derived/audited_summary.csv)
-- [Đối chứng theo cặp, effect size và khoảng tin cậy](results/experiments/zdt_seven_fixed_oade_v2/derived/audited_comparisons.csv)
-- [Mã kiểm chứng độc lập](analysis/audit_zdt_seven_v2.py)
-
-## Chạy lại từ mốc hiện tại
-
-Không chạy ghi đè lên bộ đã chấm. Dùng thư mục mới cho lần chạy độc lập:
+## Chạy bộ so sánh mới
 
 ```powershell
-$env:OMP_NUM_THREADS="1"
-$env:OPENBLAS_NUM_THREADS="1"
-$env:MKL_NUM_THREADS="1"
+# Chỉ xem kế hoạch; không chạy solver.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage plan --jobs 8
 
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage plan
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage run --jobs 4 --out-dir results/experiments/zdt_seven_fixed_oade_v2_replication
+$env:OMP_NUM_THREADS = "1"
+$env:OPENBLAS_NUM_THREADS = "1"
+$env:MKL_NUM_THREADS = "1"
+
+# Lặp lại độc lập: dùng thư mục output MỚI.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage run --jobs 8 --out-dir results/experiments/zdt_six_replication
+
+# Tiếp tục cùng source/configuration/môi trường và output.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage run --jobs 8 --resume
 ```
 
-Thêm `--resume` để tiếp tục đúng lần chạy bị gián đoạn. Lệnh `-m research` điều phối thí nghiệm; solver OADE vẫn là bản chính `oade_nsga2`. Manifest từ chối thay đổi mã, cấu hình, môi trường hoặc primary bị sửa. Không dùng lệnh benchmark cũ để tái tạo các bảng hiện tại.
+Dùng `--stage report --resume` để tái tạo bảng của bộ đã hoàn tất. Lần lặp độc lập dùng `--out-dir` mới; không chạy `benchmark-zdt-seven` để tái tạo thiết kế sáu thuật toán. Mọi đánh giá nội bộ tính vào cap; đọc FE thực khi xem convergence. Runtime đã được đo; giới hạn so sánh máy/worker/thread được nêu trong báo cáo.
 
 ## Ảnh hưởng của mức tham số trên ZDT4 và ZDT6
 

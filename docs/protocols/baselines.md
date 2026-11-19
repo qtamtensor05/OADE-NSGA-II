@@ -1,5 +1,16 @@
 # Baseline identity and implementation registry
 
+## Current comparison set — 19 November 2026
+
+The active [six-solver protocol](zdt_six_fixed_oade.md) uses OADE_NSGAII, NSGA2, DNSGA2, CGDE_NSGAII, **GDE3** and **NSDE**. CE_MOEA, RNSGA2 and NSGAII_SDR_OLS are removed from this active suite; their implementations and the older seven-solver results remain legacy evidence only. The new suite is a fresh 900-run design with 50 global-Holm endpoints; 900 runs are complete, 899 valid; global Holm: 44/50 favor OADE, 6 nonsignificant. See the [audited report](../reports/zdt_six_fixed_oade_report.md).
+
+| ID | Library implementation | Role and settings |
+|---|---|---|
+| GDE3 | `pymoo.algorithms.moo.gde3.GDE3` | Parent–trial DE competition and nondominated/crowding survival; common uniform input, DE/rand/1/bin, F=0.5, CR=0.5, gamma=1e-4, bounce-back. [Official documentation](https://pymoo.org/algorithms/moo/gde3.html) |
+| NSDE | `pymoo.algorithms.moo.nsde.NSDE` | DE variation with NSGA-II sorting/survival; same explicit DE settings and input. [Official documentation](https://pymoo.org/algorithms/moo/nsde.html) |
+
+## Legacy seven-solver registry
+
 This registry describes current executable implementations after the 2026-11-14 corrections. Earlier comparator results are excluded; the current evaluation starts with ZDT v2. See [paper corrections and remaining uncertainties](baseline_paper_corrections.md).
 
 > For the locally reconstructed baselines, we could not locate author-provided source code or detailed explanations resolving the implementation ambiguities. We therefore reconstructed these methods from the publicly available papers, documenting our implementation assumptions.

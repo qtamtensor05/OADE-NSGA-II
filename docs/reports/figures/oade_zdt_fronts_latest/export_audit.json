@@ -1,0 +1,77 @@
+{
+  "figures": [
+    {
+      "figure": "oade_zdt_best_fronts",
+      "pdf_sha256": "71641083c189f35c56a17f615b06c8ddfec960aaf7f83427de99973d6098adbf",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 72,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "zdt1_best_igd_seed48",
+      "pdf_sha256": "a39841ebd591050f5c2c32861886dca56c2feb3296ac82de1b5c3ac6ce797b30",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 0,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "zdt2_best_igd_seed69",
+      "pdf_sha256": "18b593b8a43cab3c97b547612bc120363de2975191dcbfd736d2b2441d2dfc82",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 0,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "zdt3_best_igd_seed65",
+      "pdf_sha256": "4402d96c3ad9eeab40de41543be486f80b00465f231d27fe4ed3efc61e8d864f",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 0,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "zdt4_best_igd_seed44",
+      "pdf_sha256": "2c002ec460462b70c91254fb2ea6fd14ae75a1bb5251f9a6e52cc83d058ef05d",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 0,
+        "contained_image_overlays": 0
+      }
+    },
+    {
+      "figure": "zdt6_best_igd_seed65",
+      "pdf_sha256": "63267ec738e06ea201f8a47f2eaa61fcd10bd7630b2d03562e786ba2772e6869",
+      "minimum_font_pt": 6.0,
+      "collision_summary": {
+        "fail": 0,
+        "warn": 0,
+        "contained_fill_overlays": 0,
+        "contained_image_overlays": 0
+      }
+    }
+  ],
+  "inputs": {
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_comparisons.csv": "0f1704156eb585134658f6dba85f9d6b75292122d637ca4fda89d63174a726ae",
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_raw_runs.csv": "21a9b5e08372cdced20ab758885e23b6699c99a0a7a2ece7b65420a53c74f39d",
+    "results\\experiments\\zdt_six_fixed_oade_v1\\derived\\audited_summary.csv": "4edacb560eebb58bd0ae00ac3946e989ad35c84aab32b45e2b25110e071e6904",
+    "extraction.json": "144f8c725759928436977077eb37ae21331d0ee09a80c32b974ace06d997697f"
+  },
+  "scope": "PDF text/collision and SVG checks; visual review recorded in QA.md. Base PDF editable text verified; preferred cairo device static exception."
+}

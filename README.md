@@ -2,134 +2,103 @@
 
 **Language:** **English** | [Tiếng Việt](README.vi.md)
 
-OADE-NSGA-II combines DE/SBX offspring generation, F/CR adaptation, periodic opposition-based diversity injection and NSGA-II survival. The main solver uses one fixed configuration; configurable research variants are kept separately.
+OADE-NSGA-II combines DE/SBX offspring generation, F/CR adaptation, periodic opposition-based diversity injection, adaptive restart and NSGA-II survival. Production OADE and the existing CGDE implementation are unchanged.
 
-## Current evaluation baseline
+## Current comparison baseline — six algorithms
 
-**As of 15 November 2026, ZDT v2 is the starting point for algorithm comparisons.** Tables, figures and claims from runs preceding the baseline corrections have been removed from this README. They do not establish the performance of the current implementation. All earlier result datasets, reports and archives have been removed. Only the audited ZDT v2 evaluation is retained. DTLZ/WFG have not been reevaluated with these corrected baselines, so current-version conclusions are unavailable for those suites.
+As of 19 November 2026, the main comparison uses **OADE_NSGAII, NSGA2, DNSGA2, CGDE_NSGAII, GDE3 and NSDE**. CE-MOEA, R-NSGA-II and SDR-OLS are removed from the active suite. Their source/configurations remain for legacy reproducibility.
 
-[Audited report](docs/reports/zdt_seven_fixed_oade_v2_report.md) · [Protocol](docs/protocols/zdt_seven_fixed_oade.md) · [Baseline identities and source papers](docs/protocols/baselines.md)
+| Algorithm | Implementation | Comparison role |
+|---|---|---|
+| OADE-NSGA-II | Fixed local production solver | Proposed method |
+| NSGA-II | pymoo | NSGA-II foundation |
+| D-NSGA-II | pymoo | Diversity response; tested here on static problems |
+| CGDE-NSGA-II | Existing local paper-based reconstruction | Cross-generation neighborhood DE |
+| GDE3 | pymoo 0.6.2+ | DE parent–trial competition |
+| NSDE | pymoo 0.6.2+ | DE variation with NSGA-II sorting/survival |
 
-## Design and configuration
+GDE3 and NSDE use the library search implementations: `DE/rand/1/bin`, F=0.5, CR=0.5, gamma=1e-4, bounce-back repair and default RankAndCrowding survival. All six receive the same uniform initialization per problem/seed. No new baseline search operator is reconstructed locally.
+
+[Execution protocol](docs/protocols/zdt_six_fixed_oade.md) · [Suite configuration](config/suites/zdt_six_fixed_oade.yaml) · [Baseline registry](docs/protocols/baselines.md).
+
+## Experiment settings and result status
 
 | Item | Setting |
 |---|---|
-| Dataset | ZDT1/2/3: D=30; ZDT4/6: D=10; M=2 |
-| Algorithms | OADE_NSGAII, NSGA2, RNSGA2, DNSGA2, CGDE_NSGAII, NSGAII_SDR_OLS, CE_MOEA |
-| Population / budget | 100 / 20,000 objective evaluations per run |
-| Seeds | 42–71; 30 runs per algorithm/problem; 1,050 total |
-| Implementation revision | `paper_corrections_2026_11_14`; `zdt_seven_fixed_oade_v2` |
-| OADE | `oade_nsga2`, `local_oade`, uniform, adaptive restart, periodic OBL, `success_rate` |
+| Problems | ZDT1/2/3: D=30; ZDT4/6: D=10; M=2 throughout |
+| Population / budget | 100 / at most 20,000 objective evaluations per run |
+| Seeds | 42–71, 30 independent runs per algorithm/problem |
+| Total | **900 fresh runs**, at most 18 million solver evaluations |
+| Statistics | OADE versus five baselines: **50 endpoints**, global Holm, alpha=0.05 |
+| Parallelism | Default 8 processes; `--jobs` overrides it |
+| New output | `results/experiments/zdt_six_fixed_oade_v1/` |
 
-OADE starts with F=0.65, CR=0.5 and pDE=0.5; five neighbors; patience 20; tolerance 10⁻⁴; diversity threshold 0.02; elite ratio 0.8; OBL interval 10 and jump rate 0.2. The manifest captures these settings. The benchmark does not use `research.oade_nsga2`.
+<!-- six-solver-audited-results:start -->
 
-All solvers receive the same uniform input within each problem/seed. SDR-OLS applies its own initial OBL selection. OBL, local search and RNSGA2 aspiration-point evaluations count against the budget. Atomic batches may leave unused evaluations; use actual n_eval when comparing costs.
+**Completed: 900 runs, 899 valid.** Global Holm across 50 endpoints: **OADE better in 44, 6 nonsignificant, none significantly favoring a baseline**. CGDE–ZDT4 seed 63 collapsed; that group has 29 valid runs, all others 30. OADE has the best means on ZDT1/2/3/6; NSGA-II has the best means on ZDT4. [Audited report](docs/reports/zdt_six_fixed_oade_report.md).
 
-## Comparison results
+Cells show mean (best run): min IGD/max HV; means and best runs are bolded separately using unrounded values. Metric best runs may use different seeds; NS does not establish equivalence.
 
-**All 1,050 runs completed; 1,049 are valid.** CGDE on ZDT4, seed 63, produced a collapsed front. OADE is better on **56/60 endpoints** after Holm correction across all 60 tests. The four endpoints without a detected difference are ZDT4 IGD/HV against NSGA2 and DNSGA2. No endpoint favors a baseline under the specified test.
+### IGD ↓ — mean (best)
 
-In the table, “+/+” means OADE is better on both IGD/HV; “NS/NS” means neither difference is detected. CGDE ZDT4 comparisons use n=29; all others use n=30. Endpoints are not independent experiments.
+| Problem | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
+|---|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 5.175e-3 (4.417e-3) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 4.961e-3 (4.469e-3) | 4.872e-3 (4.373e-3) | **4.47e-3** (**3.952e-3**) |
+| ZDT2 | 5.405e-3 (4.938e-3) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 8.597e-2 (4.764e-3) | 1.665e-1 (4.535e-3) | **4.71e-3** (**4.149e-3**) |
+| ZDT3 | 7.191e-3 (4.695e-3) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 5.349e-3 (4.917e-3) | 5.186e-3 (4.565e-3) | **4.998e-3** (**4.453e-3**) |
+| ZDT4 | **9.953e-3** (4.767e-3) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 8.542e0 (5.599e0) | 6.938e0 (3.668e0) | 3.979e-2 (4.636e-3) |
+| ZDT6 | 1.637e-2 (1.299e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 1.154e-2 (8.408e-3) | 2.588e-2 (7.242e-3) | **3.881e-3** (**3.461e-3**) |
 
-| Problem | NSGA2 | RNSGA2 | DNSGA2 | CGDE_NSGAII | NSGAII_SDR_OLS | CE_MOEA |
-|---|---|---|---|---|---|---|
-| ZDT1 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT2 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT3 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
-| ZDT4 | NS/NS | +/+ | NS/NS | +/+ | +/+ | +/+ |
-| ZDT6 | +/+ | +/+ | +/+ | +/+ | +/+ | +/+ |
+### HV ↑ — mean (best)
 
-Lower IGD and higher HV indicate better quality. Quality cells show **mean (best run)** over valid runs. Valid and runtime columns are omitted from the quality matrices; complete measurements remain in the source CSV. Best means minimum IGD or maximum HV among the 30 runs (29 valid runs for CGDE ZDT4); these extrema may come from different seeds. SD remains in the source CSV, but is omitted from the tables. All seven solvers are shown per problem, without pooling metrics across differently scaled problems.
+| Problem | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
+|---|---:|---:|---:|---:|---:|---:|
+| ZDT1 | 8.681e-1 (8.686e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 8.686e-1 (8.693e-1) | 8.689e-1 (8.695e-1) | **8.708e-1** (**8.713e-1**) |
+| ZDT2 | 5.341e-1 (5.349e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 4.78e-1 (5.356e-1) | 4.218e-1 (5.359e-1) | **5.377e-1** (**5.38e-1**) |
+| ZDT3 | 1.047e0 (1.049e0) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 1.048e0 (1.049e0) | 1.048e0 (1.049e0) | **1.051e0** (**1.052e0**) |
+| ZDT4 | **8.594e-1** (8.686e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 0 (0) | 8.139e-1 (**8.693e-1**) |
+| ZDT6 | 4.179e-1 (4.226e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 4.249e-1 (4.297e-1) | 4.175e-1 (4.315e-1) | **4.381e-1** (**4.385e-1**) |
 
-Bold numbers mark the best central and best-run values separately within each problem/table: minimum IGD and maximum HV. In reference → tested-level cells, compare the two centers and two best-run values separately. Winners and ties use unrounded source values; display uses four significant digits (e.g. `4.47e-3`), so equal-looking rounded values need not be ties. Emphasis is descriptive, not a statistical test; intervals and p-values are not ranked.
+Holm outcomes in **IGD / HV** order; +: OADE significantly better, NS: no detected difference.
 
-### Table 1. IGD values
+| Baseline | ZDT1 | ZDT2 | ZDT3 | ZDT4 | ZDT6 | OADE better / 10 |
+|---|---|---|---|---|---|---:|
+| NSGA2 | + / + | + / + | + / + | NS / NS | + / + | 8 |
+| DNSGA2 | + / + | + / + | + / + | NS / NS | + / + | 8 |
+| CGDE_NSGAII | + / + | + / + | + / + | + / + | + / NS | 9 |
+| GDE3 | + / + | + / + | + / + | + / + | + / + | 10 |
+| NSDE | + / + | + / + | NS / + | + / + | + / + | 9 |
 
-| Problem | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| ZDT1 | 5.175e-3 (4.417e-3) | 6.33e-1 (4.845e-1) | 5.633e-3 (4.97e-3) | 5.202e-3 (4.584e-3) | 1.845e0 (1.493e0) | 6.8e-3 (5.543e-3) | **4.47e-3** (**3.952e-3**) |
-| ZDT2 | 5.405e-3 (4.938e-3) | 5.235e-1 (4.467e-1) | 5.881e-3 (5.189e-3) | 5.539e-3 (4.774e-3) | 3.042e0 (2.344e0) | 7.8e-3 (5.356e-3) | **4.71e-3** (**4.149e-3**) |
-| ZDT3 | 7.191e-3 (4.695e-3) | 7.406e-1 (5.024e-1) | 5.568e-3 (5.049e-3) | 6.126e-3 (5.246e-3) | 1.575e0 (1.128e0) | 8.813e-3 (6.121e-3) | **4.998e-3** (**4.453e-3**) |
-| ZDT4 | **9.953e-3** (4.767e-3) | 6.206e-1 (2.416e-1) | 1.997e-2 (**4.574e-3**) | 2.32e0 (4.666e-1) | 2.384e1 (1.233e1) | 2.884e-1 (1.337e-2) | 3.979e-2 (4.636e-3) |
-| ZDT6 | 1.637e-2 (1.299e-2) | 1.858e-1 (2.775e-2) | 2.259e-2 (1.699e-2) | 4.828e-3 (4.24e-3) | 5.257e0 (4.394e0) | 4.887e-3 (4.268e-3) | **3.881e-3** (**3.461e-3**) |
+![Paired effects after global Holm](docs/reports/figures/zdt_six/paired_effects.png)
 
-### Table 2. HV values
+Color shows rank-biserial effects (positive favors OADE), not percentage improvement. GDE3/NSDE had lower measured runtime but poor ZDT4 quality (HV=0); NSDE–ZDT3 IGD and CGDE–ZDT6 HV remain nonsignificant. Independent recalculation matched 900 primary records, 30 summaries and 50 tests, with zero objective/IGD/HV discrepancy. [Statistical data and interpretation limits](docs/reports/zdt_six_fixed_oade_report.md).
 
-| Problem | NSGA-II | R-NSGA-II | D-NSGA-II | CGDE | SDR-OLS | CE-MOEA | OADE-NSGA-II |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| ZDT1 | 8.681e-1 (8.686e-1) | 3.481e-1 (4.932e-1) | 8.671e-1 (8.683e-1) | 8.699e-1 (8.706e-1) | 0 (0) | 8.646e-1 (8.67e-1) | **8.708e-1** (**8.713e-1**) |
-| ZDT2 | 5.341e-1 (5.349e-1) | 1.209e-1 (1.46e-1) | 5.327e-1 (5.345e-1) | 5.365e-1 (5.373e-1) | 0 (0) | 5.293e-1 (5.338e-1) | **5.377e-1** (**5.38e-1**) |
-| ZDT3 | 1.047e0 (1.049e0) | 4.01e-1 (6.188e-1) | 1.047e0 (1.048e0) | 1.051e0 (1.051e0) | 8.119e-4 (1.219e-2) | 1.034e0 (1.045e0) | **1.051e0** (**1.052e0**) |
-| ZDT4 | **8.594e-1** (8.686e-1) | 3.511e-1 (6.767e-1) | 8.467e-1 (8.688e-1) | 1.647e-2 (2.453e-1) | 0 (0) | 4.653e-1 (8.518e-1) | 8.139e-1 (**8.693e-1**) |
-| ZDT6 | 4.179e-1 (4.226e-1) | 2.676e-1 (3.977e-1) | 4.089e-1 (4.17e-1) | 4.379e-1 (4.385e-1) | 0 (0) | 4.378e-1 (4.385e-1) | **4.381e-1** (**4.385e-1**) |
+![IGD median and IQR, current six-solver study](docs/reports/figures/zdt_six/igd_log_comparison.png)
 
-## Visual comparison (R)
+Points show medians and segments show Q1–Q3 on a shared log10 axis, not confidence intervals. [All-seed IGD](docs/reports/figures/zdt_six/igd_distribution.png) · [HV](docs/reports/figures/zdt_six/hv_distribution.png) · [Runtime](docs/reports/figures/zdt_six/runtime_distribution.png) · [OADE Pareto fronts from current data](docs/reports/oade_zdt_pareto_fronts.md).
 
-### OADE solutions against the true Pareto front
+<!-- six-solver-audited-results:end -->
 
-![Best-IGD OADE runs on the true ZDT Pareto fronts](docs/reports/figures/oade_zdt_best_fronts/oade_zdt_best_fronts.png)
+No results from the old seven-algorithm study are relabeled, pooled or copied into the new comparison. The [previous ZDT v2 report](docs/reports/zdt_seven_fixed_oade_v2_report.md), original datasets remain **historical evidence**, including their original 60-endpoint correction and implementation limitations. Existing OADE-only mechanism/parameter studies below remain separate evidence.
 
-Pink is the true PF; blue crosses are the 100 exported final OADE solutions per panel. Select the minimum-IGD seed from 30 runs per problem: ZDT1=48, ZDT2=69, ZDT3=65, ZDT4=44, ZDT6=65. These are best cases by IGD, not typical performance or necessarily best HV. [Individual figures, data and selection details](docs/reports/oade_zdt_pareto_fronts.md).
-
-### Quality distributions and paired comparisons
-
-The figures use the audited ZDT v2 data. Blue highlights OADE; grey shows the baselines. All valid quality observations are retained, including the ZDT4 tails. See the [Vietnamese report and figure legends](docs/reports/zdt_seven_fixed_oade_v2_report.md#biểu-đồ-so-sánh-bằng-r) for interpretation and reproduction.
-
-![Paired effects across all 60 comparisons](docs/reports/figures/zdt_v2/paired_effects.png)
-
-Positive rank-biserial effects favour OADE. **NS** marks the four endpoints with Holm-adjusted p ≥ 0.05 across the full 60-test family; nonsignificance does not establish equivalence. Colour represents paired effect size, not improvement percentage.
-
-| Quality distributions | Measured cost |
-|---|---|
-| [IGD: all valid runs](docs/reports/figures/zdt_v2/igd_distribution.png) · [PDF](docs/reports/figures/zdt_v2/igd_distribution.pdf) | [Runtime: all completed runs](docs/reports/figures/zdt_v2/runtime_distribution.png) · [PDF](docs/reports/figures/zdt_v2/runtime_distribution.pdf) |
-| [HV: all valid runs](docs/reports/figures/zdt_v2/hv_distribution.png) · [PDF](docs/reports/figures/zdt_v2/hv_distribution.pdf) | Runtime reflects the measured four-worker environment. |
-
-## Effect sizes and limitations
-
-### IGD on a log scale and HV bars
-
-![IGD median and IQR on a log10 scale for all seven algorithms](docs/reports/figures/zdt_v2/igd_log_comparison.png)
-
-![HV mean and SD for all seven algorithms](docs/reports/figures/zdt_v2/hv_bars.png)
-
-IGD points show **median**, with lines spanning Q1–Q3 on a shared log10 axis across all five problems. Smaller IGD remains visible alongside values several orders of magnitude larger; no constant is added. HV bars show mean ± SD on linear axes starting at zero. Lower IGD and higher HV are better. For mean-based detail with NSGA2/DNSGA2, see the [labelled IGD bars](docs/reports/figures/zdt_v2/igd_bars_focus.png) and [labelled HV bars](docs/reports/figures/zdt_v2/hv_bars_focus.png). These summaries do not replace the paired tests or the full distributions.
-
-### Interpretation
-
-Relative to NSGA2, OADE median IGD decreases by 12.59% on ZDT1, 11.64% on ZDT2, 7.69% on ZDT3, 22.63% on ZDT4 and 75.92% on ZDT6. The ZDT4 difference is not statistically significant. Percentages compare group medians, not the median of paired percentage changes.
-
-- **ZDT4 instability:** OADE median IGD is 0.00625933, but its mean is 0.0397899, worse than NSGA2 (mean 0.00995272) and DNSGA2 (mean 0.0199731). Several large-error seeds change the interpretation; they remain in the analysis.
-- **ZDT6 HV against CGDE:** the improvement is only about 0.0256%, with Holm p=0.0465056, a small effect close to the threshold.
-- **Cost:** OADE median runtime is about 1.95–2.84 times that of NSGA2 across problems in the measured four-worker setting. Implementation differences prevent a pure complexity comparison.
-- **Baseline scope:** RNSGA2 targets preference regions; DNSGA2 targets dynamic problems; CE on ZDT is a search-core adaptation. SDR-OLS has HV=0 in 148/150 runs and spends many evaluations on local search. Local reconstructions follow public papers with documented assumptions.
-- **Mechanism boundary:** this benchmark does not isolate restart, OBL or success_rate contributions or establish superiority beyond the five measured ZDT problems.
-
-## Statistics and verification
-
-Two-sided paired Wilcoxon signed-rank tests use zero_method=wilcox and SciPy method=auto; all-zero differences receive p=1. Overall conclusions use Holm correction across 60 endpoints at alpha=0.05. Only prespecified invalid pairs are excluded, with exclusion counts reported. A nonsignificant result does not establish equivalence. Supplementary data include rank-biserial effects and unadjusted 95% bootstrap intervals for median paired differences.
-
-The audit verifies 1,050 primary checksums, 106 source/dependency hashes, the reference snapshot, uniform inputs and every final X/F. Recomputed IGD/HV match exactly; 35 summary rows and 60 tests are independently cross-checked. Actual evaluations total 20,979,322. Batch callbacks must be read using actual n_eval, not nominal checkpoint targets.
-
-- [Execution manifest](results/experiments/zdt_seven_fixed_oade_v2/study_manifest.json)
-- [Audit record](results/experiments/zdt_seven_fixed_oade_v2/derived/audit.json)
-- [Audited summary](results/experiments/zdt_seven_fixed_oade_v2/derived/audited_summary.csv)
-- [Paired comparisons, effects and intervals](results/experiments/zdt_seven_fixed_oade_v2/derived/audited_comparisons.csv)
-- [Independent audit recipe](analysis/audit_zdt_seven_v2.py)
-
-## Reproduce the current evaluation
-
-Use a new directory for an independent execution; do not overwrite the evaluated dataset:
+## Run the new comparison
 
 ```powershell
-$env:OMP_NUM_THREADS="1"
-$env:OPENBLAS_NUM_THREADS="1"
-$env:MKL_NUM_THREADS="1"
+# Inspect only; no solver execution.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage plan --jobs 8
 
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage plan
-.\.venv\Scripts\python.exe -m research benchmark-zdt-seven --stage run --jobs 4 --out-dir results/experiments/zdt_seven_fixed_oade_v2_replication
+$env:OMP_NUM_THREADS = "1"
+$env:OPENBLAS_NUM_THREADS = "1"
+$env:MKL_NUM_THREADS = "1"
+
+# Fresh replication: use a NEW output directory.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage run --jobs 8 --out-dir results/experiments/zdt_six_replication
+
+# Resume the same study with unchanged source/configuration/environment.
+.\.venv\Scripts\python.exe -m research benchmark-zdt-six --stage run --jobs 8 --resume
 ```
 
-Add `--resume` to continue the same interrupted execution. The `-m research` entry point orchestrates experiments; the OADE solver remains the main `oade_nsga2` package. The manifest rejects changes in code, configuration, environment or primary artifacts. Legacy benchmark commands do not reproduce the current tables.
+Use `--stage report --resume` to regenerate completed-study tables. Use a new `--out-dir` for replication; do not run the legacy `benchmark-zdt-seven` command for this suite. Objective calls inside all solvers count toward the cap; preserve actual FE when interpreting convergence. Recorded runtime includes implementation, worker and machine effects; see the report for its limits.
 
 ## Parameter effects on ZDT4 and ZDT6
 
