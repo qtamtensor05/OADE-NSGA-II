@@ -41,14 +41,16 @@ In the table, “+/+” means OADE is better on both IGD/HV; “NS/NS” means n
 
 Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** over valid runs; runtime is median seconds/run. All seven solvers are shown per problem, without pooling metrics across differently scaled problems.
 
+Bold numbers mark the best displayed central value within each problem/table: minimum IGD/runtime and maximum HV, with ties retained. In reference → tested-level cells, the better of the two numbers is bold. Emphasis describes numerical performance, not statistical significance; SDs, intervals and p-values are not ranked.
+
 ### ZDT1
 
 | Algorithm | Valid | IGD ↓ (mean ± SD) | HV ↑ (mean ± SD) | Median runtime (s) |
 |---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 0.004469996 ± 0.0002461367 | 0.8708345 ± 0.0002705209 | 7.398 |
+| OADE_NSGAII | 30/30 | **0.004469996** ± 0.0002461367 | **0.8708345** ± 0.0002705209 | 7.398 |
 | NSGA2 | 30/30 | 0.005174662 ± 0.0002979038 | 0.8680528 ± 0.0004172684 | 3.484 |
 | RNSGA2 | 30/30 | 0.6329726 ± 0.08762427 | 0.3480615 ± 0.0938884 | 3.610 |
-| DNSGA2 | 30/30 | 0.005632946 ± 0.000423465 | 0.867066 ± 0.0006850103 | 3.257 |
+| DNSGA2 | 30/30 | 0.005632946 ± 0.000423465 | 0.867066 ± 0.0006850103 | **3.257** |
 | CGDE_NSGAII | 30/30 | 0.005202101 ± 0.0003939673 | 0.8699383 ± 0.0004466639 | 118.025 |
 | NSGAII_SDR_OLS | 30/30 | 1.844996 ± 0.158428 | 0 ± 0 | 38.268 |
 | CE_MOEA | 30/30 | 0.006800385 ± 0.0007568819 | 0.8646314 ± 0.001397095 | 178.953 |
@@ -57,8 +59,8 @@ Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** ov
 
 | Algorithm | Valid | IGD ↓ (mean ± SD) | HV ↑ (mean ± SD) | Median runtime (s) |
 |---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 0.004709676 ± 0.0003506824 | 0.5376825 ± 0.0002095407 | 7.897 |
-| NSGA2 | 30/30 | 0.005404928 ± 0.0003062495 | 0.5340721 ± 0.000611177 | 2.778 |
+| OADE_NSGAII | 30/30 | **0.004709676** ± 0.0003506824 | **0.5376825** ± 0.0002095407 | 7.897 |
+| NSGA2 | 30/30 | 0.005404928 ± 0.0003062495 | 0.5340721 ± 0.000611177 | **2.778** |
 | RNSGA2 | 30/30 | 0.5235072 ± 0.02531412 | 0.1208837 ± 0.00708899 | 3.858 |
 | DNSGA2 | 30/30 | 0.005881009 ± 0.0003919705 | 0.532697 ± 0.000974228 | 3.399 |
 | CGDE_NSGAII | 30/30 | 0.005539142 ± 0.0004257992 | 0.5364841 ± 0.0004320833 | 156.693 |
@@ -69,10 +71,10 @@ Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** ov
 
 | Algorithm | Valid | IGD ↓ (mean ± SD) | HV ↑ (mean ± SD) | Median runtime (s) |
 |---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 0.004998217 ± 0.0003862774 | 1.051217 ± 0.0001910845 | 7.426 |
+| OADE_NSGAII | 30/30 | **0.004998217** ± 0.0003862774 | **1.051217** ± 0.0001910845 | 7.426 |
 | NSGA2 | 30/30 | 0.007191168 ± 0.01023075 | 1.047182 ± 0.006699209 | 3.804 |
 | RNSGA2 | 30/30 | 0.7405515 ± 0.05731643 | 0.4010049 ± 0.04949664 | 5.867 |
-| DNSGA2 | 30/30 | 0.005568199 ± 0.0002905857 | 1.046953 ± 0.000679974 | 2.980 |
+| DNSGA2 | 30/30 | 0.005568199 ± 0.0002905857 | 1.046953 ± 0.000679974 | **2.980** |
 | CGDE_NSGAII | 30/30 | 0.00612553 ± 0.0004490891 | 1.050619 ± 0.0002276871 | 178.629 |
 | NSGAII_SDR_OLS | 30/30 | 1.575167 ± 0.2255406 | 0.0008118896 ± 0.003089748 | 40.696 |
 | CE_MOEA | 30/30 | 0.00881295 ± 0.002077688 | 1.034105 ± 0.006937207 | 117.514 |
@@ -82,7 +84,7 @@ Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** ov
 | Algorithm | Valid | IGD ↓ (mean ± SD) | HV ↑ (mean ± SD) | Median runtime (s) |
 |---|---:|---:|---:|---:|
 | OADE_NSGAII | 30/30 | 0.03978991 ± 0.07313553 | 0.8139427 ± 0.1120385 | 9.062 |
-| NSGA2 | 30/30 | 0.009952722 ± 0.005080291 | 0.8593619 ± 0.007910405 | 3.273 |
+| NSGA2 | 30/30 | **0.009952722** ± 0.005080291 | **0.8593619** ± 0.007910405 | **3.273** |
 | RNSGA2 | 30/30 | 0.6205746 ± 0.1653183 | 0.3510772 ± 0.1552783 | 5.031 |
 | DNSGA2 | 30/30 | 0.01997309 ± 0.02736954 | 0.8467496 ± 0.03686742 | 3.765 |
 | CGDE_NSGAII | 29/30 | 2.320433 ± 1.62697 | 0.01647341 ± 0.05151324 | 118.540 |
@@ -93,10 +95,10 @@ Lower IGD and higher HV indicate better quality. Tables report **mean ± SD** ov
 
 | Algorithm | Valid | IGD ↓ (mean ± SD) | HV ↑ (mean ± SD) | Median runtime (s) |
 |---|---:|---:|---:|---:|
-| OADE_NSGAII | 30/30 | 0.003881201 ± 0.0002201265 | 0.4380939 ± 0.0002440285 | 7.923 |
+| OADE_NSGAII | 30/30 | **0.003881201** ± 0.0002201265 | **0.4380939** ± 0.0002440285 | 7.923 |
 | NSGA2 | 30/30 | 0.01636813 ± 0.002011487 | 0.4178915 ± 0.002872109 | 3.054 |
 | RNSGA2 | 30/30 | 0.1857638 ± 0.09278693 | 0.2676365 ± 0.06858999 | 5.488 |
-| DNSGA2 | 30/30 | 0.0225884 ± 0.002794084 | 0.4089167 ± 0.003997333 | 2.542 |
+| DNSGA2 | 30/30 | 0.0225884 ± 0.002794084 | 0.4089167 ± 0.003997333 | **2.542** |
 | CGDE_NSGAII | 30/30 | 0.004827706 ± 0.0003294287 | 0.4379368 ± 0.0002590232 | 114.378 |
 | NSGAII_SDR_OLS | 30/30 | 5.257007 ± 0.3926272 | 0 ± 0 | 15.004 |
 | CE_MOEA | 30/30 | 0.004887331 ± 0.0003339747 | 0.4378238 ± 0.0003542558 | 138.853 |
