@@ -15,6 +15,7 @@ from research.maintenance import tmp_sessions, inventory, check_structure
 from research.benchmarking.reuse import run_benchmark_v2
 from research.benchmarking import zdt_seven
 from research.benchmarking import zdt_six
+from research.benchmarking import deb_report
 from research.studies import restart_comparison
 from research.studies import probability_ablation
 from research.studies import diversity_injection
@@ -26,6 +27,7 @@ Command = Callable[[list[str] | None], None]
 
 
 COMMANDS: dict[str, Command] = {
+    "report-deb-metrics": deb_report.main,
     "benchmark-zdt-six": zdt_six.main,
     "sensitivity-mechanisms": mechanism_sensitivity.main,
     "mechanism-impact": mechanism_impact.main,

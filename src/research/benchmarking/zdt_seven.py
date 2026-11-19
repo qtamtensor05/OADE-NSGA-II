@@ -138,6 +138,8 @@ def write_outputs(directory,manifest,cfg,candidates):
         text.append(f"| {s['problem'].upper()} | {s['algorithm']} | {s['valid_runs']}/{s['runs']} | {fmt('IGD_median')} | {fmt('HV_median')} | {s['runtime_seconds_median']:.3f} |")
     text+=['','Đây là so sánh các bản triển khai cụ thể trong repository, không chứng minh ưu thế so với mọi thuật toán cùng tên trong tài liệu. CGDE/SDR-OLS/CE-MOEA có các điều chỉnh cục bộ; xem registry baselines. Batch nguyên tử có thể để dư budget; xem n_eval thực. Convergence không nội suy.', '']
     (derived/'report.md').write_text('\n'.join(text),encoding='utf-8')
+    from .deb_report import export_tables
+    export_tables(rows, derived/'deb_metrics', cfg)
 
 
 def main(argv=None):

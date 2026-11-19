@@ -127,6 +127,8 @@ def write_outputs(directory,manifest,cfg,candidates):
             text.append('| '+p['name'].upper()+' | '+' | '.join(cells)+' |')
         text.append('')
     (derived/'report.md').write_text('\n'.join(text),encoding='utf-8')
+    from .deb_report import export_tables
+    export_tables(rows, derived/'deb_metrics', cfg)
 
 
 def main(argv=None):
