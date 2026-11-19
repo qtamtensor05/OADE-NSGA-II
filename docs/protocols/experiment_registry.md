@@ -17,6 +17,7 @@ Earlier component-study results have been removed. A subsequent 480-run mechanis
 
 | Study | Protocol |
 |---|---|
+| Current-solver mechanism parameter levels | [OFAT with initial/held levels](mechanism_sensitivity.md) — 2,100 valid runs; [audited report](../reports/mechanism_sensitivity_report.md), 124 Holm-corrected endpoints |
 | Restart | [Classic, adaptive and no restart](restart_comparison.md) |
 | Periodic diversity | [Injection on/off](diversity_injection.md) |
 | Initialization | [Uniform and Sobol–OBL](initialization_comparison.md) |

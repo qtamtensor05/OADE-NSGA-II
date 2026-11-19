@@ -19,12 +19,14 @@ from research.studies import probability_ablation
 from research.studies import initialization_comparison
 from research.studies import diversity_injection
 from research.studies import mechanism_impact
+from research.studies import mechanism_sensitivity
 
 
 Command = Callable[[list[str] | None], None]
 
 
 COMMANDS: dict[str, Command] = {
+    "sensitivity-mechanisms": mechanism_sensitivity.main,
     "mechanism-impact": mechanism_impact.main,
     "benchmark-zdt-seven": zdt_seven.main,
     "ablation-diversity": diversity_injection.main,

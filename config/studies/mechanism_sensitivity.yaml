@@ -1,0 +1,19 @@
+schema: 1
+population: 100
+budget: 20000
+# Fresh seeds, distinct from the 42–71 mechanism ablations.
+seeds: [7000, 7001, 7002, 7003, 7004, 7005, 7006, 7007, 7008, 7009, 7010, 7011, 7012, 7013, 7014, 7015, 7016, 7017, 7018, 7019, 7020, 7021, 7022, 7023, 7024, 7025, 7026, 7027, 7028, 7029]
+problems: [zdt4, zdt6]
+parameters:
+  obl_interval: {levels: [5, 10, 20, 40], mode: initial}
+  obl_jump_rate: {levels: [0.05, 0.1, 0.2, 0.4], mode: initial}
+  stagnation_patience: {levels: [5, 10, 20, 40], mode: initial}
+  stagnation_tolerance: {levels: [0.00001, 0.0001, 0.001], mode: initial}
+  diversity_threshold: {levels: [0.01, 0.02, 0.05, 0.1], mode: initial}
+  restart_elite_ratio: {levels: [0.8, 0.9, 0.95], mode: initial}
+  n_neighbors: {levels: [3, 5, 10, 20], mode: initial}
+  # Held mode isolates the numeric level from continued adaptation.
+  # Each has its own matched held-reference at the production initial value.
+  mean_F: {levels: [0.4, 0.5, 0.65, 0.8, 0.9], mode: held}
+  mean_CR: {levels: [0.1, 0.3, 0.5, 0.7, 0.9], mode: held}
+  prob_de: {levels: [0.2, 0.35, 0.5, 0.65, 0.8], mode: held}

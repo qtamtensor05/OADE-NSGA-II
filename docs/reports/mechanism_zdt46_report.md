@@ -2,6 +2,8 @@
 
 Ngày phân tích: 18/11/2026. Phân tích lại 480 lượt chạy hiện có; không chạy lại thuật toán tối ưu. [Giao thức](../protocols/mechanism_impact_zdt46.md) · [Audit](../../results/experiments/oade_mechanism_zdt46/derived/audit.json).
 
+Nghiên cứu tiếp nối: [2.100 lượt đo nhiều mức tham số, phân tích ngày 19/11/2026](mechanism_sensitivity_report.md). Báo cáo mới dùng seed và mốc so sánh khác, không thay thế các kiểm định của bộ ablation này.
+
 ## Kết quả chính
 
 Các cơ chế của OADE không mang lại lợi ích đồng đều trên hai bài toán. Trong 28 endpoint sau hiệu chỉnh Holm chung, cấu hình đầy đủ (`full`) tốt hơn ở 6 endpoint, biến thể can thiệp tốt hơn ở 4 endpoint, và 18 endpoint chưa phát hiện khác biệt. Endpoint là bài toán × can thiệp × chỉ số, không phải 28 thí nghiệm độc lập.

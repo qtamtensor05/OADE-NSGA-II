@@ -1,0 +1,30 @@
+{
+  "records": 2100,
+  "valid_runs": 2100,
+  "source_hashes_verified": 21,
+  "primary_checksums_verified": 2100,
+  "summaries_verified": 70,
+  "comparisons_verified": 124,
+  "activation_rows_verified": 4200,
+  "max_objective_error": 0.0,
+  "max_metric_error": 0.0,
+  "total_evaluations": 41898954,
+  "manifest_sha256": "640749c2cb5708ee75fc6116ed3bf0d8cf33ea3226420b6beddd81bfb9b89563",
+  "results": {
+    "not_significant": 104,
+    "reference_better": 15,
+    "level_better": 5
+  },
+  "bootstrap": {
+    "seed": 20261119,
+    "resamples": 20000,
+    "unit": "paired seed within problem and contrast",
+    "interval": "percentile 95%; marginal, not multiplicity-adjusted"
+  },
+  "environment": {
+    "python": "3.14.7",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "scope": "Independent analysis path, same analyst and pymoo objective/indicator implementation; not an independent solver rerun. Initial hashes agree within blocks, not reconstructed. I/O-only source migration checked by AST. Raw events/trace CSV not exhaustively audited."
+}

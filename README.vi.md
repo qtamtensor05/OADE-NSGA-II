@@ -148,7 +148,55 @@ $env:MKL_NUM_THREADS="1"
 
 Thêm `--resume` để tiếp tục đúng lần chạy bị gián đoạn. Lệnh `-m research` điều phối thí nghiệm; solver OADE vẫn là bản chính `oade_nsga2`. Manifest từ chối thay đổi mã, cấu hình, môi trường hoặc primary bị sửa. Không dùng lệnh benchmark cũ để tái tạo các bảng hiện tại.
 
-## Nghiên cứu thành phần và tài liệu
+## Ảnh hưởng của mức tham số trên ZDT4 và ZDT6
+
+Nghiên cứu OFAT đã hoàn tất **2.100/2.100 lượt hợp lệ**: 35 cấu hình × 2 bài × 30 seed mới (7000–7029), quần thể 100, cap 20.000 FE/lượt. Sau Holm chung **124 endpoint**, mốc tốt hơn ở **15**, mức thử tốt hơn ở **5**, **104 chưa phát hiện khác biệt**. Endpoint là bài × mức so với mốc × chỉ số, không phải các thí nghiệm độc lập. [Báo cáo đã audit](docs/reports/mechanism_sensitivity_report.md) · [Bảng đầy đủ](docs/reports/mechanism_sensitivity_tables.md) · [Giao thức và các mức](docs/protocols/mechanism_sensitivity.md).
+
+**Mốc so sánh:** tham số tĩnh so với full production; mean F/CR/pDE so với cùng tham số được **giữ cố định (held)** tại 0,65/0,5/0,5. Khi giữ một tham số, các tham số thích nghi khác vẫn hoạt động. Kết quả held không phải phép so trực tiếp với full adaptive. IGD thấp tốt hơn; HV cao tốt hơn.
+
+### Tham số nào làm thay đổi kết quả?
+
+Trong bảng, “tốt/kém hơn” là mức thử so với mốc, đã đạt p Holm <0,05; **NS** là chưa phát hiện khác biệt, không chứng minh tương đương. Mỗi endpoint dùng đủ 30 cặp seed.
+
+| Tham số và mốc | ZDT4: IGD | ZDT4: HV | ZDT6: IGD | ZDT6: HV |
+|---|---|---|---|---|
+| OBL interval, mốc 10 | NS ở 5/20/40 | NS ở 5/20/40 | NS ở 5/20/40 | NS ở 5/20/40 |
+| OBL jump rate, mốc 0,2 | **0,05 kém hơn**; 0,1/0,4 NS | **0,05 kém hơn**; 0,1/0,4 NS | NS ở mọi mức thử | NS ở mọi mức thử |
+| Patience, tolerance, diversity threshold, elite ratio | NS ở mọi mức thử | NS ở mọi mức thử | NS ở mọi mức thử | NS ở mọi mức thử |
+| Số láng giềng, mốc 5 | NS ở 3/10/20 | NS ở 3/10/20 | NS ở 3/10/20 | NS ở 3/10/20 |
+| Mean F held, mốc 0,65 | **0,5 tốt hơn; 0,8/0,9 kém hơn**; 0,4 NS | **0,4/0,5 tốt hơn; 0,8/0,9 kém hơn** | **0,5 kém hơn**; 0,4/0,8/0,9 NS | **0,4/0,5 kém hơn**; 0,8/0,9 NS |
+| Mean CR held, mốc 0,5 | NS ở mọi mức thử | NS ở mọi mức thử | **0,9 kém hơn**; 0,1/0,3/0,7 NS | **0,3 tốt hơn; 0,7/0,9 kém hơn**; 0,1 NS |
+| pDE held, mốc 0,5 | **0,2 kém hơn**; 0,35/0,65/0,8 NS | **0,2 kém hơn**; 0,35/0,65/0,8 NS | NS ở mọi mức thử | **0,8 tốt hơn; 0,2 kém hơn**; 0,35/0,65 NS |
+
+![Chênh lệch HV theo mức tham số trên ZDT4 và ZDT6](docs/reports/figures/mechanism_sensitivity/paired_hv_overview.png)
+
+**Cách đọc:** dương là mức thử tốt hơn, âm là kém hơn; xanh ZDT4, nâu ZDT6. Chấm đặc theo Holm, chấm rỗng là NS; đoạn dọc là CI bootstrap 95% **chưa hiệu chỉnh**. Đại lượng hiển thị là median chênh lệch HV theo cặp chia cho median mốc, không phải phần trăm cải thiện của từng seed. Các panel có phạm vi riêng. [Tổng quan IGD](docs/reports/figures/mechanism_sensitivity/paired_igd_overview.png) dùng signed pseudo-log để giữ cả CI dài; [hướng dẫn đầy đủ cho 12 hình](docs/reports/mechanism_sensitivity_figures.md).
+
+### Chất lượng đạt được ở các trường hợp tiêu biểu
+
+Số dưới đây là **median nhóm: mốc → mức thử**, không phải median chênh lệch theo cặp. Kết luận vẫn dựa trên kiểm định theo cặp, không suy ra từ việc hai median khác nhau.
+
+| Bài | Thay đổi một tham số | IGD median ↓ | HV median ↑ | Kết luận sau Holm |
+|---|---|---:|---:|---|
+| ZDT4 | OBL jump rate 0,2 → 0,05 | 0,00541441 → 0,0721610 | 0,867651 → 0,762704 | Kém ở cả hai; p=0,005069 / 0,006915 |
+| ZDT4 | Mean F held 0,65 → 0,5 | 0,00480515 → 0,00451561 | 0,869223 → 0,870173 | Tốt ở cả hai; p=0,005565 / 9,691×10⁻⁶ |
+| ZDT6 | Mean F held 0,65 → 0,5 | 0,00382934 → 0,00402787 | 0,438053 → 0,437742 | Kém ở cả hai; p=0,006208 / 0,005069 |
+| ZDT6 | Mean CR held 0,5 → 0,3 | 0,00373864 → 0,00366901 | 0,438227 → 0,438471 | IGD NS; HV tốt hơn, p=0,048311 |
+| ZDT6 | pDE held 0,5 → 0,8 | 0,00381187 → 0,00366338 | 0,438208 → 0,438799 | IGD NS; HV tốt hơn, p=3,037×10⁻⁵ |
+
+![Phân bố chất lượng theo mean F giữ cố định](docs/reports/figures/mechanism_sensitivity/levels_mean_F.png)
+
+F thấp có lợi trên ZDT4 trong những so sánh cụ thể nhưng F=0,5 gây bất lợi trên ZDT6. Mỗi chấm là một seed, hộp là Q1–Q3, hình thoi là median; IGD dùng trục log10, HV tuyến tính. Đường dọc chấm là mốc held. Giữ đủ các đuôi sai số, không so độ cao giữa các panel có phạm vi khác nhau.
+
+![Phân bố chất lượng theo xác suất OBL](docs/reports/figures/mechanism_sensitivity/levels_obl_jump_rate.png)
+
+Giảm jump rate xuống 0,05 làm ZDT4 kém hơn; các mức còn lại chưa đủ bằng chứng xác định 0,2 là tối ưu. Cách đọc hộp/điểm như hình F; mốc ở đây là full production với jump rate=0,2.
+
+**Kết luận thực nghiệm:** không có mức thay thế nào được chứng minh cải thiện đồng đều cả hai bài và hai chỉ số. CR=0,3 và pDE=0,8 chỉ có bằng chứng cải thiện HV trên ZDT6; riêng CR=0,3 có p sát ngưỡng. Ngưỡng restart có thể làm thay đổi hành vi mà chưa cải thiện chất lượng đạt ngưỡng: trên ZDT6, patience=5 tạo 102 restart trong 19/30 seed so với 8 restart trong 6/30 seed của full, nhưng IGD/HV vẫn NS. Trên ZDT4, full và các mức tham số restart đã thử không có restart hoàn tất.
+
+Đây là OFAT trên hai bài, không kiểm định tương tác hay tối ưu tổ hợp tham số. Không cộng các mức thắng thành cấu hình mới, không suy rộng sang DTLZ/WFG và không tự đổi production. Bộ này không chạy lại các đối thủ nên không thay kết luận benchmark ZDT v2 ở trên. [Audit dữ liệu và 124 kiểm định](results/experiments/mechanism_sensitivity_v1/derived/audit.json).
+
+## Nghiên cứu thành phần khác và tài liệu
 
 Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả thành phần cũ đã được xóa. Bộ chạy mới 480 lượt trên ZDT4/ZDT6 đã có [báo cáo, biểu đồ và kiểm chứng độc lập](docs/reports/mechanism_zdt46_report.md): 6 endpoint thiên về bản đầy đủ, 4 thiên về biến thể và 18 chưa phát hiện khác biệt sau Holm chung 28 endpoint. Báo cáo nêu rõ giới hạn provenance và số lần restart kích hoạt thấp.
 

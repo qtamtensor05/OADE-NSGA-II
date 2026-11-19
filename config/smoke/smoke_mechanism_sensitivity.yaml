@@ -1,0 +1,11 @@
+schema: 1
+population: 10
+budget: 300
+seeds: [9100, 9101]
+problems: [zdt4, zdt6]
+parameters:
+  obl_interval: {levels: [2, 10], mode: initial}
+  obl_jump_rate: {levels: [0.2, 0.8], mode: initial}
+  mean_F: {levels: [0.4, 0.65], mode: held}
+  mean_CR: {levels: [0.1, 0.5], mode: initial}
+  prob_de: {levels: [0.2, 0.5], mode: held}

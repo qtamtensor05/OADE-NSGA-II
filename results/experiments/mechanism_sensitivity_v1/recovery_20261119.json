@@ -1,0 +1,14 @@
+{
+  "committed_before": 838,
+  "verified_after": 839,
+  "recovered": [
+    "zdt4_7023_level_b26107a506bffc86.json"
+  ],
+  "remaining": 1261,
+  "all_primary_hashes_verified": true,
+  "source_hashes_unchanged": true,
+  "recovered_objectives_and_metrics_verified": true,
+  "previous_manifest_sha256": "9137130a6508b721d4a60c8390302fb25962ddaf3b99030d850b751c699b51f0",
+  "recovered_manifest_sha256": "fab106813adadcce0bc097210456207c10a10b43c2a89f4a5571261a181714e0",
+  "cause_boundary": "Interrupted manifest promotion observed; original exception unavailable."
+}
