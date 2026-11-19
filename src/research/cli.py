@@ -17,7 +17,6 @@ from research.benchmarking import zdt_seven
 from research.benchmarking import zdt_six
 from research.studies import restart_comparison
 from research.studies import probability_ablation
-from research.studies import initialization_comparison
 from research.studies import diversity_injection
 from research.studies import mechanism_impact
 from research.studies import mechanism_sensitivity
@@ -32,7 +31,6 @@ COMMANDS: dict[str, Command] = {
     "mechanism-impact": mechanism_impact.main,
     "benchmark-zdt-seven": zdt_seven.main,
     "ablation-diversity": diversity_injection.main,
-    "compare-initialization": initialization_comparison.main,
     "ablation-probability": probability_ablation.main,
     "restart-comparison": restart_comparison.main,
     "tmp": tmp_sessions.main,

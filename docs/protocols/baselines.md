@@ -32,7 +32,7 @@ The main empirical claim is restricted to these implementations and parameteriza
 
 ## Method mapping for OADE
 
-- Fixed OADE uses seeded uniform initialization. Research OADE may separately study Sobol/OBL. A common uniform input does not imply identical effective initial populations: SDR-OLS applies its own OBL selection and charges its evaluations.
+- Fixed OADE uses seeded uniform initialization. A common uniform input does not imply identical effective initial populations: SDR-OLS applies its own OBL selection and charges its evaluations.
 - Periodic OBL: enabled injection occurs when generation index modulo 10 equals zero, including generation zero. The no-OBL ablation disables these injections under the common warm start.
 - F update: μF ← 0.9 μF + 0.1 mean(F²)/mean(F) for DE trials nondominated in the evaluated parent+trial pool before duplicate removal; no stale/None-rank filtering.
 - CR update: μCR ← 0.9 μCR + 0.1 mean(CR) over the same offspring.

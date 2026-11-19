@@ -1,7 +1,7 @@
 """Ablate periodic OBL injection, holding initialization/restart/pDE constant."""
 import json
 from shared.io.csv_io import write_csv
-from . import initialization_comparison as measurements
+from . import uniform_measurements as measurements
 from . import restart_comparison as base
 
 
@@ -69,7 +69,7 @@ def write_outputs(directory,manifest,cfg,candidates):
           '| Bật | Chỉ số thế hệ 0, 10, 20, … | Uniform cùng quần thể đầu/seed, adaptive restart, success-rate, F/CR, neighborhood |',
           '| Tắt | Không gọi OBL định kỳ | Giữ nguyên các cơ chế còn lại |','',
           'Kernel OBL hiện có chọn từng cá thể với xác suất jump_rate=0,2 rồi phản chiếu theo bounds quần thể hoặc bounds bài toán (50/50). Chỉ các ứng viên được sinh mới tốn evaluation; không mặc định mỗi lần bơm có đủ 100 ứng viên.',
-          'Tắt bơm định kỳ không tắt adaptive restart hoặc phần OBL/Gauss bên trong restart. Vì vậy nhánh tắt vẫn có thể được restart làm mới quần thể. Khởi tạo Sobol–OBL không tham gia cả hai nhánh.',
+          'Tắt bơm định kỳ không tắt adaptive restart hoặc phần OBL/Gauss bên trong restart. Vì vậy nhánh tắt vẫn có thể được restart làm mới quần thể. Cả hai nhánh chỉ dùng khởi tạo uniform.',
           '## Chất lượng cuối — median','',
           '| Bài | Nhánh | Valid/run | IGD ↓ | HV ↑ | Runtime (s) |','|:---|:---|---:|---:|---:|---:|']
     for s in summaries:

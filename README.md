@@ -155,7 +155,6 @@ Component-study code and protocols remain available. Earlier component results w
 - [Fixed and research OADE implementations](docs/protocols/oade_implementations.md)
 - [Restart ablation](docs/protocols/restart_comparison.md)
 - [Periodic diversity injection](docs/protocols/diversity_injection.md)
-- [Initialization study](docs/protocols/initialization_comparison.md)
 - [Probability adaptation](docs/protocols/probability_ablation.md)
 - [Baseline corrections and reconstruction assumptions](docs/protocols/baseline_paper_corrections.md)
 - [Experiment registry](docs/protocols/experiment_registry.md)

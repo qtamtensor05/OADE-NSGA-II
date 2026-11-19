@@ -9,7 +9,7 @@ from shared.evaluation import BudgetedProblem,EvaluationBudgetExceeded
 from shared.population import make_initial_population
 from shared.io.config import load_yaml_config
 from research.studies.diversity_injection import design,run_task
-from research.studies.initialization_comparison import run_task as baseline_task
+from research.studies.uniform_measurements import run_task as baseline_task
 
 
 class DiversityTests(unittest.TestCase):

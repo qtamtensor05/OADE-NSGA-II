@@ -5,6 +5,7 @@ import csv
 import hashlib
 import json
 import platform
+import zipfile
 import numpy as np
 import scipy
 from scipy.stats import wilcoxon,rankdata
@@ -38,7 +39,12 @@ def main():
     assert set(names)=={'OADE_NSGAII','NSGA2','DNSGA2','CGDE_NSGAII','GDE3','NSDE'}
     assert cfg['baseline_revision']=='pymoo_de_baselines_2026_11_19'
     changed=[p for p,h in m['source_hashes'].items() if not (ROOT/p).exists() or sha(ROOT/p)!=h]
-    assert not changed,changed
+    # Maintenance may remove unused code after execution. Verify historical bytes
+    # against the original manifest, never replace its hashes with current ones.
+    if changed:
+        with zipfile.ZipFile(D/'config/execution_sources.zip') as archive:
+            for p in changed:
+                assert hashlib.sha256(archive.read(p)).hexdigest()==m['source_hashes'][p],p
     assert sha(D/'config/reference_fronts.json')==m['reference_sha256']
     refs=json.loads((D/'config/reference_fronts.json').read_text())
     assert set(m['artifacts'])=={p.relative_to(D).as_posix() for p in (D/'primary').glob('*.json')}
@@ -125,6 +131,7 @@ def main():
     write('audited_raw_runs.csv',[{k:r[k] for k in ('problem','algorithm','seed','valid','n_eval','runtime_seconds','IGD','HV')} for r in records])
     audit=dict(records=900,valid_runs=sum(r['valid'] for r in records),validity_counts=dict(Counter(r['validation_status'] for r in records)),
         primary_checksums_verified=900,source_hashes_verified=len(m['source_hashes']),summary_rows_verified=30,comparison_rows_verified=50,
+        source_snapshot_files_verified=len(changed),
         paired_initialization_blocks_verified=150,max_objective_error=max_objective,max_metric_error=max_metric,
         total_evaluations=sum(r['n_eval'] for r in records),manifest_sha256=manifest_hash,results=dict(Counter(r['result'] for r in comparisons)),
         bootstrap=dict(seed=20261119,resamples=20000,unit='paired seed within problem and comparison',interval='percentile 95%, marginal not multiplicity-adjusted'),

@@ -185,8 +185,8 @@ def root_protocol(vi):
         ['Restart confirmation', 'Classic / no restart / adaptive; 30 paired seeds 1000–1029'],
         ['Adaptive OFAT', '9 parameters; 19 unique configurations; 30 seeds 6000–6029 per problem/configuration'],
         ['Metrics', 'IGD ↓; HV ↑; mean ± sample SD for benchmarks; median and Q25–Q75 for OFAT']])
-    lines += [('Các bảng dưới đây báo cáo từng bài toán. Holm giữ nguyên họ kiểm định gốc; các block đối chứng dùng chung không được đếm lại thành lượt chạy mới. Khởi tạo uniform chung trong benchmark bỏ qua Sobol/OBL khởi tạo độc lập. Runtime là thời gian của bản triển khai đã đo, không phải độ phức tạp độc lập phần cứng.' if vi else
-               'Tables below report individual problems. Holm corrections retain their original families; reused comparator blocks are not new independent runs. Common uniform benchmark initialization bypasses standalone initial Sobol/OBL. Runtime describes the measured implementation, rather than hardware-independent complexity.'), '',
+    lines += [('Các bảng dưới đây báo cáo từng bài toán. Holm giữ nguyên họ kiểm định gốc; các block đối chứng dùng chung không được đếm lại thành lượt chạy mới. Khởi tạo uniform chung trong benchmark dùng cùng khởi tạo uniform theo seed. Runtime là thời gian của bản triển khai đã đo, không phải độ phức tạp độc lập phần cứng.' if vi else
+               'Tables below report individual problems. Holm corrections retain their original families; reused comparator blocks are not new independent runs. Common uniform benchmark initialization uses the same seeded uniform population. Runtime describes the measured implementation, rather than hardware-independent complexity.'), '',
               '![Classic versus adaptive mean IGD by ZDT problem](results/figures/benchmark_v2_v1_vs_v2_delta.png)', '',
               ('**Hình 1. Classic và adaptive trên từng bài ZDT.** Mỗi cặp cột là mean IGD của 30 seed benchmark. Phần trăm trên hình là chênh lệch mô tả giữa hai cấu hình, không cô lập nguyên nhân do restart.' if vi else
                '**Figure 1. Classic and adaptive on each ZDT problem.** Each pair shows mean IGD over 30 benchmark seeds. Percentages describe configuration differences and do not isolate a restart mechanism.'), '']
@@ -288,7 +288,7 @@ def root_strengths_and_limits(vi):
         lines += md_table(['Ưu điểm', 'Bằng chứng hiện có', 'Phạm vi diễn giải'], [
             ['Chất lượng nghiệm so với NSGA2', 'Adaptive có mean IGD thấp hơn và mean HV cao hơn NSGA2 trong từng bài ZDT đã báo cáo; các kiểm định ghép cặp được giữ theo bài.', '30 seed 42–71, population 100, trần 20.000 đánh giá; không suy ra vượt mọi đối chứng.'],
             ['Giảm phân tán so với classic trên ZDT1–3', 'SD của IGD trong benchmark adaptive thấp hơn classic trên riêng ZDT1, ZDT2 và ZDT3; hình xác nhận cho thấy các đuôi chất lượng kém của classic.', 'Lợi ích ở mức cấu hình; no-restart gần trùng adaptive nên chưa quy nguyên nhân cho trigger.'],
-            ['Có bằng chứng thành phần cụ thể trên ZDT4', 'Ablation classic cho thấy giữ OBL tốt hơn loại OBL trên cả IGD và HV sau hiệu chỉnh Holm.', 'Đánh giá bổ sung OBL định kỳ với khởi tạo uniform chung, không phải lợi ích của Sobol/OBL khởi tạo.'],
+            ['Có bằng chứng thành phần cụ thể trên ZDT4', 'Ablation classic cho thấy giữ OBL tốt hơn loại OBL trên cả IGD và HV sau hiệu chỉnh Holm.', 'Đánh giá bổ sung OBL định kỳ với khởi tạo uniform chung, khởi tạo uniform giữ nguyên.'],
             ['Có dữ liệu để kiểm tra độ nhạy và tái lập', 'Benchmark ghép seed, thí nghiệm xác nhận riêng, OFAT adaptive, manifest và ZIP có SHA-256 đều đã có.', 'Đây là ưu điểm của hồ sơ thực nghiệm; không tự tạo bảo đảm về hội tụ hoặc tối ưu.']])
         lines += ['## Hạn chế và giới hạn kết luận', '']
         lines += md_table(['Hạn chế', 'Biểu hiện trên ZDT', 'Hệ quả khi diễn giải'], [
@@ -297,7 +297,7 @@ def root_strengths_and_limits(vi):
             ['Nhạy với cấu hình và ngân sách', 'ZDT4 suy giảm mạnh tại population 200 ở trần 20.000 đánh giá; tăng population không có lợi đồng đều.', 'Không chọn một mức population lớn làm mặc định cho mọi bài.'],
             ['Chưa cô lập giá trị của restart adaptive', 'Kết quả adaptive và no-restart gần trùng trong xác nhận; đợt này không lưu telemetry trigger.', 'Cần seed mới và số lần kiểm tra/kích hoạt restart trước khi khẳng định cơ chế.'],
             ['OFAT chưa đo tương tác hoặc xác nhận tối ưu', 'Mỗi lần chỉ thay một tham số quanh baseline; F/CR và xác suất DE có thể cập nhật trong lượt chạy.', 'Các mức có lợi là ứng viên xác nhận, không phải cấu hình tối ưu tổng quát.'],
-            ['Chưa kiểm tra riêng lợi ích khởi tạo', 'Benchmark truyền quần thể uniform chung, bỏ qua khởi tạo Sobol/OBL độc lập.', 'Không dùng ablation OBL định kỳ để khẳng định lợi ích khởi tạo.'],
+            ['Chưa kiểm tra riêng lợi ích khởi tạo', 'Benchmark truyền quần thể uniform chung, giữ cùng khởi tạo uniform.', 'Không dùng ablation OBL định kỳ để khẳng định lợi ích khởi tạo.'],
             ['Bất định và provenance còn thiếu', 'Chưa có CI của hiệu ứng ghép cặp trong các bảng hiện tại; một số block lịch sử thiếu manifest thực thi.', 'SD/IQR không thay cho CI; không gán môi trường hiện tại cho những lượt chạy lịch sử.'],
             ['Phạm vi nghiên cứu chính còn hẹp', 'Trọng tâm hiện tại là ZDT liên tục hai mục tiêu đã có dữ liệu; ZDT5 không nằm trong bộ đang báo cáo.', 'Chưa xác lập khả năng tổng quát sang nhiều mục tiêu, ràng buộc, biến rời rạc hoặc bài toán thực tế.']])
         lines += ['## Định hướng: hoàn thiện ZDT trước, mở rộng sau', '',
@@ -313,7 +313,7 @@ def root_strengths_and_limits(vi):
     lines += md_table(['Strength', 'Current evidence', 'Interpretation boundary'], [
         ['Solution quality versus NSGA2', 'Adaptive has lower mean IGD and higher mean HV than NSGA2 in each reported ZDT problem; paired tests remain problem-specific.', '30 seeds 42–71, population 100, 20,000-evaluation cap; not superiority over every comparator.'],
         ['Lower dispersion than classic on ZDT1–3', 'Adaptive benchmark IGD SD is lower than classic separately on ZDT1, ZDT2 and ZDT3; held-out distributions expose poor-quality classic tails.', 'A configuration-level benefit; near-overlap with no-restart prevents attribution to the adaptive trigger.'],
-        ['Specific component evidence on ZDT4', 'Classic ablation favors retaining OBL over removing it for both IGD and HV after Holm correction.', 'Periodic OBL under common uniform initialization, not standalone initial Sobol/OBL.'],
+        ['Specific component evidence on ZDT4', 'Classic ablation favors retaining OBL over removing it for both IGD and HV after Holm correction.', 'Periodic OBL under common uniform initialization, with unchanged uniform initialization.'],
         ['Evidence for sensitivity checks and reproduction', 'Matched-seed benchmarks, separate confirmation seeds, adaptive OFAT, manifests and SHA-256 ZIP records are available.', 'A strength of the experimental record, not a convergence or optimality guarantee.']])
     lines += ['## Limitations and claim boundaries', '']
     lines += md_table(['Limitation', 'ZDT evidence or design boundary', 'Consequence'], [
@@ -322,7 +322,7 @@ def root_strengths_and_limits(vi):
         ['Configuration and budget sensitivity', 'ZDT4 deteriorates strongly at population 200 under the 20,000-evaluation cap.', 'Larger populations are not a universally beneficial default.'],
         ['Adaptive restart value remains unisolated', 'Adaptive and no-restart nearly overlap in confirmation; trigger telemetry was not saved.', 'Fresh seeds and restart checks/activations are needed for a mechanism claim.'],
         ['OFAT does not establish interactions or optimality', 'One parameter changes around baseline; F/CR and DE probability can update within a run.', 'Favorable levels are confirmation candidates, not a general optimum.'],
-        ['Initialization benefit remains untested', 'Benchmark populations use common uniform initialization, bypassing standalone Sobol/OBL.', 'Periodic-OBL ablation does not establish an initialization benefit.'],
+        ['Initialization benefit remains untested', 'Benchmark populations use common uniform initialization, with a fixed uniform start.', 'Periodic-OBL ablation does not establish an initialization benefit.'],
         ['Uncertainty and provenance gaps', 'Current tables lack paired-effect CIs; some historical blocks lack execution manifests.', 'SD/IQR are not CIs; current environments cannot be assigned retrospectively.'],
         ['Limited primary scope', 'The current focus is the reported continuous bi-objective ZDT problems; ZDT5 is not included.', 'Generalization to more objectives, constraints, discrete variables or applications is not established.']])
     lines += ['## Research direction: consolidate ZDT, then extend', '',

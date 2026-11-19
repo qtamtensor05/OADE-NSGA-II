@@ -93,7 +93,9 @@ HV cao tốt; trục tuyến tính từ 0, giữ mọi giá trị 0. Mỗi chấ
 
 Đây là kiểm chứng bằng đường tính độc lập do cùng người phân tích thực hiện, vẫn dùng cùng thư viện pymoo cho objective/indicator; không phải xác nhận từ nhóm nghiên cứu bên ngoài, không chạy lại optimizer và không kiểm chứng toàn bộ transition trace.
 
-Kiểm tra bảo trì: `git diff --check` đạt; đối chiếu bảng và liên kết tài liệu đạt. Lệnh `research check-structure` hiện báo hai lỗi vì allowlist cũ chưa chứa package `gde3`/`nsde`, dù import solver nằm đúng package. Khi bổ sung hai tên vào allowlist trong bộ nhớ rồi chạy lại, toàn bộ kiểm tra cấu trúc/liên kết đạt. Chưa sửa file source đã được hash trong manifest; đây là hạn chế của công cụ kiểm tra cấu trúc, tách biệt với audit số liệu ở trên.
+Sau bảo trì mã nguồn, các hash tại thời điểm chạy được xác minh với [snapshot mã thực thi](../../results/experiments/zdt_six_fixed_oade_v1/config/execution_sources.zip) khi file hiện tại khác hoặc đã được gỡ. Snapshot được lưu và đối chiếu trước khi sửa mã; không sửa hash trong manifest. Khởi tạo benchmark vẫn là uniform theo seed; thay đổi mã sau thí nghiệm không được quy thành mã đã sinh dữ liệu. Muốn chạy lại thiết kế với mã mới phải dùng thư mục output mới; resume strict của dữ liệu cũ cần đúng source/môi trường tại thời điểm chạy.
+
+Kiểm tra bảo trì: `git diff --check`, đối chiếu bảng và liên kết tài liệu đạt. Allowlist kiểm tra cấu trúc đã bổ sung hai package baseline GDE3/NSDE.
 
 ```powershell
 .\.venv\Scripts\python.exe analysis/audit_zdt_six.py

@@ -68,7 +68,7 @@ def generate_reports(base, family, problem, records, reports, link):
         if category == 'restart_confirmation':
             lines += ['OADE_FULL là classic; OADE_ADAPTIVE_RESTART là adaptive; OADE_NO_RESTART tắt restart. Seed xác nhận là 1000–1029. Telemetry trigger không được lưu: chất lượng cuối không tự xác nhận cơ chế kích hoạt restart.', '']
         if category == 'ablation_classic':
-            lines += ['Ablation thuộc cấu hình classic với khởi tạo uniform chung; không suy rộng thành ablation adaptive hoặc khởi tạo Sobol.', '']
+            lines += ['Ablation thuộc cấu hình classic với khởi tạo uniform chung; không suy rộng thành ablation adaptive hoặc thay đổi cách khởi tạo.', '']
         if category.startswith('sensitivity'):
             lines += ['Giữ riêng thiết kế và seed của đợt này; không ghép classic với adaptive. OFAT không đo tương tác giữa tham số. Baseline dùng lại giữa các bảng không phải các lượt thực thi mới.', '']
         for filename, (title, columns) in TABLES.items():

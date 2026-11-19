@@ -8,7 +8,7 @@ import subprocess
 
 from shared.paths import ROOT
 
-ALGORITHM_PACKAGES = {"oade_nsga2", "nsga2", "rnsga2", "dnsga2", "cgde_nsga2", "nsga2_sdr_ols", "ce_moea"}
+ALGORITHM_PACKAGES = {"oade_nsga2", "nsga2", "rnsga2", "dnsga2", "cgde_nsga2", "nsga2_sdr_ols", "ce_moea", "gde3", "nsde"}
 
 
 def check_source_boundaries(source_root=ROOT / "src") -> list[str]:

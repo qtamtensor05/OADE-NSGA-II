@@ -25,6 +25,8 @@ Add `--resume` only for the same interrupted execution. Never edit a manifest to
 
 The completed study recorded eight workers but no OMP/BLAS thread-variable limits. Setting the limits above is a recommendation for a new replication, not a description of the original run; do not change environment variables when resuming a strict-identity study.
 
+After source maintenance, use a fresh output directory for new execution. The [execution source snapshot](../../results/experiments/zdt_six_fixed_oade_v1/config/execution_sources.zip) preserves the 113 files hashed by the completed study. Its audit verifies snapshot bytes against original manifest hashes when the current file has changed or been removed; it does not rewrite historical provenance or bypass strict resume identity.
+
 ## Audit completed results
 
 ```powershell

@@ -15,7 +15,7 @@ from .operators import (
     generate_obl_offspring,
     get_neighborhood_indices,
     initialize_from_data,
-    initialize_obl,
+    initialize_uniform,
     sbx_crossover_mutation,
     tournament_selection,
 )
@@ -28,14 +28,14 @@ class OADE_NSGAII:
 
     Cải tiến so với NSGA-II gốc (Deb et al., 2002)
     ------------------------------------------------
-    - Khởi tạo OBL + Sobol/LHS khi initial_x=None; benchmark dùng uniform chung
+    - Khởi tạo uniform theo seed; benchmark truyền cùng quần thể ban đầu
     - Đột biến DE/current-to-pbest/1 hướng láng giềng thay SBX đơn thuần
     - F cập nhật theo Lehmer mean, CR theo trung bình cộng của DE có rank 1
     - Phun đa dạng định kỳ qua OBL mỗi 10 thế hệ
     - Phát hiện trì trệ và partial restart khi ideal point ngừng cải thiện
 
     Benchmark truyền initial_x để giữ cùng quần thể ban đầu giữa các solver,
-    nên không đo lợi ích của khởi tạo Sobol/OBL. OBL định kỳ trong quá trình
+    với khởi tạo uniform. OBL định kỳ trong quá trình
     tiến hoá vẫn hoạt động khi enable_obl=True, độc lập với cách khởi tạo.
     """
 
@@ -54,7 +54,7 @@ class OADE_NSGAII:
         self.prob_de = 0.5  # xác suất chọn DE thay vì SBX
         self.probability_update_mode = "success_rate"  # or fixed
         self.last_probability_update = {}
-        self.initialization_seed = None  # explicit Sobol/OBL reproducibility
+        self.initialization_seed = None  # optional isolated uniform initialization RNG
 
         # Bài toán nhiều mục tiêu cần láng giềng rộng hơn để ước lượng tốt
         min_neighbors = 10 if self.n_obj >= 3 else 5
@@ -93,8 +93,7 @@ class OADE_NSGAII:
         """
         Chạy thuật toán và trả về ma trận F của quần thể cuối, shape (pop_size, n_obj).
         Nếu initial_x được cung cấp, dùng nó làm quần thể khởi đầu (warm-start),
-        bỏ qua hoàn toàn Sobol/OBL khởi tạo. Đây là chế độ benchmark uniform chung.
-        Nếu không, khởi tạo bằng OBL + Sobol.
+        đây là chế độ benchmark uniform chung. Nếu không, lấy mẫu uniform trong bounds.
         """
         if self.probability_update_mode not in {"success_rate", "fixed"}:
             raise ValueError("probability_update_mode must be success_rate or fixed")
@@ -127,11 +126,11 @@ class OADE_NSGAII:
 
     # Khởi tạo
     def _build_initial_population(self, initial_x: Optional[np.ndarray]) -> List[Individual]:
-        """Khởi tạo từ dữ liệu có sẵn hoặc bằng OBL + Sobol nếu không có dữ liệu."""
+        """Khởi tạo từ dữ liệu có sẵn hoặc lấy mẫu uniform trong bounds."""
         if initial_x is not None:
             pop = initialize_from_data(self.problem, initial_x)
             return environmental_selection(pop, self.pop_size, self.n_obj)
-        return initialize_obl(self.problem, self.pop_size, seed=self.initialization_seed)
+        return initialize_uniform(self.problem, self.pop_size, seed=self.initialization_seed)
 
     # Sinh con lai
     def _generate_offspring(self, gen: int) -> List[Individual]:

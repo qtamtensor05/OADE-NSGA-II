@@ -155,7 +155,6 @@ Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả 
 - [OADE bản thống nhất và bản nghiên cứu](docs/protocols/oade_implementations.md)
 - [Ablation restart](docs/protocols/restart_comparison.md)
 - [Bơm đa dạng định kỳ](docs/protocols/diversity_injection.md)
-- [Nghiên cứu khởi tạo](docs/protocols/initialization_comparison.md)
 - [Thích nghi xác suất toán tử](docs/protocols/probability_ablation.md)
 - [Sửa baseline và giả định tái dựng](docs/protocols/baseline_paper_corrections.md)
 - [Danh mục thí nghiệm](docs/protocols/experiment_registry.md)

@@ -2,7 +2,7 @@
 
 **Triển khai nghiên cứu:** pipeline này dùng `research.oade_nsga2` và runner `local_oade_research`; bản chính `oade_nsga2` chỉ có một cấu hình. Xem [phân tách hai bản](oade_implementations.md). Dữ liệu và báo cáo cũ đã được xóa khi đặt lại mốc nghiên cứu; cần chạy mới, không dùng resume từ bộ cũ.
 
-**Chỉ thay một công tắc:** OBL bổ sung định kỳ trong tiến hóa. Cả hai nhánh giữ cùng quần thể uniform và seed, adaptive restart, success-rate, adaptation F/CR và neighborhood. Không sử dụng Sobol–OBL khởi tạo trong đối chứng này.
+**Chỉ thay một công tắc:** OBL bổ sung định kỳ trong tiến hóa. Cả hai nhánh giữ cùng quần thể uniform và seed, adaptive restart, success-rate, adaptation F/CR và neighborhood. Khởi tạo chỉ dùng uniform theo seed.
 
 | Thành phần | Bật | Tắt |
 |:---|:---|:---|

@@ -1,8 +1,7 @@
 """Common seeded uniform initialization for controlled solver comparisons.
 
 Passing this population as initial_x bypasses solver-native initialization,
-including OADE's initial Sobol/OBL. Such studies measure search from a common
-start and do not establish the benefit of native initialization.
+so studies measure search from a common seeded uniform start.
 """
 import numpy as np
 

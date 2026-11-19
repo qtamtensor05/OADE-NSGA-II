@@ -9,6 +9,7 @@
   "source_hashes_verified": 113,
   "summary_rows_verified": 30,
   "comparison_rows_verified": 50,
+  "source_snapshot_files_verified": 8,
   "paired_initialization_blocks_verified": 150,
   "max_objective_error": 0.0,
   "max_metric_error": 0.0,

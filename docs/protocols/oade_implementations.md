@@ -4,7 +4,7 @@
 
 Mã nguồn: [`src/oade_nsga2/`](../../src/oade_nsga2/). Cấu hình benchmark: [`config/algorithms/oade_nsga2.yaml`](../../config/algorithms/oade_nsga2.yaml), runner `local_oade`.
 
-Đây là một bản triển khai độc lập, không kế thừa hoặc import thuật toán từ bản research. Không có các công tắc ablation, nhánh classic/no-restart, fixed probability, Sobol/LHS hay OBL khởi tạo.
+Đây là một bản triển khai độc lập, không kế thừa hoặc import thuật toán từ bản research. Không có các công tắc ablation, nhánh classic/no-restart, fixed probability, các tùy chọn khởi tạo khác.
 
 | Thành phần | Cơ chế cố định |
 |:---|:---|
@@ -42,16 +42,16 @@ Mã nguồn cũ đã chuyển vào [`src/research/oade_nsga2/`](../../src/resear
 | Baseline có thể điều chỉnh | [`config/research/oade_nsga2.yaml`](../../config/research/oade_nsga2.yaml) |
 | Classic research | [`config/research/oade_classic.yaml`](../../config/research/oade_classic.yaml) |
 | Các ablation | [`config/ablations/`](../../config/ablations/) |
-| Restart, khởi tạo, OBL, probability, sensitivity | Các lệnh research hiện tại, đã đổi import/runner sang bản research |
+| Restart, OBL định kỳ, probability, sensitivity | Các lệnh research hiện tại, đã đổi import/runner sang bản research |
 
-Bản nghiên cứu giữ classic/adaptive/no-restart, uniform/Sobol–OBL, bật/tắt OBL và các adaptation; cùng telemetry restart, diversity, initialization và probability. **Không khôi phục generated-share hoặc lỗi cũ.**
+Bản nghiên cứu giữ classic/adaptive/no-restart, khởi tạo uniform, bật/tắt OBL và các adaptation; cùng telemetry restart, diversity, initialization và probability. **Không khôi phục generated-share hoặc lỗi cũ.**
 
 ## Các bản sửa lỗi được giữ lại
 
 - Cập nhật F/CR theo quan hệ Pareto trên pool đã đánh giá trước loại trùng; không bỏ DE trial tốt chỉ vì `rank=None`, không dùng rank stale để tính thành công.
 - Tỷ lệ thành công DE/SBX được chuẩn hóa theo số trial; giữ xác suất khi thiếu toán tử hoặc cả hai tỷ lệ bằng 0; giới hạn xác suất 0,2–0,8.
 - Objective accounting và xử lý batch vượt cap vẫn giữ nguyên.
-- Seed Sobol/GOBL và cách cô lập RNG trong thí nghiệm khởi tạo vẫn nằm trong bản research.
+- Khởi tạo uniform có seed tường minh; RNG riêng có thể được dùng khi gọi initializer trực tiếp.
 - Retry ghi checkpoint khi Windows chặn thay file vẫn nằm trong pipeline research.
 
 Kiểm thử đối chiếu bản chính với research cùng cấu hình yêu cầu X/F, n_eval và convergence khớp hoàn toàn trên các run nhỏ; có hồi quy riêng cho lỗi duplicate/stale rank và chuẩn hóa success-rate.

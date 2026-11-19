@@ -27,7 +27,6 @@ Earlier component-study results have been removed. New 480-run mechanism and 2,1
 
 - [Restart](protocols/restart_comparison.md)
 - [Periodic diversity injection](protocols/diversity_injection.md)
-- [Initialization](protocols/initialization_comparison.md)
 - [Probability adaptation](protocols/probability_ablation.md)
 - [ZDT sensitivity](protocols/zdt_sensitivity.md)
 - [DTLZ sensitivity](protocols/dtlz_sensitivity.md)
