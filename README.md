@@ -4,6 +4,31 @@
 
 OADE-NSGA-II combines DE/SBX offspring generation, F/CR adaptation, periodic opposition-based diversity injection, adaptive restart and NSGA-II survival. Production OADE and the existing CGDE implementation are unchanged.
 
+## Evidence summary (updated 27 November 2026)
+
+- **Holds — ZDT6:** OADE is significantly better than all five baselines on IGD and four on HV. With the optimum moved inside the domain, OADE's IGD remains about 7 times better than NSGA-II's.
+- **Only on the original ZDT — ZDT1/2/3:** OADE's significant advantage reverses when the optimum is not on the bound; NSGA-II then has 20–40% lower IGD than OADE.
+- **Not won — ZDT4:** on the original problem OADE does not differ significantly from NSGA-II/D-NSGA-II. With the optimum away from the domain centre, OADE is trapped on a local front in 29/30 runs. The OBL benefit on ZDT4 comes mainly from the optimum lying at the centre.
+- **Mechanisms:** there is no evidence yet that F/CR adaptation, operator-probability adaptation or restart improve quality. Fixed F/CR beats the full version on ZDT4; DE-only beats it on ZDT6.
+- **Scope:** two-objective ZDT only, at one budget of 20,000 FE. DTLZ/WFG, M>2 and real-world problems have not been run with the current algorithm set.
+
+Details: [limitations when reading the comparison](#limitations-when-reading-the-comparison) and [research status](#research-status).
+
+## Algorithm
+
+| Component | Mechanism | Fixed values |
+|---|---|---|
+| Initialization | Seeded uniform, shared with every baseline | — |
+| Offspring | One child per individual: DE with probability pDE, otherwise SBX + polynomial mutation | SBX η=20, p_c=0.9; mutation η=20 |
+| DE | 70% DE/current-to-pbest/1 within the 5 nearest neighbours (normalized objective space), 30% DE/rand/1 over the population; binomial crossover; out-of-bound genes are clipped | 5 neighbours |
+| F/CR adaptation | F ~ Cauchy(μF, 0.1), CR ~ N(μCR, 0.1); μ updated from nondominated DE trials (Lehmer mean for F), learning rate 0.1 | Initial μF=0.65, μCR=0.5 |
+| pDE adaptation | DE versus SBX success rate, normalized by trial counts, clamped to [0.2, 0.8] | Initial pDE=0.5 |
+| Periodic OBL | Every 10 generations, static (xl+xu−x) or dynamic (population-bound) reflection of part of the population | Jump rate 0.2 |
+| Restart | When the ideal point has not moved for 20 generations and diversity has collapsed: keep 80% elites, regenerate the rest by OBL/Gaussian sampling | Tolerance 1e-4, diversity threshold 0.02 |
+| Survival | NSGA-II nondominated sorting and crowding, with objective-space duplicate removal | — |
+
+Every objective evaluation, including OBL and restart, counts toward the budget. [Production and research implementations](docs/protocols/oade_implementations.md) · [Source](src/oade_nsga2/).
+
 ## Current comparison baseline — six algorithms
 
 As of 19 November 2026, the main comparison uses **OADE_NSGAII, NSGA2, DNSGA2, CGDE_NSGAII, GDE3 and NSDE**. CE-MOEA, R-NSGA-II and SDR-OLS are removed from the active suite. Their source/configurations remain for legacy reproducibility.
@@ -61,7 +86,7 @@ Cells show mean (best run): min IGD/max HV; means and best runs are bolded separ
 
 <!-- deb-metrics-results:start -->
 
-These additional tables use the same 899 valid runs: 29 for CGDE–ZDT4 and 30 for every other group. Mean and population variance (denominator R, `ddof=0`) summarize per-run metric values. Lower Υ and Δ are better; the lowest mean per problem is bolded using unrounded values. These are descriptive statistics; the Holm tests below apply only to IGD/HV.
+These additional tables use the same 899 valid runs: 29 for CGDE–ZDT4 and 30 for every other group. Mean and population variance (denominator R, `ddof=0`) summarize per-run metric values. Lower Υ and Δ are better; the lowest mean per problem is bolded using unrounded values. These are descriptive statistics; the Holm tests below apply only to IGD/HV. Tables II/III follow the numbering of Deb et al. (2002).
 
 ### Table II — Convergence metric Υ ↓
 
@@ -137,6 +162,36 @@ Points show medians and segments show Q1–Q3 on a shared log10 axis, not confid
 
 <!-- six-solver-audited-results:end -->
 
+## Limitations when reading the comparison
+
+### The advantage depends on where the optimum lies
+
+On the original ZDT problems the optimum lies on the bound (ZDT1/2/3/6) or at the domain centre (ZDT4). A separate study of 3,720 new runs moved the optimum inside the domain with three shift vectors while keeping the Pareto front unchanged. The table shows the confirmation round (seeds 9100–9129):
+
+| Problem | IGD(NSGA-II)/IGD(OADE), original | After shifting (3 vectors) |
+|---|---:|---:|
+| ZDT1 | 1.17 (+) | 0.63–0.66 (−) |
+| ZDT2 | 1.12 (+) | 0.79–0.80 (−) |
+| ZDT3 | 1.06 (+) | 0.59–0.61 (−) |
+| ZDT4 | 2.13 (NS) | 0.035–0.048 (−) |
+| ZDT6 | 4.01 (+) | 6.98–7.30 (+) |
+
+Ratios are per-seed medians; above 1 favours OADE. `+`/`−` follow paired Wilcoxon tests with global Holm over 160 endpoints, IGD and HV in the same direction. Only NSGA-II was rerun; the other baselines were not.
+
+- The OBL benefit on ZDT4 drops from 80.7-fold to nonsignificant when the optimum is off-centre; on the other problems OBL makes no difference.
+- Clipping out-of-bound DE genes gives only about a 20% advantage on original ZDT6; it does not explain the ZDT1/2/3 advantage.
+- For ZDT1/2/3/6 the shift |x − o| adds a kink at the optimum; ZDT4 uses a pure translation.
+
+The 44/50-endpoint conclusion above therefore applies to the original ZDT problems only. [Report](docs/reports/bias_location_check_report.md) · [Protocol](docs/protocols/bias_location_check.md).
+
+### Υ and Δ do not follow IGD/HV
+
+OADE has the lowest mean Υ on no problem: CGDE leads on ZDT1/2/3/6 and NSGA-II on ZDT4, with OADE second on ZDT1/2/3/6. OADE also leads on no problem for Δ and is worse than NSGA-II on ZDT1/2 (0.364 versus 0.350; 0.369 versus 0.346). Δ therefore does not show OADE spreading solutions more evenly. Υ/Δ are descriptive only and have not been tested.
+
+### Robustness on ZDT4
+
+OADE's median ZDT4 IGD (6.26e-3) is better than NSGA-II's (8.09e-3), but the distribution has a heavy tail: 9/30 OADE runs have IGD > 1e-2, the worst 0.325. NSGA-II has 8/30 such runs, the worst only 0.023. This tail makes OADE's mean IGD about four times NSGA-II's.
+
 No results from the old seven-algorithm study are relabeled, pooled or copied into the new comparison. The [previous ZDT v2 report](docs/reports/zdt_seven_fixed_oade_v2_report.md), original datasets remain **historical evidence**, including their original 60-endpoint correction and implementation limitations. Existing OADE-only mechanism/parameter studies below remain separate evidence.
 
 ## Run the new comparison
@@ -204,11 +259,21 @@ Jump rate 0.05 hurts ZDT4; the remaining contrasts do not establish 0.2 as optim
 
 **Empirical conclusion:** no alternative level was shown to improve both problems and both metrics consistently. CR=0.3 and pDE=0.8 have evidence of HV-only improvement on ZDT6; the CR result is close to the significance threshold. Restart settings can change behavior without a detected quality gain: on ZDT6, patience=5 produced 102 completed restarts in 19/30 seeds, versus 8 in 6/30 seeds for full, yet both quality endpoints remained NS. On ZDT4, full and the tested restart-parameter variants had no completed restarts.
 
-This two-problem OFAT study does not test interactions or optimize parameter combinations. Do not combine favorable levels into a new configuration without validation, extrapolate to DTLZ/WFG, or change production defaults from these tables. Competitors were not rerun, so the study does not revise the ZDT v2 benchmark conclusions above. [Data and 124-endpoint audit](results/experiments/mechanism_sensitivity_v1/derived/audit.json).
+This two-problem OFAT study does not test interactions or optimize parameter combinations. Do not combine favorable levels into a new configuration without validation, extrapolate to DTLZ/WFG, or change production defaults from these tables. Competitors were not rerun, so the study does not revise the six-algorithm comparison above. [Data and 124-endpoint audit](results/experiments/mechanism_sensitivity_v1/derived/audit.json).
 
 ## Other component studies and documentation
 
-Component-study code and protocols remain available. Earlier component results were removed. A subsequent 480-run ZDT4/ZDT6 mechanism study has an [audited report and R figures](docs/reports/mechanism_zdt46_report.md), with explicit provenance limitations: full OADE wins 6 endpoints, interventions win 4, and 18 are nonsignificant after Holm across 28 endpoints.
+Component-study code and protocols remain available. Earlier component results were removed. A subsequent 480-run ZDT4/ZDT6 mechanism study has an [audited report and R figures](docs/reports/mechanism_zdt46_report.md), with explicit provenance limitations: full OADE wins 6 endpoints, interventions win 4, and 18 are nonsignificant after Holm across 28 endpoints. Each intervention changes one component of the full version:
+
+| Intervention | ZDT4 (IGD/HV) | ZDT6 (IGD/HV) |
+|---|---|---|
+| OBL off | Full better | NS |
+| SBX only | Full better | Full better |
+| Fixed mean F/CR | **Variant better** | NS |
+| DE only | NS | **Variant better** |
+| Fixed pDE, global neighbourhood, restart off | NS | NS |
+
+DE is necessary, but the adaptive mechanisms have not shown a benefit. Restart never completed on ZDT4 (0/30 seeds) and only 6 times in 5/30 seeds on ZDT6, so its effect could not be assessed. The ZDT4 OBL benefit comes mainly from the optimum at the domain centre (see [limitations](#the-advantage-depends-on-where-the-optimum-lies)).
 
 - [Fixed and research OADE implementations](docs/protocols/oade_implementations.md)
 - [Restart ablation](docs/protocols/restart_comparison.md)
@@ -217,3 +282,15 @@ Component-study code and protocols remain available. Earlier component results w
 - [Baseline corrections and reconstruction assumptions](docs/protocols/baseline_paper_corrections.md)
 - [Experiment registry](docs/protocols/experiment_registry.md)
 - [Documentation index](docs/index.md)
+
+## Research status
+
+| Item | Status |
+|---|---|
+| Algorithm implementation, pipeline, data audits | Complete |
+| Six-algorithm ZDT comparison (900 runs) | Complete, audited |
+| Mechanism ablation (480 runs) and parameter OFAT (2,100 runs) | Complete, ZDT4/ZDT6 only |
+| Optimum-location bias check (3,720 runs) | Complete; no separate-path audit yet |
+| DTLZ/WFG, M>2, shifted problems with all baselines | Not run with the current algorithm set |
+| Tuned baselines (GDE3/NSDE use fixed F=0.5, CR=0.5), MOEA/D-DE | Not available |
+| Manuscript and literature review | Not written; [manuscript](docs/manuscript/manuscript.md) is currently an evidence summary |

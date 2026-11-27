@@ -4,6 +4,31 @@
 
 OADE-NSGA-II kết hợp sinh nghiệm DE/SBX, thích nghi F/CR, bơm đa dạng OBL định kỳ, adaptive restart và chọn lọc NSGA-II. Giữ nguyên solver OADE production và CGDE đã triển khai.
 
+## Tóm tắt bằng chứng (cập nhật 27/11/2026)
+
+- **Đứng vững — ZDT6:** OADE tốt hơn có ý nghĩa cả năm baseline về IGD và bốn baseline về HV. Khi dời nghiệm tối ưu vào trong miền, OADE vẫn có IGD tốt hơn NSGA-II khoảng 7 lần.
+- **Chỉ đúng trên ZDT gốc — ZDT1/2/3:** ưu thế có ý nghĩa của OADE đảo chiều khi nghiệm tối ưu không nằm trên biên; khi đó NSGA-II tốt hơn OADE 20–40% về IGD.
+- **Chưa thắng — ZDT4:** trên bài gốc, OADE không khác biệt có ý nghĩa với NSGA-II/D-NSGA-II. Khi nghiệm tối ưu không ở tâm miền, OADE kẹt ở front cục bộ 29/30 lượt. Lợi ích của OBL trên ZDT4 chủ yếu đến từ việc nghiệm tối ưu nằm ở tâm.
+- **Cơ chế:** chưa có bằng chứng rằng thích nghi F/CR, thích nghi xác suất toán tử hay restart cải thiện chất lượng. Cố định F/CR tốt hơn bản đầy đủ trên ZDT4; chỉ dùng DE tốt hơn trên ZDT6.
+- **Phạm vi:** chỉ ZDT hai mục tiêu và một mức ngân sách 20.000 FE. Chưa chạy DTLZ/WFG, M>2 hay bài thực tế với bộ thuật toán hiện tại.
+
+Chi tiết ở [giới hạn khi đọc kết quả so sánh](#giới-hạn-khi-đọc-kết-quả-so-sánh) và [trạng thái nghiên cứu](#trạng-thái-nghiên-cứu).
+
+## Thuật toán
+
+| Thành phần | Cơ chế | Giá trị cố định |
+|---|---|---|
+| Khởi tạo | Uniform theo seed, dùng chung với mọi baseline | — |
+| Sinh con | Mỗi cá thể sinh một con: DE với xác suất pDE, ngược lại SBX + đột biến đa thức | SBX η=20, p_c=0,9; đột biến η=20 |
+| DE | 70% DE/current-to-pbest/1 trong 5 láng giềng gần nhất (không gian mục tiêu chuẩn hóa), 30% DE/rand/1 trên toàn quần thể; lai nhị phân; gene vượt biên được clip | 5 láng giềng |
+| Thích nghi F/CR | F ~ Cauchy(μF; 0,1), CR ~ N(μCR; 0,1); μ cập nhật từ các DE trial không bị trội (Lehmer mean cho F), hệ số học 0,1 | μF=0,65, μCR=0,5 ban đầu |
+| Thích nghi pDE | Theo tỷ lệ thành công của DE so với SBX, chuẩn hóa theo số trial, kẹp trong [0,2; 0,8] | pDE=0,5 ban đầu |
+| OBL định kỳ | Mỗi 10 thế hệ, phản chiếu tĩnh (xl+xu−x) hoặc động (theo biên quần thể) một phần cá thể | Jump rate 0,2 |
+| Restart | Khi điểm lý tưởng không đổi trong 20 thế hệ và đa dạng sụp đổ: giữ 80% elite, sinh lại phần còn lại bằng OBL/Gauss | Tolerance 10⁻⁴, ngưỡng đa dạng 0,02 |
+| Chọn lọc | Sắp xếp không trội và crowding của NSGA-II, loại nghiệm trùng trong không gian mục tiêu | — |
+
+Mọi đánh giá mục tiêu, kể cả OBL và restart, đều tính vào ngân sách. [Mô tả bản production và bản nghiên cứu](docs/protocols/oade_implementations.md) · [Mã nguồn](src/oade_nsga2/).
+
 ## Baseline so sánh hiện tại — sáu thuật toán
 
 Từ 19/11/2026, nhóm so sánh chính gồm **OADE_NSGAII, NSGA2, DNSGA2, CGDE_NSGAII, GDE3, NSDE**. Bỏ CE-MOEA, R-NSGA-II và SDR-OLS khỏi bộ chạy chính; mã nguồn/cấu hình cũ được giữ để truy xuất lịch sử.
@@ -61,7 +86,7 @@ GDE3/NSDE dùng trực tiếp thuật toán trong thư viện: `DE/rand/1/bin`, 
 
 <!-- deb-metrics-results:start -->
 
-Hai bảng bổ sung dùng cùng 899 run hợp lệ: CGDE–ZDT4 có 29 run, các nhóm khác 30. Mean và phương sai dân số (mẫu số R, `ddof=0`) được tính trên giá trị từng run. Cả Υ và Δ đều càng nhỏ càng tốt; in đậm mean nhỏ nhất theo bài, dựa trên số chưa làm tròn. Đây là thống kê mô tả; kiểm định Holm bên dưới chỉ áp dụng cho IGD/HV.
+Hai bảng bổ sung dùng cùng 899 run hợp lệ: CGDE–ZDT4 có 29 run, các nhóm khác 30. Mean và phương sai dân số (mẫu số R, `ddof=0`) được tính trên giá trị từng run. Cả Υ và Δ đều càng nhỏ càng tốt; in đậm mean nhỏ nhất theo bài, dựa trên số chưa làm tròn. Đây là thống kê mô tả; kiểm định Holm bên dưới chỉ áp dụng cho IGD/HV. Bảng II/III đánh số theo Deb et al. (2002).
 
 ### Bảng II — Convergence metric Υ ↓
 
@@ -137,6 +162,36 @@ Màu là rank-biserial (dương có lợi cho OADE), không phải phần trăm 
 
 <!-- six-solver-audited-results:end -->
 
+## Giới hạn khi đọc kết quả so sánh
+
+### Ưu thế phụ thuộc vị trí nghiệm tối ưu
+
+Trên ZDT gốc, nghiệm tối ưu nằm trên biên (ZDT1/2/3/6) hoặc ở tâm miền (ZDT4). Một nghiên cứu riêng gồm 3.720 lượt mới đã dời nghiệm tối ưu vào trong miền bằng ba vectơ dịch chuyển, giữ nguyên Pareto front. Bảng dưới là vòng xác nhận (seed 9100–9129):
+
+| Bài | IGD(NSGA-II)/IGD(OADE), bài gốc | Sau dịch chuyển (3 vectơ) |
+|---|---:|---:|
+| ZDT1 | 1,17 (+) | 0,63–0,66 (−) |
+| ZDT2 | 1,12 (+) | 0,79–0,80 (−) |
+| ZDT3 | 1,06 (+) | 0,59–0,61 (−) |
+| ZDT4 | 2,13 (NS) | 0,035–0,048 (−) |
+| ZDT6 | 4,01 (+) | 6,98–7,30 (+) |
+
+Tỷ lệ là median theo seed; lớn hơn 1 nghĩa là OADE tốt hơn. `+`/`−` theo Wilcoxon ghép cặp và Holm chung 160 endpoint, IGD và HV cùng chiều. Kết quả này mới so với NSGA-II, chưa chạy lại các baseline khác.
+
+- Lợi ích của OBL trên ZDT4 giảm từ 80,7 lần xuống mức không có ý nghĩa khi nghiệm tối ưu không ở tâm; trên các bài khác OBL không tạo khác biệt.
+- Sửa biên bằng clip chỉ tạo lợi thế khoảng 20% trên ZDT6 gốc; nó không giải thích ưu thế trên ZDT1/2/3.
+- Với ZDT1/2/3/6, phép dịch chuyển |x − o| tạo một điểm gãy tại nghiệm tối ưu; ZDT4 là phép dịch thuần túy.
+
+Vì vậy kết luận 44/50 endpoint ở trên chỉ áp dụng cho ZDT gốc. [Báo cáo](docs/reports/bias_location_check_report.md) · [Giao thức](docs/protocols/bias_location_check.md).
+
+### Υ và Δ không cùng chiều với IGD/HV
+
+OADE không có mean Υ nhỏ nhất ở bài nào: CGDE dẫn đầu ZDT1/2/3/6, NSGA-II dẫn đầu ZDT4, OADE đứng thứ hai trên ZDT1/2/3/6. Về Δ, OADE cũng không dẫn đầu bài nào và kém NSGA-II trên ZDT1/2 (0,364 so với 0,350; 0,369 so với 0,346). Δ vì vậy không cho thấy OADE phân bố nghiệm đều hơn. Υ/Δ là thống kê mô tả, chưa có kiểm định.
+
+### Độ bền trên ZDT4
+
+Median IGD của OADE trên ZDT4 (6,26×10⁻³) tốt hơn NSGA-II (8,09×10⁻³), nhưng phân bố có đuôi nặng: 9/30 lượt OADE có IGD > 10⁻², lượt tệ nhất 0,325. NSGA-II có 8/30 lượt như vậy, lượt tệ nhất chỉ 0,023. Đuôi này làm mean IGD của OADE cao gấp khoảng 4 lần NSGA-II.
+
 Không đổi tên hoặc ghép dữ liệu cũ thành kết quả bộ mới. [Báo cáo ZDT v2 trước đây](docs/reports/zdt_seven_fixed_oade_v2_report.md), dữ liệu gốc được giữ như **bằng chứng lịch sử**, cùng họ 60 endpoint và các giới hạn triển khai ban đầu. Các nghiên cứu chỉ đo OADE ở phần dưới vẫn là bằng chứng riêng, không bị xóa hoặc dùng để điền baseline mới.
 
 ## Chạy bộ so sánh mới
@@ -204,11 +259,21 @@ Giảm jump rate xuống 0,05 làm ZDT4 kém hơn; các mức còn lại chưa �
 
 **Kết luận thực nghiệm:** không có mức thay thế nào được chứng minh cải thiện đồng đều cả hai bài và hai chỉ số. CR=0,3 và pDE=0,8 chỉ có bằng chứng cải thiện HV trên ZDT6; riêng CR=0,3 có p sát ngưỡng. Ngưỡng restart có thể làm thay đổi hành vi mà chưa cải thiện chất lượng đạt ngưỡng: trên ZDT6, patience=5 tạo 102 restart trong 19/30 seed so với 8 restart trong 6/30 seed của full, nhưng IGD/HV vẫn NS. Trên ZDT4, full và các mức tham số restart đã thử không có restart hoàn tất.
 
-Đây là OFAT trên hai bài, không kiểm định tương tác hay tối ưu tổ hợp tham số. Không cộng các mức thắng thành cấu hình mới, không suy rộng sang DTLZ/WFG và không tự đổi production. Bộ này không chạy lại các đối thủ nên không thay kết luận benchmark ZDT v2 ở trên. [Audit dữ liệu và 124 kiểm định](results/experiments/mechanism_sensitivity_v1/derived/audit.json).
+Đây là OFAT trên hai bài, không kiểm định tương tác hay tối ưu tổ hợp tham số. Không cộng các mức thắng thành cấu hình mới, không suy rộng sang DTLZ/WFG và không tự đổi production. Bộ này không chạy lại các đối thủ nên không thay kết luận của bộ so sánh sáu thuật toán ở trên. [Audit dữ liệu và 124 kiểm định](results/experiments/mechanism_sensitivity_v1/derived/audit.json).
 
 ## Nghiên cứu thành phần khác và tài liệu
 
-Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả thành phần cũ đã được xóa. Bộ chạy mới 480 lượt trên ZDT4/ZDT6 đã có [báo cáo, biểu đồ và kiểm chứng độc lập](docs/reports/mechanism_zdt46_report.md): 6 endpoint thiên về bản đầy đủ, 4 thiên về biến thể và 18 chưa phát hiện khác biệt sau Holm chung 28 endpoint. Báo cáo nêu rõ giới hạn provenance và số lần restart kích hoạt thấp.
+Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả thành phần cũ đã được xóa. Bộ chạy mới 480 lượt trên ZDT4/ZDT6 đã có [báo cáo, biểu đồ và kiểm chứng độc lập](docs/reports/mechanism_zdt46_report.md): 6 endpoint thiên về bản đầy đủ, 4 thiên về biến thể và 18 chưa phát hiện khác biệt sau Holm chung 28 endpoint. Mỗi can thiệp thay một thành phần trong bản đầy đủ:
+
+| Can thiệp | ZDT4 (IGD/HV) | ZDT6 (IGD/HV) |
+|---|---|---|
+| Tắt OBL | Bản đầy đủ tốt hơn | NS |
+| Chỉ dùng SBX | Bản đầy đủ tốt hơn | Bản đầy đủ tốt hơn |
+| Cố định mean F/CR | **Biến thể tốt hơn** | NS |
+| Chỉ dùng DE | NS | **Biến thể tốt hơn** |
+| Cố định pDE, lân cận toàn cục, tắt restart | NS | NS |
+
+DE là thành phần cần thiết, nhưng các cơ chế thích nghi chưa cho thấy lợi ích. Restart không hoàn tất lần nào trên ZDT4 (0/30 seed) và chỉ 6 lần trong 5/30 seed trên ZDT6, nên chưa đánh giá được tác dụng. Lợi ích của OBL trên ZDT4 chủ yếu do nghiệm tối ưu ở tâm miền (xem [giới hạn](#ưu-thế-phụ-thuộc-vị-trí-nghiệm-tối-ưu)). Báo cáo nêu rõ giới hạn provenance.
 
 - [OADE bản thống nhất và bản nghiên cứu](docs/protocols/oade_implementations.md)
 - [Ablation restart](docs/protocols/restart_comparison.md)
@@ -217,3 +282,15 @@ Mã nguồn và giao thức nghiên cứu thành phần vẫn còn. Kết quả 
 - [Sửa baseline và giả định tái dựng](docs/protocols/baseline_paper_corrections.md)
 - [Danh mục thí nghiệm](docs/protocols/experiment_registry.md)
 - [Mục lục tài liệu](docs/index.md)
+
+## Trạng thái nghiên cứu
+
+| Hạng mục | Trạng thái |
+|---|---|
+| Cài đặt thuật toán, pipeline, kiểm toán dữ liệu | Hoàn tất |
+| So sánh sáu thuật toán trên ZDT (900 lượt) | Hoàn tất, đã audit |
+| Ablation cơ chế (480 lượt) và OFAT tham số (2.100 lượt) | Hoàn tất, chỉ trên ZDT4/ZDT6 |
+| Kiểm tra thiên lệch vị trí nghiệm tối ưu (3.720 lượt) | Hoàn tất; chưa audit bằng đường tính riêng |
+| DTLZ/WFG, M>2, bài dịch chuyển với đủ baseline | Chưa chạy với bộ thuật toán hiện tại |
+| Baseline có điều chỉnh tham số (GDE3/NSDE đang dùng F=0,5, CR=0,5 cố định), MOEA/D-DE | Chưa có |
+| Bản thảo và tổng quan tài liệu | Chưa viết; [manuscript](docs/manuscript/manuscript.md) hiện chỉ là tóm tắt bằng chứng |
