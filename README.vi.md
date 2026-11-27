@@ -63,35 +63,53 @@ GDE3/NSDE dùng trực tiếp thuật toán trong thư viện: `DE/rand/1/bin`, 
 
 Hai bảng bổ sung dùng cùng 899 run hợp lệ: CGDE–ZDT4 có 29 run, các nhóm khác 30. Mean và phương sai dân số (mẫu số R, `ddof=0`) được tính trên giá trị từng run. Cả Υ và Δ đều càng nhỏ càng tốt; in đậm mean nhỏ nhất theo bài, dựa trên số chưa làm tròn. Đây là thống kê mô tả; kiểm định Holm bên dưới chỉ áp dụng cho IGD/HV.
 
-### Υ ↓ — Convergence: Mean / Variance
+### Bảng II — Convergence metric Υ ↓
 
-| Bài | Thống kê | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
-|---|---|---:|---:|---:|---:|---:|---:|
-| ZDT1 | Mean | 2.2348e-03 | 2.8974e-03 | **7.2046e-04** | 1.8007e-03 | 1.6374e-03 | 7.8155e-04 |
-| ZDT1 | Variance | 7.0131e-08 | 1.5361e-07 | 2.4015e-09 | 2.2505e-08 | 1.2610e-08 | 3.3734e-09 |
-| ZDT2 | Mean | 2.4863e-03 | 3.2709e-03 | **7.2782e-04** | 1.8516e-03 | 1.3625e-03 | 7.4881e-04 |
-| ZDT2 | Variance | 1.3827e-07 | 3.3720e-07 | 3.2820e-09 | 2.0834e-07 | 4.6051e-07 | 3.7071e-09 |
-| ZDT3 | Mean | 1.3769e-03 | 1.6760e-03 | **8.4640e-04** | 1.4047e-03 | 1.2684e-03 | 8.5883e-04 |
-| ZDT3 | Variance | 1.2695e-08 | 2.6135e-08 | 2.6503e-09 | 9.2944e-09 | 4.8345e-09 | 2.2691e-09 |
-| ZDT4 | Mean | **6.9653e-03** | 1.3031e-02 | 2.5441e+00 | 2.6912e+01 | 2.6735e+01 | 3.8085e-02 |
-| ZDT4 | Variance | 1.4216e-05 | 4.6938e-04 | 3.1629e+00 | 5.1855e+01 | 5.1947e+01 | 5.9209e-03 |
-| ZDT6 | Mean | 1.6054e-02 | 2.2695e-02 | **5.6601e-04** | 1.0764e-02 | 7.4932e-03 | 1.2273e-03 |
-| ZDT6 | Variance | 4.4706e-06 | 8.9087e-06 | 1.7199e-09 | 2.1147e-06 | 2.0685e-06 | 1.8040e-08 |
+Mỗi thuật toán: **dòng trên là Mean, dòng dưới là Variance**.
 
-### Δ ↓ — Diversity: Mean / Variance
+<table>
+  <thead>
+    <tr><th>Thuật toán</th><th>ZDT1</th><th>ZDT2</th><th>ZDT3</th><th>ZDT4</th><th>ZDT6</th></tr>
+  </thead>
+  <tbody>
+    <tr><td rowspan="2">NSGA2</td><td align="right">2.2348e-03</td><td align="right">2.4863e-03</td><td align="right">1.3769e-03</td><td align="right"><strong>6.9653e-03</strong></td><td align="right">1.6054e-02</td></tr>
+    <tr><td align="right">7.0131e-08</td><td align="right">1.3827e-07</td><td align="right">1.2695e-08</td><td align="right">1.4216e-05</td><td align="right">4.4706e-06</td></tr>
+    <tr><td rowspan="2">DNSGA2</td><td align="right">2.8974e-03</td><td align="right">3.2709e-03</td><td align="right">1.6760e-03</td><td align="right">1.3031e-02</td><td align="right">2.2695e-02</td></tr>
+    <tr><td align="right">1.5361e-07</td><td align="right">3.3720e-07</td><td align="right">2.6135e-08</td><td align="right">4.6938e-04</td><td align="right">8.9087e-06</td></tr>
+    <tr><td rowspan="2">CGDE_NSGAII</td><td align="right"><strong>7.2046e-04</strong></td><td align="right"><strong>7.2782e-04</strong></td><td align="right"><strong>8.4640e-04</strong></td><td align="right">2.5441e+00</td><td align="right"><strong>5.6601e-04</strong></td></tr>
+    <tr><td align="right">2.4015e-09</td><td align="right">3.2820e-09</td><td align="right">2.6503e-09</td><td align="right">3.1629e+00</td><td align="right">1.7199e-09</td></tr>
+    <tr><td rowspan="2">GDE3</td><td align="right">1.8007e-03</td><td align="right">1.8516e-03</td><td align="right">1.4047e-03</td><td align="right">2.6912e+01</td><td align="right">1.0764e-02</td></tr>
+    <tr><td align="right">2.2505e-08</td><td align="right">2.0834e-07</td><td align="right">9.2944e-09</td><td align="right">5.1855e+01</td><td align="right">2.1147e-06</td></tr>
+    <tr><td rowspan="2">NSDE</td><td align="right">1.6374e-03</td><td align="right">1.3625e-03</td><td align="right">1.2684e-03</td><td align="right">2.6735e+01</td><td align="right">7.4932e-03</td></tr>
+    <tr><td align="right">1.2610e-08</td><td align="right">4.6051e-07</td><td align="right">4.8345e-09</td><td align="right">5.1947e+01</td><td align="right">2.0685e-06</td></tr>
+    <tr><td rowspan="2">OADE_NSGAII</td><td align="right">7.8155e-04</td><td align="right">7.4881e-04</td><td align="right">8.5883e-04</td><td align="right">3.8085e-02</td><td align="right">1.2273e-03</td></tr>
+    <tr><td align="right">3.3734e-09</td><td align="right">3.7071e-09</td><td align="right">2.2691e-09</td><td align="right">5.9209e-03</td><td align="right">1.8040e-08</td></tr>
+  </tbody>
+</table>
 
-| Bài | Thống kê | NSGA2 | DNSGA2 | CGDE_NSGAII | GDE3 | NSDE | OADE_NSGAII |
-|---|---|---:|---:|---:|---:|---:|---:|
-| ZDT1 | Mean | 3.4968e-01 | **3.3776e-01** | 5.1806e-01 | 3.5093e-01 | 3.4990e-01 | 3.6366e-01 |
-| ZDT1 | Variance | 8.1914e-04 | 5.6915e-04 | 4.5954e-03 | 6.8594e-04 | 9.1802e-04 | 1.0134e-03 |
-| ZDT2 | Mean | 3.4559e-01 | **3.4071e-01** | 5.5545e-01 | 4.4231e-01 | 5.2035e-01 | 3.6948e-01 |
-| ZDT2 | Variance | 9.5195e-04 | 1.0573e-03 | 3.5296e-03 | 4.8431e-02 | 8.3941e-02 | 8.4133e-04 |
-| ZDT3 | Mean | 5.5206e-01 | 5.4211e-01 | 6.6530e-01 | 5.3140e-01 | **5.2847e-01** | 5.4395e-01 |
-| ZDT3 | Variance | 6.1092e-04 | 3.4178e-04 | 1.1084e-03 | 3.4406e-04 | 3.7982e-04 | 5.1888e-04 |
-| ZDT4 | Mean | 4.0147e-01 | **3.9833e-01** | 8.1657e-01 | 9.4363e-01 | 9.2765e-01 | 4.0232e-01 |
-| ZDT4 | Variance | 2.5620e-02 | 6.5907e-03 | 3.2703e-03 | 5.9575e-03 | 1.2274e-02 | 2.5441e-02 |
-| ZDT6 | Mean | 3.3786e-01 | 3.5114e-01 | 6.6988e-01 | **3.3060e-01** | 3.5644e-01 | 3.4681e-01 |
-| ZDT6 | Variance | 6.0995e-04 | 7.1913e-04 | 1.6770e-03 | 5.9186e-04 | 1.5135e-02 | 7.6387e-04 |
+### Bảng III — Diversity metric Δ ↓
+
+Mỗi thuật toán: **dòng trên là Mean, dòng dưới là Variance**.
+
+<table>
+  <thead>
+    <tr><th>Thuật toán</th><th>ZDT1</th><th>ZDT2</th><th>ZDT3</th><th>ZDT4</th><th>ZDT6</th></tr>
+  </thead>
+  <tbody>
+    <tr><td rowspan="2">NSGA2</td><td align="right">3.4968e-01</td><td align="right">3.4559e-01</td><td align="right">5.5206e-01</td><td align="right">4.0147e-01</td><td align="right">3.3786e-01</td></tr>
+    <tr><td align="right">8.1914e-04</td><td align="right">9.5195e-04</td><td align="right">6.1092e-04</td><td align="right">2.5620e-02</td><td align="right">6.0995e-04</td></tr>
+    <tr><td rowspan="2">DNSGA2</td><td align="right"><strong>3.3776e-01</strong></td><td align="right"><strong>3.4071e-01</strong></td><td align="right">5.4211e-01</td><td align="right"><strong>3.9833e-01</strong></td><td align="right">3.5114e-01</td></tr>
+    <tr><td align="right">5.6915e-04</td><td align="right">1.0573e-03</td><td align="right">3.4178e-04</td><td align="right">6.5907e-03</td><td align="right">7.1913e-04</td></tr>
+    <tr><td rowspan="2">CGDE_NSGAII</td><td align="right">5.1806e-01</td><td align="right">5.5545e-01</td><td align="right">6.6530e-01</td><td align="right">8.1657e-01</td><td align="right">6.6988e-01</td></tr>
+    <tr><td align="right">4.5954e-03</td><td align="right">3.5296e-03</td><td align="right">1.1084e-03</td><td align="right">3.2703e-03</td><td align="right">1.6770e-03</td></tr>
+    <tr><td rowspan="2">GDE3</td><td align="right">3.5093e-01</td><td align="right">4.4231e-01</td><td align="right">5.3140e-01</td><td align="right">9.4363e-01</td><td align="right"><strong>3.3060e-01</strong></td></tr>
+    <tr><td align="right">6.8594e-04</td><td align="right">4.8431e-02</td><td align="right">3.4406e-04</td><td align="right">5.9575e-03</td><td align="right">5.9186e-04</td></tr>
+    <tr><td rowspan="2">NSDE</td><td align="right">3.4990e-01</td><td align="right">5.2035e-01</td><td align="right"><strong>5.2847e-01</strong></td><td align="right">9.2765e-01</td><td align="right">3.5644e-01</td></tr>
+    <tr><td align="right">9.1802e-04</td><td align="right">8.3941e-02</td><td align="right">3.7982e-04</td><td align="right">1.2274e-02</td><td align="right">1.5135e-02</td></tr>
+    <tr><td rowspan="2">OADE_NSGAII</td><td align="right">3.6366e-01</td><td align="right">3.6948e-01</td><td align="right">5.4395e-01</td><td align="right">4.0232e-01</td><td align="right">3.4681e-01</td></tr>
+    <tr><td align="right">1.0134e-03</td><td align="right">8.4133e-04</td><td align="right">5.1888e-04</td><td align="right">2.5441e-02</td><td align="right">7.6387e-04</td></tr>
+  </tbody>
+</table>
 
 Υ dùng 500 điểm tham chiếu xấp xỉ đều theo độ dài cung trên front giải tích ZDT. Δ dùng hai extreme thật và khoảng cách giữa các nghiệm nondominated liên tiếp; trên ZDT3, khoảng cách qua các đoạn rời vẫn được tính theo công thức gốc. [Phương pháp và giới hạn](docs/protocols/deb_metrics.md).
 

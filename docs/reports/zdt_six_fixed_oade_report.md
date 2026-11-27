@@ -73,6 +73,8 @@ Sáu endpoint chưa đạt ngưỡng:
 
 Manifest ghi hai phiên 8 worker (900 lượt chờ ban đầu, 319 khi resume); OMP/OPENBLAS/MKL thread variables không được đặt trong snapshot. Vì vậy không khẳng định mỗi worker chỉ dùng một thread và không so runtime với đợt lịch sử như phép thử tăng tốc có kiểm soát.
 
+**Giới hạn bổ sung (27/11/2026):** [kiểm tra thiên lệch theo vị trí nghiệm tối ưu](bias_location_check_report.md) cho thấy khi dời nghiệm tối ưu vào trong miền mà giữ nguyên Pareto front, ưu thế IGD/HV của OADE so với NSGA-II trên ZDT1/2/3 đảo chiều, OADE thua rõ trên ZDT4, còn ưu thế trên ZDT6 vẫn giữ. Không khái quát các endpoint ZDT1/2/3/4 ở trên cho bài có nghiệm tối ưu nằm trong miền.
+
 Các seed và cấu hình của bốn thuật toán giữ lại trùng thiết kế trước; đợt này chạy mới nhưng không phải xác nhận trên seed holdout. Chưa đo DTLZ/WFG, M>2 hay tối ưu động. Các nghiên cứu cơ chế/OFAT OADE là bằng chứng riêng; không suy nguyên nhân từ bảng so thuật toán. Không có cơ sở đổi cấu hình production chỉ từ best seed hoặc kết quả benchmark này.
 
 ## Biểu đồ phân bố và Pareto mới nhất

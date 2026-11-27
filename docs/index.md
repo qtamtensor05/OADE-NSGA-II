@@ -5,6 +5,7 @@
 The active comparison is the new six-solver ZDT suite (OADE, NSGA2, DNSGA2, CGDE, GDE3, NSDE); 900 runs are complete, 899 valid. Global Holm (50 endpoints): 44 favor OADE and 6 are nonsignificant. Previous seven-solver ZDT v2 results are historical, not results of the new suite. The OADE component studies remain separate. DTLZ/WFG have not been reevaluated with the active set.
 
 - [Audited six-solver results and conclusions](reports/zdt_six_fixed_oade_report.md)
+- [Optimum-location bias check: 3,720 runs on original and shifted ZDT](reports/bias_location_check_report.md) — OADE's ZDT1/2/3 advantage over NSGA-II reverses when the optimum is moved off the bound; the ZDT4 OBL benefit comes mainly from the optimum at the domain centre; ZDT6 holds
 - [Current comparison tables](../README.md)
 - [Active six-solver protocol, configuration and run commands](protocols/zdt_six_fixed_oade.md)
 - [Audited ZDT v2 report](reports/zdt_seven_fixed_oade_v2_report.md)

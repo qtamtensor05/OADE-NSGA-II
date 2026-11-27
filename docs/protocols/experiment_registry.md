@@ -4,6 +4,17 @@
 
 **19 November 2026:** the active comparison is now the [six-solver ZDT protocol](zdt_six_fixed_oade.md): OADE, NSGA2, DNSGA2, CGDE, GDE3 and NSDE. New run directory `results/experiments/zdt_six_fixed_oade_v1/`; 900 completed runs (899 valid) and 50 Holm endpoints: 44 favor OADE, 6 nonsignificant. See the [audited report](../reports/zdt_six_fixed_oade_report.md). CE/RNSGA2/SDR-OLS are legacy only. Component-study datasets remain separate and retained.
 
+## Optimum-location bias check
+
+**27 November 2026:** [protocol](bias_location_check.md) and [report](../reports/bias_location_check_report.md). OADE variants (production, random/bounce DE repair, no OBL) and NSGA-II on original and shifted ZDT, where the shift moves the optimum inside the domain with an unchanged Pareto front.
+
+| Study | Role | Seeds | Runs | Directory |
+|---|---|---|---:|---|
+| Exploratory | Discovery, ZDT1/4/6, one shift | 9000–9029 | 720 | `results/experiments/bias_location_exploratory_v1/` |
+| Confirmation | Pre-specified, ZDT1/2/3/4/6, three shifts | 9100–9129 | 3,000 | `results/experiments/bias_location_confirm_v1/` |
+
+These runs do not change the stored six-solver results; they limit how those results may be generalised.
+
 ## Historical algorithm-comparison baseline
 
 As of 15 November 2026, the starting point is `results/experiments/zdt_seven_fixed_oade_v2/`: corrected baselines and fixed OADE, 1,050 newly executed runs, 1,049 valid and one collapsed CGDE ZDT4 front. No previous baseline blocks are reused.

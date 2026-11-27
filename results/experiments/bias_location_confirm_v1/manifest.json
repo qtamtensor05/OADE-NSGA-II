@@ -1,0 +1,92 @@
+{
+ "script": "analysis/bias_location_confirm.py",
+ "executed_as": "scratch/bias_check/run_confirm.py",
+ "executed_on": "2026-11-27",
+ "role": "confirmatory; hypotheses and test families fixed in the script docstring before the run",
+ "seeds": [
+  9100,
+  9129
+ ],
+ "n_runs": 3000,
+ "problems": {
+  "zdt1": 30,
+  "zdt2": 30,
+  "zdt3": 30,
+  "zdt4": 10,
+  "zdt6": 10
+ },
+ "variants": {
+  "original": null,
+  "shift_a": 12345,
+  "shift_b": 2024,
+  "shift_c": 777
+ },
+ "algorithms": [
+  "OADE",
+  "OADE_random",
+  "OADE_bounce",
+  "OADE_noOBL",
+  "NSGA2"
+ ],
+ "families": {
+  "paired_wilcoxon_holm": 160,
+  "interaction_mannwhitney_holm": 60
+ },
+ "schema": 1,
+ "study": "bias_location_confirm_v1",
+ "pop_size": 100,
+ "evaluation_budget": 20000,
+ "shift_definition": {
+  "zdt4": "z_i = x_i - o_i, o_i ~ U(-2.5, 2.5)",
+  "others": "z_i = |x_i - o_i|, o_i ~ U(0.2, 0.8)",
+  "note": "i >= 2; bounds, objectives and Pareto front unchanged"
+ },
+ "reference_fronts": "results/experiments/zdt_six_fixed_oade_v1/config/reference_fronts.json",
+ "reference_fronts_sha256": "adfc6bcb22fc62a9f55068a56ac4d5fde473de30c9419fe82259ee9cd31409a0",
+ "hv_reference_point": "max(reference front) + 0.1 per objective",
+ "nsga2": "pymoo NSGA2 defaults, common seeded uniform initial population",
+ "git_head_at_execution": "b320ea45f89a57f11791dbdfac856a5bfc5772f5",
+ "src_uncommitted_changes_at_execution": false,
+ "oade_source_sha256": {
+  "src/oade_nsga2/__init__.py": "57117b6c3fabb0f4c5d6e5d6447e5b8d6f6fd913116904f349da381ae3d0ede0",
+  "src/oade_nsga2/algorithm.py": "be3b25e36b789e6dc9538cdd41c9ce0339ebb5681306a925d67e87205b5eca2c",
+  "src/oade_nsga2/configuration.py": "b08615899eb67977379212531fc04b366c12d8b9acbf24672c3a26aad920e4ee",
+  "src/oade_nsga2/core.py": "7a3af86abc19ac6e9b5fdb67c1f09625002dc24b524ee987cb400e6fd7f7acd2",
+  "src/oade_nsga2/operators.py": "188b04b544c851e95abeb49c1805d65793d7b9b70bc6542adf8b63fc6b908a0f",
+  "src/oade_nsga2/runner.py": "d713e0ccd1a6b6a7832713585e84714ebcc2aa42e1d50d89778d15680c167ce1",
+  "src/oade_nsga2/selection.py": "bbf9e1eeb4d9e6ee4c4755c26b7bb64fa2b852ce2ce6acf458b5203536d41129"
+ },
+ "shared_source_sha256": {
+  "src/shared/evaluation.py": "98f9cb26e64b330acfe276048d861c42a07b8b472c7817f76c337e2102e744e1",
+  "src/shared/fronts.py": "df3cabc4b067c68213aa2932c6ac1ece692efa3d4f080ee43fd9378d222e5f07",
+  "src/shared/population.py": "398cd5056a68fd35d1a3f81b3ed6b69d74a0b97f0036dbb8aa2ae9c278ca2911",
+  "src/shared/pymoo_execution.py": "c1a4b11ad5ece178af15e78a5555d4a2b6fee6850de53efd88a27b1a696ba9b8"
+ },
+ "environment": {
+  "python": "3.14.7",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "pymoo": "0.6.2",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "cpu": "13th Gen Intel Core i5-13420H, 8 cores / 12 threads",
+  "workers": 10,
+  "thread_env": {
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1"
+  }
+ },
+ "script_sha256_in_repo": "c868f9678f752947b4301edb55fdb3220afb6af038aace648bccb1b5d9ecad2b",
+ "script_note": "Repository copy differs from the executed scratch script only in ROOT/OUT paths, docstring usage line, smoke output path (tmp/smoke) and a UTF-8 stdout fix; solver, problem and statistics code are identical.",
+ "data_sha256": {
+  "runs.jsonl": "6113ae34445de42d2cdf144ca374916fdd61a65e3b476b510786a3948cbc3ab6",
+  "tests.json": "574066be0942b89fa230c3edaa85bb5a86bf55d4b1d752a0c229f4abab986fca",
+  "report.md": "09a189bff3ad89c9a47c9b1d66f27a7e99ce29aec33dfc45901a1050c04db99f"
+ },
+ "summary": {
+  "runs": 3000,
+  "invalid": 0,
+  "max_n_eval": 20000,
+  "max_f_reeval_error": 0.0
+ }
+}
